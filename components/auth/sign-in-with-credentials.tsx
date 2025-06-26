@@ -1,7 +1,6 @@
-import { signIn } from "@/../auth";
-import { signInWithCredentials } from "../../actions/auth";
+import { signInWithCredentials } from "@/../actions/auth";
 
-export function SignInWithCredentials() {
+export function SignInWithCredentialsButton() {
   return (
     <form
       action={async (formData) => {

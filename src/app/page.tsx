@@ -2,7 +2,7 @@ import Image from "next/image";
 import SignInWithGitHubButton from "@/../components/auth/sign-in-with-github";
 import SignInWithGoogleButton from "@/../components/auth/sign-in-with-google";
 import SignOutOfAllProvidersButton from "@/../components/auth/sign-out-of-all-providers";
-import { SignInWithCredentials } from "@/../components/auth/sign-in-with-credentials";
+import { SignInWithCredentialsButton } from "@/../components/auth/sign-in-with-credentials";
 
 export default function Home() {
   return (
@@ -56,7 +56,7 @@ export default function Home() {
           <SignInWithGitHubButton />
           <SignInWithGoogleButton />
           <SignOutOfAllProvidersButton />
-          <SignInWithCredentials />
+          <SignInWithCredentialsButton />
         </div>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
