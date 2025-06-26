@@ -10,10 +10,11 @@ export async function signInWithGoogle() {
   await signIn("google");
 }
 
-export async function signInWithCredentials(email: string, password: string) {
+export async function signInWithCredentials(formData: FormData) {
+  console.log(formData);
   await signIn("credentials", {
-    email,
-    password,
+    email: formData.get("email"),
+    password: formData.get("password"),
     redirect: true,
     redirectTo: "/dashboard",
   });
