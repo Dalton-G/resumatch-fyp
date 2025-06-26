@@ -1,6 +1,6 @@
 import { signInWithGoogle } from "@/../actions/auth";
 
-export default function SignInWithGitHubButton() {
+export default function SignInWithGoogleButton() {
   return (
     <div className="flex flex-col gap-4">
       <form action={signInWithGoogle}>
