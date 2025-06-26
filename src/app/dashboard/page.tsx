@@ -1,10 +1,10 @@
-import { auth } from "@/../auth";
+import { auth } from "../../auth";
 import SignOutOfAllProvidersButton from "../../../components/auth/sign-out-of-all-providers";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const session = await auth();
-
-  if (!session?.user) return null;
+  if (!session || !session.user) redirect("/");
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
