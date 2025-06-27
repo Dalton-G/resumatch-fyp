@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn, signOut } from "../src/auth";
+import { signIn, signOut } from "@/auth";
 
 export async function signInWithGoogle() {
   await signIn("google", { redirect: true, redirectTo: "/dashboard" });
@@ -17,5 +17,5 @@ export async function signInWithCredentials(formData: FormData) {
 }
 
 export async function signOutOfAllProviders() {
-  await signOut({ redirect: true, redirectTo: "/" });
+  await signOut({ redirect: true, redirectTo: "/auth/login" });
 }

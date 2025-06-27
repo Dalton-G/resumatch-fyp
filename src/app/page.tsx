@@ -1,7 +1,7 @@
+import { SignInWithCredentialsButton } from "@/components/auth/sign-in-with-credentials";
+import SignInWithGoogleButton from "@/components/auth/sign-in-with-google";
+import SignOutOfAllProvidersButton from "@/components/auth/sign-out-of-all-providers";
 import Image from "next/image";
-import SignInWithGoogleButton from "@/../components/auth/sign-in-with-google";
-import SignOutOfAllProvidersButton from "@/../components/auth/sign-out-of-all-providers";
-import { SignInWithCredentialsButton } from "@/../components/auth/sign-in-with-credentials";
 
 export default function Home() {
   return (
