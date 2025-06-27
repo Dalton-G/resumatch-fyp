@@ -1,4 +1,4 @@
-import { signInWithCredentials } from "@/../actions/auth";
+import { signInWithCredentials } from "@/actions/auth";
 
 export function SignInWithCredentialsButton() {
   return (

@@ -1,4 +1,4 @@
-import { signOutOfAllProviders } from "@/../actions/auth";
+import { signOutOfAllProviders } from "@/actions/auth";
 
 export default function SignOutOfAllProvidersButton() {
   return (

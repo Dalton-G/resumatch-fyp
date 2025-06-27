@@ -1,4 +1,4 @@
-import { signInWithGoogle } from "@/../actions/auth";
+import { signInWithGoogle } from "@/actions/auth";
 
 export default function SignInWithGoogleButton() {
   return (
