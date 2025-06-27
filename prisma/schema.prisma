@@ -168,7 +168,7 @@ model RecruiterProfile {
   companyWebsite     String?
   companyIndustry    String?
   companySize        String?
-  companyLocation    String?
+  companyAddress     String?
   companyLogoUrl     String?
 
   jobPostings   JobPosting[]
@@ -178,7 +178,7 @@ model RecruiterProfile {
   updatedAt DateTime @updatedAt
 
   @@index([companyName])
-  @@index([companyLocation])
+  @@index([companyAddress])
   @@index([userId])
 }
 

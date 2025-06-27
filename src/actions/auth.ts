@@ -17,5 +17,5 @@ export async function signInWithCredentials(formData: FormData) {
 }
 
 export async function signOutOfAllProviders() {
-  await signOut({ redirect: true, redirectTo: "/" });
+  await signOut({ redirect: true, redirectTo: "/auth/login" });
 }
