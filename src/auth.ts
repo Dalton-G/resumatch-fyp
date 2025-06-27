@@ -4,8 +4,8 @@ import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "../prisma/client";
 import { compare } from "bcrypt-ts";
-import { signInSchema } from "../lib/schema/auth-schema";
 import { ZodError } from "zod";
+import { signInSchema } from "./schema/auth-schema";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
