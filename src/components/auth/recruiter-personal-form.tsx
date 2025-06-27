@@ -13,7 +13,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { useState, forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useImperativeHandle } from "react";
 
 const RecruiterPersonalForm = forwardRef(function RecruiterPersonalForm(
   {
@@ -25,7 +25,6 @@ const RecruiterPersonalForm = forwardRef(function RecruiterPersonalForm(
   },
   ref
 ) {
-  const [showErrors, setShowErrors] = useState(false);
   const form = useForm({
     resolver: zodResolver(recruiterPersonalSchema),
     defaultValues: initialValues,
@@ -33,7 +32,6 @@ const RecruiterPersonalForm = forwardRef(function RecruiterPersonalForm(
   });
 
   async function validateAndContinue() {
-    setShowErrors(true);
     const valid = await form.trigger();
     if (valid) {
       onContinue(form.getValues());
@@ -47,7 +45,6 @@ const RecruiterPersonalForm = forwardRef(function RecruiterPersonalForm(
   }));
 
   function handleContinue(data: any) {
-    setShowErrors(true);
     onContinue(data);
   }
 
@@ -73,7 +70,7 @@ const RecruiterPersonalForm = forwardRef(function RecruiterPersonalForm(
                     placeholder=""
                   />
                 </FormControl>
-                {showErrors && <FormMessage />}
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -90,7 +87,7 @@ const RecruiterPersonalForm = forwardRef(function RecruiterPersonalForm(
                     placeholder=""
                   />
                 </FormControl>
-                {showErrors && <FormMessage />}
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -109,7 +106,7 @@ const RecruiterPersonalForm = forwardRef(function RecruiterPersonalForm(
                   placeholder=""
                 />
               </FormControl>
-              {showErrors && <FormMessage />}
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -127,7 +124,7 @@ const RecruiterPersonalForm = forwardRef(function RecruiterPersonalForm(
                   placeholder=""
                 />
               </FormControl>
-              {showErrors && <FormMessage />}
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -145,7 +142,7 @@ const RecruiterPersonalForm = forwardRef(function RecruiterPersonalForm(
                   placeholder=""
                 />
               </FormControl>
-              {showErrors && <FormMessage />}
+              <FormMessage />
             </FormItem>
           )}
         />

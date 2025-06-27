@@ -21,7 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
 
 const INDUSTRY_OPTIONS = [
   "Technology",
@@ -49,7 +48,6 @@ export default function RecruiterCompanyForm({
   initialValues: any;
   onSubmit: (data: any) => void;
 }) {
-  const [showErrors, setShowErrors] = useState(false);
   const form = useForm({
     resolver: zodResolver(recruiterCompanySchema),
     defaultValues: initialValues,
@@ -57,7 +55,6 @@ export default function RecruiterCompanyForm({
   });
 
   function handleSubmit(data: any) {
-    setShowErrors(true);
     onSubmit(data);
   }
 
@@ -82,7 +79,7 @@ export default function RecruiterCompanyForm({
                   placeholder=""
                 />
               </FormControl>
-              {showErrors && <FormMessage />}
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -100,7 +97,7 @@ export default function RecruiterCompanyForm({
                   rows={3}
                 />
               </FormControl>
-              {showErrors && <FormMessage />}
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -118,7 +115,7 @@ export default function RecruiterCompanyForm({
                   placeholder=""
                 />
               </FormControl>
-              {showErrors && <FormMessage />}
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -150,7 +147,7 @@ export default function RecruiterCompanyForm({
                   </SelectContent>
                 </Select>
               </FormControl>
-              {showErrors && <FormMessage />}
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -182,7 +179,7 @@ export default function RecruiterCompanyForm({
                   </SelectContent>
                 </Select>
               </FormControl>
-              {showErrors && <FormMessage />}
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -199,7 +196,7 @@ export default function RecruiterCompanyForm({
                   placeholder=""
                 />
               </FormControl>
-              {showErrors && <FormMessage />}
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -217,7 +214,7 @@ export default function RecruiterCompanyForm({
                   placeholder=""
                 />
               </FormControl>
-              {showErrors && <FormMessage />}
+              <FormMessage />
             </FormItem>
           )}
         />
