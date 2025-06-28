@@ -52,7 +52,7 @@ const RecruiterPersonalForm = forwardRef(function RecruiterPersonalForm(
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleContinue)}
-        className="w-full flex flex-col gap-4"
+        className="w-full flex flex-col gap-4 font-libertinus"
         autoComplete="off"
         noValidate
       >

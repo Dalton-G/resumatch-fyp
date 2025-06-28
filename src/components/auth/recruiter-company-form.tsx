@@ -62,7 +62,7 @@ export default function RecruiterCompanyForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="w-full flex flex-col gap-4"
+        className="w-full flex flex-col gap-4 font-libertinus"
         autoComplete="off"
         noValidate
       >

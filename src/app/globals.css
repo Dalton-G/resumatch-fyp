@@ -6,7 +6,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-libertinus: var(--font-libertinus), sans-serif;
+  --font-libertinus: var(--font-libertinus), serif;
   --font-dm-serif: var(--font-dm-serif), serif;
   --font-dm-serif-italic: var(--font-dm-serif-italic), serif;
   --color-sidebar-ring: var(--sidebar-ring);

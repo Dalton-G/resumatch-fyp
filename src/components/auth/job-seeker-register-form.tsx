@@ -36,7 +36,7 @@ export default function JobSeekerRegisterForm() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full font-libertinus">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

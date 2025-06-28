@@ -39,15 +39,15 @@ export function LoginForm({
   return (
     <div
       className={cn(
-        "w-full max-w-sm mx-auto flex flex-col justify-center",
+        "w-full max-w-sm mx-auto flex flex-col justify-center font-libertinus",
         className
       )}
       {...props}
     >
-      <h1 className="text-3xl font-bold font-dm-serif mb-2 text-center md:text-center">
+      <h1 className="text-3xl font-bold font-dm-serif mb-2 text-center md:text-center mt-4">
         Welcome back
       </h1>
-      <p className="mb-6 text-center md:text-center font-libertinus">
+      <p className="mb-8 text-center md:text-center font-libertinus">
         Please login to your{" "}
         <a
           href="#"
@@ -114,7 +114,7 @@ export function LoginForm({
         <div className="flex-grow border-t border-gray-300" />
       </div>
       <GoogleButton className="mb-4 w-full" />
-      <p className="text-center text-sm font-libertinus mt-2">
+      <p className="text-center text-sm font-libertinus mt-2 mb-4">
         Don&apos;t have an account?{" "}
         <Link
           href="/auth/register"

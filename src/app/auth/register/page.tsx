@@ -19,7 +19,7 @@ export default function RegisterPage() {
           </p>
           <div className="flex flex-col gap-4 w-full">
             <Link href="/auth/register/job-seeker" className="group">
-              <Card className="flex flex-row items-center justify-between p-5 cursor-pointer transition-colors border border-gray-200 group-hover:bg-[var(--r-gray)]">
+              <Card className="flex flex-row items-center justify-between p-5 cursor-pointer transition-colors border border-gray-200  group-hover:border-[var(--r-blue)]">
                 <div>
                   <div className="font-bold font-libertinus text-lg">
                     I'm a Job Seeker
@@ -32,7 +32,7 @@ export default function RegisterPage() {
               </Card>
             </Link>
             <Link href="/auth/register/recruiter" className="group">
-              <Card className="flex flex-row items-center justify-between p-5 cursor-pointer transition-colors border border-gray-200 group-hover:bg-[var(--r-gray)]">
+              <Card className="flex flex-row items-center justify-between p-5 cursor-pointer transition-colors border border-gray-200  group-hover:border-[var(--r-blue)]">
                 <div>
                   <div className="font-bold font-libertinus text-lg">
                     I'm a Recruiter
