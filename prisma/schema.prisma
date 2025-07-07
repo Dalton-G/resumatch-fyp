@@ -260,3 +260,42 @@ model JobApplication {
   @@index([status])
   @@index([appliedAt])
 }
+
+// =================== EMBEDDING CHUNKS ===================
+
+model ResumeChunk {
+  id            String   @id
+  jobSeekerId   String
+  resumeId      String
+  chunkIndex    Int
+  totalChunks   Int
+  content       String
+  embedding     Float[]
+  appliedJobIds String[]
+  source        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([jobSeekerId])
+  @@index([resumeId])
+}
+
+model JobPostingChunk {
+  id          String  @id
+  companyId   String
+  jobId       String
+  chunkIndex  Int
+  totalChunks Int
+  content     String
+  embedding   Float[]
+  active      Boolean @default(true)
+  source      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([jobId])
+  @@index([active])
+}
