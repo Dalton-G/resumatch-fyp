@@ -32,7 +32,7 @@ export default function RegisterPage() {
                 <LuBriefcase size={32} className="text-[var(--r-blue)]" />
               </Card>
             </Link>
-            <Link href={routes.recruiterRegister} className="group">
+            <Link href={routes.companyRegister} className="group">
               <Card className="flex flex-row items-center justify-between p-5 cursor-pointer transition-colors border border-gray-200  group-hover:border-[var(--r-blue)]">
                 <div>
                   <div className="font-bold font-libertinus text-lg">

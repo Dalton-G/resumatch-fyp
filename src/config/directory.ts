@@ -3,5 +3,5 @@ export const routes = {
   register: "/register",
   dashboard: "/dashboard",
   jobSeekerRegister: "/register/job-seeker",
-  recruiterRegister: "/register/recruiter",
+  companyRegister: "/register/company",
 } as const;
