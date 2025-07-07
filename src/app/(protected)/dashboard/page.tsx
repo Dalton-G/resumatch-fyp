@@ -1,5 +1,5 @@
 import SignOutOfAllProvidersButton from "@/components/auth/sign-out-of-all-providers";
-import { auth } from "../../auth";
+import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {

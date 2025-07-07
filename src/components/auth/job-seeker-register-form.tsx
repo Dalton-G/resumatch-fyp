@@ -16,6 +16,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { routes } from "@/config/directory";
 
 type JobSeekerSignUpForm = z.infer<typeof jobSeekerSignUpSchema>;
 
@@ -151,7 +152,7 @@ export default function JobSeekerRegisterForm() {
         <p className="text-center text-sm font-libertinus mt-2">
           Already have an account?{" "}
           <Link
-            href="/auth/login"
+            href={routes.login}
             className="text-[var(--r-blue)] underline-offset-2 hover:underline"
           >
             Login

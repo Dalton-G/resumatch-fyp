@@ -6,6 +6,7 @@ import RecruiterPersonalForm from "@/components/auth/recruiter-personal-form";
 import RecruiterCompanyForm from "@/components/auth/recruiter-company-form";
 import { recruiterRegistrationSchema } from "@/schema/auth-schema";
 import { RiStarSmileFill } from "react-icons/ri";
+import { routes } from "@/config/directory";
 
 const initialPersonalData = {
   firstName: "",
@@ -87,7 +88,7 @@ export default function RecruiterRegisterPage() {
           <p className="text-center text-sm font-libertinus mt-8">
             Already have an account?{" "}
             <a
-              href="/auth/login"
+              href={routes.login}
               className="text-[var(--r-blue)] underline-offset-2 hover:underline"
             >
               Login
