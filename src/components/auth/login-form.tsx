@@ -18,13 +18,17 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { pages } from "@/config/directory";
+import { signInWithCredentials } from "@/actions/auth";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-type LoginFormType = z.infer<typeof signInSchema>;
+export type LoginFormType = z.infer<typeof signInSchema>;
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
   const form = useForm<LoginFormType>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -33,8 +37,18 @@ export function LoginForm({
     },
   });
 
-  function onSubmit(data: LoginFormType) {
-    console.log(data);
+  async function onSubmit(data: LoginFormType) {
+    const result = await signInWithCredentials(data);
+
+    if (result?.error) {
+      toast.error("Login failed");
+      form.setError("email", { message: "Invalid Email or Password" });
+      form.setError("password", { message: "Invalid Email or Password" });
+      return;
+    }
+
+    toast.success("Login successful");
+    router.push(pages.dashboard);
   }
 
   return (

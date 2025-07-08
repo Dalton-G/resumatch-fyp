@@ -2,13 +2,16 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { compare } from "bcrypt-ts";
+import { compare } from "bcrypt";
 import { ZodError } from "zod";
 import { signInSchema } from "../schema/auth-schema";
 import { prisma } from "./prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     Google,
     Credentials({
@@ -23,8 +26,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       authorize: async (credentials) => {
         try {
-          if (!credentials.email || !credentials.password) return null;
-
           const { email, password } = await signInSchema.parseAsync(
             credentials
           );
@@ -34,12 +35,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               email: email,
             },
           });
-          if (!user) return null;
+          if (!user || !user.password) return null;
 
           const passwordMatched = await compare(
             password,
             user.password as string
           );
+
+          console.log("Password matched result: ", passwordMatched);
+          console.log("User: ", user);
+
           if (passwordMatched) return user;
           return null;
         } catch (error) {
