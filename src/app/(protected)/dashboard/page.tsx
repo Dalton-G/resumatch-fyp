@@ -15,6 +15,7 @@ export default async function DashboardPage() {
       <p>Image: {session.user.image}</p>
       <p>ID: {session.user.id}</p>
       <p>Role: {session.user.role}</p>
+      <p>Is Approved: {session.user.isApproved ? "Yes" : "No"}</p>
       <SignOutOfAllProvidersButton />
     </div>
   );
