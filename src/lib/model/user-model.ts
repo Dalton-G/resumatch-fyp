@@ -19,7 +19,10 @@ export type CompanyProfileCreationModel = {
   logoUrl: string;
 };
 
-export type AdminProfileCreationModel = {};
+export type AdminProfileCreationModel = {
+  firstName: string;
+  lastName: string;
+};
 
 export type JobSeekerUserCreationModel = BaseUserCreationModel & {
   role: "JOB_SEEKER";

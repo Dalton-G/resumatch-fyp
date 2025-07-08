@@ -9,4 +9,5 @@ export const pages = {
 export const api = {
   jobSeekerRegister: "/api/register/job-seeker",
   companyRegister: "/api/register/company",
+  adminRegister: "/api/register/admin",
 };
