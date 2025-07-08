@@ -41,23 +41,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             password,
             user.password as string
           );
+
           if (passwordMatched) return user;
+
           return null;
         } catch (error) {
-          if (error instanceof ZodError) {
-            console.log({
-              message: "Error in credentials provider (auth.ts): ZodError",
-              error: error,
-            });
-            return null;
-          }
-          console.log({
-            message: "Error in credentials provider (auth.ts): OtherError",
-            error: error,
-          });
+          throw new Error("Error in credentials provider (auth.ts)");
           return null;
         }
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token.id) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+      }
+      return session;
+    },
+  },
 });

@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { pages } from "@/config/directory";
-import { signInWithCredentials } from "@/actions/auth";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export type LoginFormType = z.infer<typeof signInSchema>;
 
@@ -38,7 +38,12 @@ export function LoginForm({
   });
 
   async function onSubmit(data: LoginFormType) {
-    const result = await signInWithCredentials(data);
+    const result = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+      callbackUrl: pages.dashboard,
+    });
 
     if (result?.error) {
       toast.error("Login failed");
@@ -47,8 +52,10 @@ export function LoginForm({
       return;
     }
 
-    toast.success("Login successful");
-    router.push(pages.dashboard);
+    if (result?.ok && result.url) {
+      toast.success("Login successful");
+      router.push(result.url);
+    }
   }
 
   return (
