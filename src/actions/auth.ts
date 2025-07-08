@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn, signOut } from "@/auth";
+import { signIn, signOut } from "@/lib/auth";
 import { routes } from "@/config/directory";
 
 export async function signInWithGoogle() {
