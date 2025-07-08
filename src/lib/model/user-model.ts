@@ -9,7 +9,15 @@ export type JobSeekerProfileCreationModel = {
   lastName: string;
 };
 
-export type CompanyProfileCreationModel = {};
+export type CompanyProfileCreationModel = {
+  name: string;
+  description: string;
+  website: string;
+  industry: string;
+  size: string;
+  address: string;
+  logoUrl: string;
+};
 
 export type AdminProfileCreationModel = {};
 
@@ -19,7 +27,7 @@ export type JobSeekerUserCreationModel = BaseUserCreationModel & {
 };
 
 export type CompanyUserCreationModel = BaseUserCreationModel & {
-  role: "RECRUITER";
+  role: "COMPANY";
   companyProfile: CompanyProfileCreationModel;
 };
 

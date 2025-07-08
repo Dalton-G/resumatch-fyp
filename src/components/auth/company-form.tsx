@@ -21,25 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const INDUSTRY_OPTIONS = [
-  "Technology",
-  "Healthcare",
-  "Finance",
-  "Education",
-  "Retail",
-  "Manufacturing",
-  "Construction",
-  "Others",
-];
-const SIZE_OPTIONS = [
-  "1-10 employees",
-  "11-50 employees",
-  "51-200 employees",
-  "201-500 employees",
-  "501-1000 employees",
-  "1000+ employees",
-];
+import axios from "@/lib/axios";
+import { api, pages } from "@/config/directory";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { industryOptions, sizeOptions } from "@/config/company-options";
 
 export default function CompanyForm({
   initialValues,
@@ -48,14 +34,31 @@ export default function CompanyForm({
   initialValues: any;
   onSubmit: (data: any) => void;
 }) {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(companyRegistrationSchema),
     defaultValues: initialValues,
     mode: "onSubmit",
   });
 
-  function handleSubmit(data: any) {
-    onSubmit(data);
+  async function handleSubmit(data: any) {
+    try {
+      const response = await axios.post(api.companyRegister, data);
+      if (response.status === 201) {
+        toast.success("Registration successful! Please login to continue.");
+        router.push(pages.login);
+      }
+      if (response.status === 400) {
+        toast.error(response.data.error);
+        form.setError("email", {
+          message: response.data.error,
+        });
+      }
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.error || "An error occurred during registration."
+      );
+    }
   }
 
   return (
@@ -199,7 +202,7 @@ export default function CompanyForm({
                       <SelectValue placeholder="Select industry" />
                     </SelectTrigger>
                     <SelectContent>
-                      {INDUSTRY_OPTIONS.map((option) => (
+                      {industryOptions.map((option) => (
                         <SelectItem
                           key={option}
                           value={option}
@@ -232,7 +235,7 @@ export default function CompanyForm({
                       <SelectValue placeholder="Select size" />
                     </SelectTrigger>
                     <SelectContent>
-                      {SIZE_OPTIONS.map((option) => (
+                      {sizeOptions.map((option) => (
                         <SelectItem
                           key={option}
                           value={option}

@@ -19,7 +19,7 @@ const initialCompanyData = {
 
 export default function CompanyRegisterPage() {
   function handleCompanySubmit(data: any) {
-    console.log(data);
+    // TODO: Call Registration API for company
   }
 
   return (
