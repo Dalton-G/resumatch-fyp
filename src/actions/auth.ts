@@ -1,10 +1,10 @@
 "use server";
 
 import { signIn, signOut } from "@/lib/auth";
-import { routes } from "@/config/directory";
+import { pages } from "@/config/directory";
 
 export async function signInWithGoogle() {
-  await signIn("google", { redirect: true, redirectTo: routes.dashboard });
+  await signIn("google", { redirect: true, redirectTo: pages.dashboard });
 }
 
 export async function signInWithCredentials(formData: FormData) {
@@ -13,10 +13,10 @@ export async function signInWithCredentials(formData: FormData) {
     email: formData.get("email"),
     password: formData.get("password"),
     redirect: true,
-    redirectTo: routes.dashboard,
+    redirectTo: pages.dashboard,
   });
 }
 
 export async function signOutOfAllProviders() {
-  await signOut({ redirect: true, redirectTo: routes.login });
+  await signOut({ redirect: true, redirectTo: pages.login });
 }

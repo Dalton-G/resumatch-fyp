@@ -6,6 +6,8 @@ import {
   fontDMSerifItalic,
   fontLibertinus,
 } from "../../public/fonts";
+import { Toaster } from "sonner";
+import QueryProvider from "@/components/provider/query-provider";
 
 export const metadata: Metadata = {
   title: "ResuMatch",
@@ -18,16 +20,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={cn(
-          "antialiased",
-          fontLibertinus.variable,
-          fontDMSerif.variable,
-          fontDMSerifItalic.variable
-        )}
-      >
-        {children}
+    <html
+      lang="en"
+      className={cn(
+        "antialiased",
+        fontLibertinus.variable,
+        fontDMSerif.variable,
+        fontDMSerifItalic.variable
+      )}
+    >
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+        <Toaster position="top-center" />
       </body>
     </html>
   );

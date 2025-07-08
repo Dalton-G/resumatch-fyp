@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { RiStarSmileFill } from "react-icons/ri";
 import { LuBriefcase } from "react-icons/lu";
 import { BiGroup } from "react-icons/bi";
-import { routes } from "@/config/directory";
+import { pages } from "@/config/directory";
 
 export default function RegisterPage() {
   return (
@@ -19,7 +19,7 @@ export default function RegisterPage() {
             <span className="text-[var(--r-blue)]">ResuMatch</span>
           </p>
           <div className="flex flex-col gap-4 w-full">
-            <Link href={routes.jobSeekerRegister} className="group">
+            <Link href={pages.jobSeekerRegister} className="group">
               <Card className="flex flex-row items-center justify-between p-5 cursor-pointer transition-colors border border-gray-200  group-hover:border-[var(--r-blue)]">
                 <div>
                   <div className="font-bold font-libertinus text-lg">
@@ -32,7 +32,7 @@ export default function RegisterPage() {
                 <LuBriefcase size={32} className="text-[var(--r-blue)]" />
               </Card>
             </Link>
-            <Link href={routes.companyRegister} className="group">
+            <Link href={pages.companyRegister} className="group">
               <Card className="flex flex-row items-center justify-between p-5 cursor-pointer transition-colors border border-gray-200  group-hover:border-[var(--r-blue)]">
                 <div>
                   <div className="font-bold font-libertinus text-lg">
@@ -49,7 +49,7 @@ export default function RegisterPage() {
           <div className="mt-8 text-center text-sm font-libertinus">
             Already have an account?{" "}
             <Link
-              href={routes.login}
+              href={pages.login}
               className="text-[var(--r-blue)] underline-offset-2 hover:underline"
             >
               Login

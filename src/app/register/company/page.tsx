@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
 import CompanyForm from "@/components/auth/company-form";
 import { RiStarSmileFill } from "react-icons/ri";
-import { routes } from "@/config/directory";
+import { pages } from "@/config/directory";
 
 const initialCompanyData = {
   email: "",
@@ -42,7 +41,7 @@ export default function CompanyRegisterPage() {
           <p className="text-center text-sm font-libertinus mt-8">
             Already have an account?{" "}
             <a
-              href={routes.login}
+              href={pages.login}
               className="text-[var(--r-blue)] underline-offset-2 hover:underline"
             >
               Login

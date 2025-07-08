@@ -16,11 +16,15 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { routes } from "@/config/directory";
+import { api, pages } from "@/config/directory";
+import axios from "@/lib/axios";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type JobSeekerSignUpForm = z.infer<typeof jobSeekerSignUpSchema>;
 
 export default function JobSeekerRegisterForm() {
+  const router = useRouter();
   const form = useForm<JobSeekerSignUpForm>({
     resolver: zodResolver(jobSeekerSignUpSchema),
     defaultValues: {
@@ -32,8 +36,24 @@ export default function JobSeekerRegisterForm() {
     },
   });
 
-  function onSubmit(data: JobSeekerSignUpForm) {
-    console.log(data);
+  async function onSubmit(data: JobSeekerSignUpForm) {
+    try {
+      const response = await axios.post(api.jobSeekerRegister, data);
+      if (response.status === 201) {
+        toast.success("Registration successful! Please login to continue.");
+        router.push(pages.login);
+      }
+      if (response.status === 400) {
+        toast.error(response.data.error);
+        form.setError("email", {
+          message: response.data.error,
+        });
+      }
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.error || "An error occurred during registration."
+      );
+    }
   }
 
   return (
@@ -152,7 +172,7 @@ export default function JobSeekerRegisterForm() {
         <p className="text-center text-sm font-libertinus mt-2">
           Already have an account?{" "}
           <Link
-            href={routes.login}
+            href={pages.login}
             className="text-[var(--r-blue)] underline-offset-2 hover:underline"
           >
             Login

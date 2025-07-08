@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { routes } from "@/config/directory";
+import { pages } from "@/config/directory";
 
 type LoginFormType = z.infer<typeof signInSchema>;
 
@@ -118,7 +118,7 @@ export function LoginForm({
       <p className="text-center text-sm font-libertinus mt-2 mb-4">
         Don&apos;t have an account?{" "}
         <Link
-          href={routes.register}
+          href={pages.register}
           className="text-[var(--r-blue)] underline-offset-2 hover:underline"
         >
           Sign up

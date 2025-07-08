@@ -1,7 +1,12 @@
-export const routes = {
+export const pages = {
   login: "/",
   register: "/register",
   dashboard: "/dashboard",
   jobSeekerRegister: "/register/job-seeker",
   companyRegister: "/register/company",
-} as const;
+};
+
+export const api = {
+  jobSeekerRegister: "/api/register/job-seeker",
+  companyRegister: "/api/register/company",
+};
