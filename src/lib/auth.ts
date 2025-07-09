@@ -47,7 +47,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         } catch (error) {
           throw new Error("Error in credentials provider (auth.ts)");
-          return null;
         }
       },
     }),

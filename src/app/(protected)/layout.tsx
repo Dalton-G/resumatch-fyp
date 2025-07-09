@@ -1,7 +1,7 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { pages } from "@/config/directory";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import ProtectedSidebar from "@/components/layout/protected-sidebar";
 
 export default async function ProtectedLayout({
   children,
@@ -11,16 +11,12 @@ export default async function ProtectedLayout({
   const session = await auth();
   if (!session || !session.user) redirect(pages.login);
 
+  const { name, image, role } = session.user;
+
   return (
-    <>
-      <SidebarProvider>
-        {session && (
-          <>
-            <h1>Sidebar itself</h1>
-            <main className="flex-1">{children}</main>
-          </>
-        )}
-      </SidebarProvider>
-    </>
+    <div className="flex min-h-screen bg-[var(--r-gray)]">
+      <ProtectedSidebar name={name} image={image} role={role} />
+      <main className="flex-1 min-h-screen">{children}</main>
+    </div>
   );
 }
