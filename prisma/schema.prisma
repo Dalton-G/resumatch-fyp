@@ -141,6 +141,7 @@ model JobSeekerProfile {
   profilePicture String?
   skills         String[] @default([])
   views          Int      @default(0)
+  profession     String?
 
   resumes      Resume[]
   applications JobApplication[]
