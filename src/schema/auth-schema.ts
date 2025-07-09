@@ -1,3 +1,4 @@
+import { industryOptions } from "@/config/company-options";
 import { z } from "zod";
 
 export const signInSchema = z.object({
@@ -49,30 +50,8 @@ export const companyRegistrationSchema = z
     companyName: z.string().min(1, "Company name is required"),
     companyDescription: z.string().min(1, "Company description is required"),
     companyWebsite: z.string().url("Invalid company website URL"),
-    companyIndustry: z.enum(
-      [
-        "Technology",
-        "Healthcare",
-        "Finance",
-        "Education",
-        "Retail",
-        "Manufacturing",
-        "Construction",
-        "Others",
-      ],
-      { required_error: "Company industry is required" }
-    ),
-    companySize: z.enum(
-      [
-        "1-10 employees",
-        "11-50 employees",
-        "51-200 employees",
-        "201-500 employees",
-        "501-1000 employees",
-        "1000+ employees",
-      ],
-      { required_error: "Company size is required" }
-    ),
+    companyIndustry: z.string().min(1, "Company industry is required"),
+    companySize: z.string().min(1, "Company size is required"),
     companyAddress: z.string().min(1, "Company address is required"),
     companyLogo: z.string().url("Invalid company logo URL"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
