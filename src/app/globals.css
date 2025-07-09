@@ -49,6 +49,7 @@
   --r-green: #dbfbe7;
   --r-purple: #efddf4;
   --r-orange: #faf0e7;
+  --r-darkgray: #cdcdcd;
 }
 
 @media (prefers-color-scheme: light) {
