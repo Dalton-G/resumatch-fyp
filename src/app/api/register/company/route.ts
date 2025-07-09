@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
       email: user.email,
       password: user.password,
       role: user.role,
+      image: user.image,
       companyProfile: {
         create: user.companyProfile,
       },

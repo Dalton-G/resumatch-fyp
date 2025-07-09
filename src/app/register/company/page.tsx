@@ -18,10 +18,6 @@ const initialCompanyData = {
 };
 
 export default function CompanyRegisterPage() {
-  function handleCompanySubmit(data: any) {
-    // TODO: Call Registration API for company
-  }
-
   return (
     <div className="min-h-svh flex">
       {/* Left: Registration Form */}
@@ -34,10 +30,7 @@ export default function CompanyRegisterPage() {
             Create your <span className="text-[var(--r-blue)]">ResuMatch</span>{" "}
             company account
           </p>
-          <CompanyForm
-            initialValues={initialCompanyData}
-            onSubmit={handleCompanySubmit}
-          />
+          <CompanyForm />
           <p className="text-center text-sm font-libertinus mt-8">
             Already have an account?{" "}
             <a

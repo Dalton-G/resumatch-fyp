@@ -26,22 +26,29 @@ import { api, pages } from "@/config/directory";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { industryOptions, sizeOptions } from "@/config/company-options";
+import { z } from "zod";
 
-export default function CompanyForm({
-  initialValues,
-  onSubmit,
-}: {
-  initialValues: any;
-  onSubmit: (data: any) => void;
-}) {
+export default function CompanyForm() {
   const router = useRouter();
-  const form = useForm({
+  type CompanyRegistrationForm = z.infer<typeof companyRegistrationSchema>;
+  const form = useForm<CompanyRegistrationForm>({
     resolver: zodResolver(companyRegistrationSchema),
-    defaultValues: initialValues,
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      companyName: "",
+      companyDescription: "",
+      companyWebsite: "",
+      companyIndustry: "",
+      companySize: "",
+      companyAddress: "",
+      companyLogo: "",
+    },
     mode: "onSubmit",
   });
 
-  async function handleSubmit(data: any) {
+  async function handleSubmit(data: CompanyRegistrationForm) {
     try {
       const response = await axios.post(api.companyRegister, data);
       if (response.status === 201) {
