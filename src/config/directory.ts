@@ -12,6 +12,7 @@ export const pages = {
   myResume: "/my-resume",
   resumeOptimizer: "/resume-optimizer",
   jobMatcher: "/job-matcher",
+  editProfile: "/edit-profile",
 };
 
 export const api = {
