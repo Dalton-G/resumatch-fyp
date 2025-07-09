@@ -12,6 +12,16 @@ import {
 import UserCard from "@/components/auth/user-card";
 import { SidebarConfig } from "@/lib/model/sidebar-model";
 import { RiStarSmileFill } from "react-icons/ri";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarMenuButton,
+  SidebarGroupContent,
+  SidebarFooter,
+  SidebarHeader,
+} from "@/components/ui/sidebar";
+import { Separator } from "../ui/separator";
 
 interface ProtectedSidebarProps {
   role: string;
@@ -47,41 +57,43 @@ export default function ProtectedSidebar({
   };
 
   return (
-    <aside
-      className="h-screen w-[260px] flex flex-col border-r bg-white"
-      style={{ minWidth: 240 }}
+    <Sidebar
+      collapsible="none"
+      className="h-screen w-[260px] flex flex-col border-r bg-white min-w-[240px]"
     >
-      {/* Logo/Header */}
-      <div className="flex items-center gap-3 px-6 py-8 select-none justify-center">
+      <SidebarHeader className="flex items-center gap-3 px-6 py-8 select-none justify-center">
         <Link href={sidebar.home} className="flex items-center gap-3 group">
           <RiStarSmileFill className="text-4xl text-[var(--r-blue)]" />
-          <span className="text-2xl font-dm-serif text-[var(--r-black)] group-hover:text-[var(--r-blue)] transition-colors">
+          <span className="text-3xl font-dm-serif text-[var(--r-black)] group-hover:text-[var(--r-blue)] transition-colors">
             ResuMatch
           </span>
         </Link>
-      </div>
-      {/* Sidebar Sections */}
-      <nav className="flex-1 px-2 space-y-2">
+      </SidebarHeader>
+      <Separator className="mx-auto max-w-[90%] bg-[var(--r-darkgray)]" />
+      <SidebarContent className="flex-1 px-2 space-y-2 mt-6">
         {sidebar.sections.map((section) => (
-          <div key={section.label} className="mb-2">
-            <button
-              type="button"
-              className="flex items-center w-full px-4 py-2 gap-2 text-[var(--r-black)] font-libertinus text-base hover:bg-[var(--r-gray)] rounded-lg transition-colors"
+          <SidebarGroup key={section.label} className="mb-2">
+            <SidebarMenuButton
+              asChild
+              className="flex items-center px-4 py-2 gap-2 text-[var(--r-black)] font-libertinus text-base hover:bg-[var(--r-gray)] rounded-lg transition-colors"
               onClick={() => toggleSection(section.label)}
               aria-expanded={openSections[section.label]}
+              isActive={false}
             >
-              <section.icon className="text-xl text-[var(--r-blue)]" />
-              <span>{section.label}</span>
-              <span className="ml-auto">
-                {openSections[section.label] ? (
-                  <FiMinus className="text-base" />
-                ) : (
-                  <FiPlus className="text-base" />
-                )}
-              </span>
-            </button>
+              <button type="button">
+                <section.icon className="text-xl text-[var(--r-blue)]" />
+                <span>{section.label}</span>
+                <span className="ml-auto">
+                  {openSections[section.label] ? (
+                    <FiMinus className="text-base" />
+                  ) : (
+                    <FiPlus className="text-base" />
+                  )}
+                </span>
+              </button>
+            </SidebarMenuButton>
             {openSections[section.label] && (
-              <div className="ml-8 border-l-2 border-[var(--r-darkgray)] pl-4 mt-1 space-y-1">
+              <SidebarGroupContent className="max-w-3/4 ml-6 border-l-2 border-[var(--r-blue)] pl-4 mt-1 space-y-1">
                 {section.children.map((child) => {
                   const isActive = pathname.startsWith(child.href);
                   return (
@@ -90,7 +102,7 @@ export default function ProtectedSidebar({
                       href={child.href}
                       className={`block py-1.5 px-2 rounded-md font-libertinus text-sm transition-colors ${
                         isActive
-                          ? "text-[var(--r-blue)] font-semibold"
+                          ? "text-[var(--r-blue)]"
                           : "text-[var(--r-black)] hover:bg-[var(--r-gray)] hover:text-[var(--r-blue)]"
                       }`}
                     >
@@ -98,15 +110,15 @@ export default function ProtectedSidebar({
                     </Link>
                   );
                 })}
-              </div>
+              </SidebarGroupContent>
             )}
-          </div>
+          </SidebarGroup>
         ))}
-      </nav>
-      {/* User Card Footer */}
-      <div className="px-4 py-6 mt-auto">
+      </SidebarContent>
+      <Separator className="mx-auto max-w-[90%] bg-[var(--r-darkgray)]" />
+      <SidebarFooter className="px-4 py-6 mt-auto">
         <UserCard name={name} image={image} role={role} />
-      </div>
-    </aside>
+      </SidebarFooter>
+    </Sidebar>
   );
 }

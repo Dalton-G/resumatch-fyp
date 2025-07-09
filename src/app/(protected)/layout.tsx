@@ -2,6 +2,7 @@ import { pages } from "@/config/directory";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import ProtectedSidebar from "@/components/layout/protected-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function ProtectedLayout({
   children,
@@ -14,9 +15,9 @@ export default async function ProtectedLayout({
   const { name, image, role } = session.user;
 
   return (
-    <div className="flex min-h-screen bg-[var(--r-gray)]">
+    <SidebarProvider defaultOpen={true}>
       <ProtectedSidebar name={name} image={image} role={role} />
-      <main className="flex-1 min-h-screen">{children}</main>
-    </div>
+      <main className="flex-1 min-h-screen bg-[var(--r-gray)]">{children}</main>
+    </SidebarProvider>
   );
 }
