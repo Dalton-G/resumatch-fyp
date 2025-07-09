@@ -139,6 +139,8 @@ model JobSeekerProfile {
   githubUrl      String?
   portfolioUrl   String?
   profilePicture String?
+  skills         String[] @default([])
+  views          Int      @default(0)
 
   resumes      Resume[]
   applications JobApplication[]
@@ -162,6 +164,7 @@ model CompanyProfile {
   size        String?
   address     String?
   logoUrl     String?
+  views       Int     @default(0)
 
   jobPostings JobPosting[]
 
@@ -181,6 +184,7 @@ model AdminProfile {
   firstName      String?
   lastName       String?
   profilePicture String?
+  views          Int     @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -221,6 +225,7 @@ model JobPosting {
   salaryMin   Int?
   salaryMax   Int?
   status      JobStatus @default(HIRING)
+  views       Int       @default(0)
 
   applications JobApplication[]
 
