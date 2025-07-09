@@ -21,7 +21,7 @@ export default function UserCard({ name, image, role }: UserCardProps) {
               <img
                 src={image}
                 alt={name}
-                className="w-10 h-10 rounded-full object-cover border border-[var(--r-darkgray)]"
+                className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
               <div className="w-10 h-10 rounded-full bg-[var(--r-darkgray)] flex items-center justify-center">

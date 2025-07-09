@@ -1,6 +1,6 @@
-import { MdWorkOutline } from "react-icons/md";
-import { HiOutlineDocumentText, HiOutlineBriefcase } from "react-icons/hi";
-import { FaUserFriends, FaUserCog, FaUserCircle } from "react-icons/fa";
+import { HiOutlineDocumentText } from "react-icons/hi";
+import { LuBriefcaseBusiness, LuInbox } from "react-icons/lu";
+import { FaUserCog, FaUserCircle } from "react-icons/fa";
 import { FiPlus, FiMinus } from "react-icons/fi";
 import { pages } from "./directory";
 import { SidebarConfig } from "@/lib/model/sidebar-model";
@@ -10,7 +10,7 @@ export const jobSeekerSidebar: SidebarConfig = {
   sections: [
     {
       label: "Jobs",
-      icon: MdWorkOutline,
+      icon: LuBriefcaseBusiness,
       children: [
         { label: "Job Portal", href: pages.jobPortal },
         { label: "Job Matcher", href: pages.jobMatcher },
@@ -26,7 +26,7 @@ export const jobSeekerSidebar: SidebarConfig = {
     },
     {
       label: "Applications",
-      icon: HiOutlineBriefcase,
+      icon: LuInbox,
       children: [{ label: "My Applications", href: pages.myApplications }],
     },
   ],
@@ -37,7 +37,7 @@ export const companySidebar: SidebarConfig = {
   sections: [
     {
       label: "Jobs",
-      icon: MdWorkOutline,
+      icon: LuBriefcaseBusiness,
       children: [
         { label: "Job Portal", href: pages.jobPortal },
         { label: "My Job Postings", href: pages.myJobPostings },
@@ -45,7 +45,7 @@ export const companySidebar: SidebarConfig = {
     },
     {
       label: "Applicants",
-      icon: FaUserFriends,
+      icon: LuInbox,
       children: [{ label: "View Applicants", href: pages.viewApplicants }],
     },
   ],
@@ -56,7 +56,7 @@ export const adminSidebar: SidebarConfig = {
   sections: [
     {
       label: "Jobs",
-      icon: MdWorkOutline,
+      icon: LuBriefcaseBusiness,
       children: [
         { label: "Job Portal", href: pages.jobPortal },
         { label: "Manage Jobs", href: pages.manageJobs },

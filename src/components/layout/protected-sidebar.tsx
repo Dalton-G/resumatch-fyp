@@ -82,7 +82,7 @@ export default function ProtectedSidebar({
             >
               <button type="button">
                 <section.icon className="text-xl text-[var(--r-blue)]" />
-                <span>{section.label}</span>
+                <span className="pl-2">{section.label}</span>
                 <span className="ml-auto">
                   {openSections[section.label] ? (
                     <FiMinus className="text-base" />
@@ -93,7 +93,7 @@ export default function ProtectedSidebar({
               </button>
             </SidebarMenuButton>
             {openSections[section.label] && (
-              <SidebarGroupContent className="max-w-3/4 ml-6 border-l-2 border-[var(--r-blue)] pl-4 mt-1 space-y-1">
+              <SidebarGroupContent className="max-w-3/4 ml-6 border-l-1 border-[var(--r-blue)] pl-4 mt-1 space-y-1">
                 {section.children.map((child) => {
                   const isActive = pathname.startsWith(child.href);
                   return (

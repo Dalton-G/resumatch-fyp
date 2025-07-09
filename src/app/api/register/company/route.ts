@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
     email: email,
     password: hashedPassword,
     role: UserRole.COMPANY,
+    image: companyLogo,
     companyProfile: {
       name: companyName,
       description: companyDescription,
