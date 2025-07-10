@@ -11,14 +11,17 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProfilePictureUploader from "@/components/upload/profile-picture-uploader";
 import { useCurrentUserProfile } from "@/hooks/use-profile";
 import type { JobSeekerProfile } from "@prisma/client";
+import axiosInstance from "@/lib/axios";
+import { toast } from "sonner";
+import { api } from "@/config/directory";
 
 const profileSchema = z.object({
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
   profession: z.string().optional(),
   location: z.string().optional(),
   bio: z.string().optional(),
-  profilePicture: z.string().optional(),
+  profilePicture: z.string().min(1, "Profile picture is required"),
   skills: z.string().array().optional(),
   linkedinUrl: z.string().optional(),
   githubUrl: z.string().optional(),
@@ -44,6 +47,7 @@ export default function JobSeekerEditProfile({
   const [tab, setTab] = useState("profile");
   const [skillsInput, setSkillsInput] = useState("");
   const [profilePicture, setProfilePicture] = useState<string | undefined>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Default values for form (safe fallback)
   const jobSeekerProfile = (profile || {}) as Partial<JobSeekerProfile>;
@@ -108,9 +112,23 @@ export default function JobSeekerEditProfile({
   };
 
   // Handle save
-  const onSubmit = (data: ProfileFormType) => {
-    // No need to construct S3 URL, fileUrl is already correct
-    console.log("[JobSeekerEditProfile] Save Data:", data);
+  const onSubmit = async (data: ProfileFormType) => {
+    setIsSubmitting(true);
+    try {
+      const res = await axiosInstance.put(
+        `${api.editProfile}?userId=${userId}&role=${role}`,
+        data
+      );
+      if (res.status === 200) {
+        toast.success("Profile updated successfully!");
+      } else {
+        toast.error(res.data?.error || "Failed to update profile");
+      }
+    } catch (e: any) {
+      toast.error(e.response?.data?.error || "Failed to update profile");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Only render loading/error UI after all hooks
@@ -145,10 +163,10 @@ export default function JobSeekerEditProfile({
                       onUploadComplete={handleProfilePictureUpload}
                       onDelete={handleProfilePictureDelete}
                     />
-                    {profilePicture && (
-                      <div className="mt-2 text-xs text-gray-500 break-all">
-                        {profilePicture}
-                      </div>
+                    {errors.profilePicture && (
+                      <span className="text-red-500 text-xs">
+                        {errors.profilePicture.message}
+                      </span>
                     )}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -170,6 +188,11 @@ export default function JobSeekerEditProfile({
                           />
                         )}
                       />
+                      {errors.firstName && (
+                        <span className="text-red-500 text-xs">
+                          {errors.firstName.message}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <label
@@ -189,6 +212,11 @@ export default function JobSeekerEditProfile({
                           />
                         )}
                       />
+                      {errors.lastName && (
+                        <span className="text-red-500 text-xs">
+                          {errors.lastName.message}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <label
@@ -402,8 +430,9 @@ export default function JobSeekerEditProfile({
             className="w-full bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/90"
             size="lg"
             onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting}
           >
-            Save Changes
+            {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </div>

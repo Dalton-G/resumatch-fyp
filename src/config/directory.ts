@@ -20,4 +20,5 @@ export const api = {
   companyRegister: "/api/register/company",
   adminRegister: "/api/register/admin",
   profile: "/api/profile",
+  editProfile: "/api/profile/edit-profile",
 };
