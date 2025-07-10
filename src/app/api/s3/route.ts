@@ -1,25 +1,23 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createUploadUrl, listFiles, deleteFile } from "@/lib/utils/s3-utils";
+import {
+  createUploadUrl,
+  listFiles,
+  deleteFile,
+  FILE_CATEGORY_CONFIG,
+} from "@/lib/utils/s3-utils";
 
 const uploadRequestSchema = z.object({
   fileName: z.string().min(1, "File name is required"),
-  contentType: z
-    .string()
-    .min(1, "Content type is required")
-    .refine(
-      (contentType) => contentType.startsWith("image/"),
-      "Only image files are allowed"
-    ),
-  size: z
-    .number()
-    .positive("File size must be positive")
-    .max(5 * 1024 * 1024, "File size cannot exceed 5MB"),
+  contentType: z.string().min(1, "Content type is required"),
+  size: z.number().positive("File size must be positive"),
   folderPath: z.string().optional(),
+  fileCategory: z.enum(["profile-picture", "resume", "job-image"]),
 });
 
 const readRequestSchema = z.object({
   folderPath: z.string(),
+  fileCategory: z.enum(["profile-picture", "resume", "job-image"]).optional(),
 });
 
 const deleteRequestSchema = z.object({
@@ -40,7 +38,44 @@ export async function POST(request: Request) {
       );
     }
 
-    const uploadResponse = await createUploadUrl(validation.data);
+    const { fileName, contentType, size, folderPath, fileCategory } =
+      validation.data;
+    const config = FILE_CATEGORY_CONFIG[fileCategory];
+    if (!config) {
+      return NextResponse.json(
+        { error: "Invalid file category" },
+        { status: 400 }
+      );
+    }
+    // Validate mime type
+    if (!config.allowedMime.test(contentType)) {
+      return NextResponse.json(
+        {
+          error: `Invalid file type. Allowed: ${config.allowedExtensions.join(
+            ", "
+          )}`,
+        },
+        { status: 400 }
+      );
+    }
+    // Validate size
+    if (size > config.maxSize) {
+      return NextResponse.json(
+        {
+          error: `File size exceeds limit (${
+            config.maxSize / (1024 * 1024)
+          }MB)`,
+        },
+        { status: 400 }
+      );
+    }
+    // Use default folder if not provided
+    const uploadResponse = await createUploadUrl({
+      fileName,
+      contentType,
+      size,
+      folderPath: folderPath || config.folder,
+    });
     return NextResponse.json(uploadResponse, { status: 200 });
   } catch (error) {
     console.error("Error creating presigned URL:", error);
@@ -59,6 +94,11 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const folderPath = searchParams.get("folderPath");
+    const fileCategory = searchParams.get("fileCategory") as
+      | "profile-picture"
+      | "resume"
+      | "job-image"
+      | undefined;
 
     if (!folderPath) {
       return NextResponse.json(
@@ -67,16 +107,13 @@ export async function GET(request: Request) {
       );
     }
 
-    const validation = readRequestSchema.safeParse({ folderPath });
-
-    if (!validation.success) {
-      return NextResponse.json(
-        { error: "Invalid folder path", details: validation.error.issues },
-        { status: 400 }
-      );
+    // Use config for allowedExtensions if fileCategory is provided
+    let allowedExtensions: string[] | undefined = undefined;
+    if (fileCategory && FILE_CATEGORY_CONFIG[fileCategory]) {
+      allowedExtensions = FILE_CATEGORY_CONFIG[fileCategory].allowedExtensions;
     }
 
-    const filesResponse = await listFiles(folderPath);
+    const filesResponse = await listFiles(folderPath, allowedExtensions);
     return NextResponse.json(filesResponse, { status: 200 });
   } catch (error) {
     console.error("Error reading S3 objects:", error);

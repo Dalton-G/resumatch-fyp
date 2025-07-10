@@ -8,6 +8,28 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "../s3-client";
 import { env } from "@/config/env";
 
+// File category config for allowed types and sizes
+export const FILE_CATEGORY_CONFIG = {
+  "profile-picture": {
+    allowedMime: /^image\/(jpeg|png|jpg|webp|gif)$/,
+    allowedExtensions: ["jpg", "jpeg", "png", "webp", "gif"],
+    maxSize: 5 * 1024 * 1024,
+    folder: "profile-pictures",
+  },
+  resume: {
+    allowedMime: /^application\/pdf$/,
+    allowedExtensions: ["pdf"],
+    maxSize: 10 * 1024 * 1024,
+    folder: "resumes",
+  },
+  "job-image": {
+    allowedMime: /^image\/(jpeg|png|jpg|webp|gif)$/,
+    allowedExtensions: ["jpg", "jpeg", "png", "webp", "gif"],
+    maxSize: 5 * 1024 * 1024,
+    folder: "job-images",
+  },
+};
+
 export interface UploadRequest {
   fileName: string;
   contentType: string;
@@ -34,27 +56,35 @@ export interface ListFilesResponse {
   files: FileInfo[];
 }
 
+function encodeS3Key(fileName: string, folderPath?: string): string {
+  const encodedFileName = encodeURIComponent(fileName);
+  if (folderPath) {
+    const encodedFolderPath = folderPath
+      .replace(/^\/+|\/+$/g, "")
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/");
+    return `${encodedFolderPath}/${encodedFileName}`;
+  }
+  return encodedFileName;
+}
+
 function generateFileUrl(key: string): string {
   const bucketName = env.AWS_S3_BUCKET_NAME;
   const region = env.AWS_REGION;
   return `https://${bucketName}.s3.${region}.amazonaws.com/${key}`;
 }
 
-// Exported utility functions
+export function constructS3Key(fileName: string, folderPath?: string): string {
+  return encodeS3Key(fileName, folderPath);
+}
+
 export function constructFileUrl(
   fileName: string,
   folderPath?: string
 ): string {
-  const key = folderPath
-    ? `${folderPath.replace(/^\/+|\/+$/g, "")}/${fileName}`
-    : fileName;
+  const key = encodeS3Key(fileName, folderPath);
   return generateFileUrl(key);
-}
-
-export function constructS3Key(fileName: string, folderPath?: string): string {
-  return folderPath
-    ? `${folderPath.replace(/^\/+|\/+$/g, "")}/${fileName}`
-    : fileName;
 }
 
 // Main service functions
@@ -62,23 +92,18 @@ export async function createUploadUrl(
   request: UploadRequest
 ): Promise<UploadResponse> {
   const { fileName, contentType, size, folderPath } = request;
-
   const uniqueFileName = `${uuidv4()}-${fileName}`;
   const s3Key = constructS3Key(uniqueFileName, folderPath);
-
   const command = new PutObjectCommand({
     Bucket: env.AWS_S3_BUCKET_NAME,
     Key: s3Key,
     ContentType: contentType,
     ContentLength: size,
   });
-
   const presignedUrl = await getSignedUrl(s3Client, command, {
     expiresIn: 300, // 5 minutes
   });
-
   const fileUrl = generateFileUrl(s3Key);
-
   return {
     presignedUrl,
     fileName: uniqueFileName,
@@ -87,32 +112,28 @@ export async function createUploadUrl(
 }
 
 export async function listFiles(
-  folderPath: string
+  folderPath: string,
+  allowedExtensions?: string[]
 ): Promise<ListFilesResponse> {
   // Ensure folder path ends with / for S3 listing
   const normalizedFolderPath = folderPath.endsWith("/")
     ? folderPath
     : `${folderPath}/`;
-
   const command = new ListObjectsV2Command({
     Bucket: env.AWS_S3_BUCKET_NAME,
     Prefix: normalizedFolderPath,
     MaxKeys: 1000,
   });
-
   const response = await s3Client.send(command);
-
   if (!response.Contents) {
     return { files: [] };
   }
-
-  // Filter for image files and format the response
-  const imageFiles = response.Contents.filter((obj) => {
+  // Filter for allowed file extensions if provided
+  const files = response.Contents.filter((obj) => {
     const key = obj.Key || "";
     const extension = key.toLowerCase().split(".").pop();
-    return ["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(
-      extension || ""
-    );
+    if (!allowedExtensions) return true;
+    return allowedExtensions.includes(extension || "");
   })
     .map((obj) => {
       const key = obj.Key || "";
@@ -121,7 +142,6 @@ export async function listFiles(
       const originalFileName = fileName.includes("-")
         ? fileName.split("-").slice(1).join("-")
         : fileName;
-
       return {
         key: key,
         fileName: originalFileName,
@@ -136,8 +156,7 @@ export async function listFiles(
       const dateB = b.lastModified ? new Date(b.lastModified).getTime() : 0;
       return dateB - dateA; // Sort by newest first
     });
-
-  return { files: imageFiles };
+  return { files };
 }
 
 export async function deleteFile(
@@ -147,11 +166,9 @@ export async function deleteFile(
   const key = fileNameOrKey.includes("/")
     ? fileNameOrKey
     : constructS3Key(fileNameOrKey, folderPath);
-
   const command = new DeleteObjectCommand({
     Bucket: env.AWS_S3_BUCKET_NAME,
     Key: key,
   });
-
   await s3Client.send(command);
 }
