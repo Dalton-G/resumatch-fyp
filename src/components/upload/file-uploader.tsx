@@ -236,8 +236,8 @@ export default function FileUploader({
           className={cn(
             "relative border transition-colors duration-200 ease-in-out w-full h-40 cursor-pointer",
             isDragActive
-              ? "border-[var(--c-violet)] bg-[var(--c-violet)]/10"
-              : "border-gray-300 hover:border-[var(--c-violet)]"
+              ? "border-[var(--r-blue)] bg-[var(--r-blue)]/10"
+              : "border-gray-300 hover:border-[var(--r-blue)]"
           )}
         >
           <CardContent className="flex flex-col items-center justify-center h-full w-full">
@@ -255,7 +255,7 @@ export default function FileUploader({
                   Drop your file(s) here, or click to select
                 </p>
                 <Button
-                  className="bg-[var(--c-violet)] text-white hover:bg-[var(--c-violet)]/90 cursor-pointer"
+                  className="bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/90 cursor-pointer"
                   type="button"
                 >
                   Choose File
