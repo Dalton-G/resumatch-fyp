@@ -22,8 +22,10 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { Separator } from "../ui/separator";
+import { useCurrentUserProfile } from "@/hooks/use-profile";
 
 interface ProtectedSidebarProps {
+  id: string;
   role: string;
   name: string;
   image?: string | null;
@@ -36,6 +38,7 @@ const roleSidebarMap: Record<string, SidebarConfig> = {
 };
 
 export default function ProtectedSidebar({
+  id,
   role,
   name,
   image,
@@ -51,6 +54,27 @@ export default function ProtectedSidebar({
       return state;
     }
   );
+
+  // Fetch latest profile data
+  const { data: profile } = useCurrentUserProfile(id, role);
+
+  let displayName = name;
+  let profilePicture = image;
+
+  if (role === "JOB_SEEKER" && profile) {
+    displayName = [profile.firstName, profile.lastName]
+      .filter(Boolean)
+      .join(" ");
+    profilePicture = profile.profilePicture;
+  } else if (role === "COMPANY" && profile) {
+    displayName = profile.name;
+    profilePicture = profile.logoUrl || profile.profilePicture;
+  } else if (role === "ADMIN" && profile) {
+    displayName = [profile.firstName, profile.lastName]
+      .filter(Boolean)
+      .join(" ");
+    profilePicture = profile.profilePicture;
+  }
 
   const toggleSection = (label: string) => {
     setOpenSections((prev) => ({ ...prev, [label]: !prev[label] }));
@@ -117,7 +141,7 @@ export default function ProtectedSidebar({
       </SidebarContent>
       <Separator className="mx-auto max-w-[90%] bg-[var(--r-darkgray)]" />
       <SidebarFooter className="px-4 py-6 mt-auto">
-        <UserCard name={name} image={image} role={role} />
+        <UserCard name={displayName} image={profilePicture} role={role} />
       </SidebarFooter>
     </Sidebar>
   );

@@ -12,11 +12,11 @@ export default async function ProtectedLayout({
   const session = await auth();
   if (!session || !session.user) redirect(pages.login);
 
-  const { name, image, role } = session.user;
+  const { id, name, image, role } = session.user;
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <ProtectedSidebar name={name} image={image} role={role} />
+      <ProtectedSidebar id={id} name={name} image={image} role={role} />
       <main className="flex-1 min-h-screen bg-[var(--r-gray)]">{children}</main>
     </SidebarProvider>
   );
