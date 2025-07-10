@@ -229,39 +229,42 @@ export default function FileUploader({
       <label className="block text-sm font-medium text-gray-700 mb-1">
         {label}
       </label>
-      <Card
-        {...getRootProps()}
-        className={cn(
-          "relative border transition-colors duration-200 ease-in-out w-full h-40 cursor-pointer",
-          isDragActive
-            ? "border-[var(--c-violet)] bg-[var(--c-violet)]/10"
-            : "border-gray-300 hover:border-[var(--c-violet)]"
-        )}
-      >
-        <CardContent className="flex flex-col items-center justify-center h-full w-full">
-          <input {...getInputProps()} />
-          {isDragActive ? (
-            <p className="text-sm text-gray-600">Drop your file(s) here</p>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full w-full gap-y-4">
-              {allowedExtensions.includes("pdf") ? (
-                <FileText className="w-12 h-12 text-gray-400" />
-              ) : (
-                <User className="w-12 h-12 text-gray-400" />
-              )}
-              <p className="text-sm text-gray-600 text-center">
-                Drop your file(s) here, or click to select
-              </p>
-              <Button
-                className="bg-[var(--c-violet)] text-white hover:bg-[var(--c-violet)]/90 cursor-pointer"
-                type="button"
-              >
-                Choose File
-              </Button>
-            </div>
+      {/* Show dropzone only if multiple is true, or if no file is uploaded */}
+      {(multiple || files.length === 0) && (
+        <Card
+          {...getRootProps()}
+          className={cn(
+            "relative border transition-colors duration-200 ease-in-out w-full h-40 cursor-pointer",
+            isDragActive
+              ? "border-[var(--c-violet)] bg-[var(--c-violet)]/10"
+              : "border-gray-300 hover:border-[var(--c-violet)]"
           )}
-        </CardContent>
-      </Card>
+        >
+          <CardContent className="flex flex-col items-center justify-center h-full w-full">
+            <input {...getInputProps()} />
+            {isDragActive ? (
+              <p className="text-sm text-gray-600">Drop your file(s) here</p>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full w-full gap-y-4">
+                {allowedExtensions.includes("pdf") ? (
+                  <FileText className="w-12 h-12 text-gray-400" />
+                ) : (
+                  <User className="w-12 h-12 text-gray-400" />
+                )}
+                <p className="text-sm text-gray-600 text-center">
+                  Drop your file(s) here, or click to select
+                </p>
+                <Button
+                  className="bg-[var(--c-violet)] text-white hover:bg-[var(--c-violet)]/90 cursor-pointer"
+                  type="button"
+                >
+                  Choose File
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
       {files.length > 0 && (
         <div className="space-y-2">
           {files.map((file) => (
