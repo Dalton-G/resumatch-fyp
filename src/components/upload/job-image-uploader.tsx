@@ -9,7 +9,6 @@ export default function JobImageUploader(props: Partial<FileUploaderProps>) {
       maxSize={config.maxSize}
       folderPath={config.folder}
       fileCategory="job-image"
-      label="Upload Job Image"
       multiple={false}
       {...props}
     />

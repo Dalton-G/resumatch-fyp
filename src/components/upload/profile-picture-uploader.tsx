@@ -11,7 +11,6 @@ export default function ProfilePictureUploader(
       maxSize={config.maxSize}
       folderPath={config.folder}
       fileCategory="profile-picture"
-      label="Upload Profile Picture"
       multiple={false}
       {...props}
     />

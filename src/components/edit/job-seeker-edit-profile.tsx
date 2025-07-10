@@ -122,273 +122,290 @@ export default function JobSeekerEditProfile({
   }
 
   return (
-    <div className="flex flex-row gap-8 p-8">
-      <div className="flex-1">
-        <Tabs value={tab} onValueChange={setTab} className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="skills">Skills</TabsTrigger>
-            <TabsTrigger value="socials">Socials</TabsTrigger>
-          </TabsList>
-          <TabsContent value="profile">
-            <Card>
-              <CardContent className="p-6 space-y-6">
-                <div>
-                  <label className="block font-medium mb-2">
-                    Profile Picture
-                  </label>
-                  <ProfilePictureUploader
-                    onUploadComplete={handleProfilePictureUpload}
-                  />
-                  {profilePicture && (
-                    <div className="mt-2 text-xs text-gray-500 break-all">
-                      {profilePicture}
-                    </div>
-                  )}
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="flex flex-col gap-4 max-w-7xl mx-auto">
+      <h1 className="text-3xl font-bold px-8 mt-8 font-dm-serif">
+        Edit Profile
+      </h1>
+      <div className="flex flex-row gap-8 p-8 font-libertinus">
+        <div className="flex-1">
+          <Tabs value={tab} onValueChange={setTab} className="w-full">
+            <TabsList className="mb-6">
+              <TabsTrigger value="profile">Profile</TabsTrigger>
+              <TabsTrigger value="skills">Skills</TabsTrigger>
+              <TabsTrigger value="socials">Socials</TabsTrigger>
+            </TabsList>
+            <TabsContent value="profile">
+              <Card>
+                <CardContent className="p-6 space-y-6">
                   <div>
-                    <label
-                      htmlFor="firstName"
-                      className="block font-medium mb-1"
-                    >
-                      First Name
+                    <label className="block font-medium mb-4">
+                      Profile Picture
                     </label>
-                    <Controller
-                      name="firstName"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          id="firstName"
-                          placeholder="First Name"
-                          {...field}
-                        />
-                      )}
+                    <ProfilePictureUploader
+                      onUploadComplete={handleProfilePictureUpload}
+                      onDelete={handleProfilePictureDelete}
                     />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="lastName"
-                      className="block font-medium mb-1"
-                    >
-                      Last Name
-                    </label>
-                    <Controller
-                      name="lastName"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          id="lastName"
-                          placeholder="Last Name"
-                          {...field}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="profession"
-                      className="block font-medium mb-1"
-                    >
-                      Profession
-                    </label>
-                    <Controller
-                      name="profession"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          id="profession"
-                          placeholder="Profession"
-                          {...field}
-                        />
-                      )}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="location"
-                      className="block font-medium mb-1"
-                    >
-                      Location
-                    </label>
-                    <Controller
-                      name="location"
-                      control={control}
-                      render={({ field }) => (
-                        <Input
-                          id="location"
-                          placeholder="Location"
-                          {...field}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="bio" className="block font-medium mb-1">
-                    Bio
-                  </label>
-                  <Controller
-                    name="bio"
-                    control={control}
-                    render={({ field }) => (
-                      <Textarea
-                        id="bio"
-                        placeholder="Bio"
-                        rows={4}
-                        {...field}
-                      />
+                    {profilePicture && (
+                      <div className="mt-2 text-xs text-gray-500 break-all">
+                        {profilePicture}
+                      </div>
                     )}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="skills">
-            <Card>
-              <CardContent className="p-6 space-y-4">
-                <div className="flex gap-2 items-center">
-                  <Input
-                    placeholder="Add A New Skill"
-                    value={skillsInput}
-                    onChange={(e) => setSkillsInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddSkill();
-                      }
-                    }}
-                  />
-                  <Button type="button" onClick={handleAddSkill}>
-                    Add
-                  </Button>
-                </div>
-                <div className="flex flex-wrap gap-2 min-h-[48px]">
-                  {(skills || []).map((skill) => (
-                    <span
-                      key={skill}
-                      className="inline-flex items-center px-3 py-1 rounded-full bg-gray-200 text-sm font-medium"
-                    >
-                      {skill}
-                      <Button
-                        type="button"
-                        size="icon"
-                        variant="ghost"
-                        className="ml-1"
-                        onClick={() => handleRemoveSkill(skill)}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        htmlFor="firstName"
+                        className="block font-medium mb-1"
                       >
-                        ×
-                      </Button>
-                    </span>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="socials">
-            <Card>
-              <CardContent className="p-6 space-y-4">
-                <div>
-                  <label
-                    htmlFor="linkedinUrl"
-                    className="block font-medium mb-1"
-                  >
-                    Linkedin URL
-                  </label>
-                  <Controller
-                    name="linkedinUrl"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="linkedinUrl"
-                        placeholder="Linkedin URL"
-                        {...field}
+                        First Name
+                      </label>
+                      <Controller
+                        name="firstName"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            id="firstName"
+                            placeholder="First Name"
+                            {...field}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="githubUrl" className="block font-medium mb-1">
-                    GitHub URL
-                  </label>
-                  <Controller
-                    name="githubUrl"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="githubUrl"
-                        placeholder="GitHub URL"
-                        {...field}
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="lastName"
+                        className="block font-medium mb-1"
+                      >
+                        Last Name
+                      </label>
+                      <Controller
+                        name="lastName"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            id="lastName"
+                            placeholder="Last Name"
+                            {...field}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="portfolioUrl"
-                    className="block font-medium mb-1"
-                  >
-                    Your Website
-                  </label>
-                  <Controller
-                    name="portfolioUrl"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        id="portfolioUrl"
-                        placeholder="Your Website"
-                        {...field}
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="profession"
+                        className="block font-medium mb-1"
+                      >
+                        Profession
+                      </label>
+                      <Controller
+                        name="profession"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            id="profession"
+                            placeholder="Profession"
+                            {...field}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="phone" className="block font-medium mb-1">
-                    Phone Number
-                  </label>
-                  <Controller
-                    name="phone"
-                    control={control}
-                    render={({ field }) => (
-                      <Input id="phone" placeholder="Phone Number" {...field} />
-                    )}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-      <div className="w-80 flex flex-col gap-4">
-        <Card className="mb-4">
-          <CardContent className="p-4 flex flex-col gap-2">
-            <Button
-              variant={tab === "profile" ? "outline" : "ghost"}
-              onClick={() => setTab("profile")}
-            >
-              Profile
-            </Button>
-            <Button
-              variant={tab === "skills" ? "outline" : "ghost"}
-              onClick={() => setTab("skills")}
-            >
-              Skills
-            </Button>
-            <Button
-              variant={tab === "socials" ? "outline" : "ghost"}
-              onClick={() => setTab("socials")}
-            >
-              Socials
-            </Button>
-          </CardContent>
-        </Card>
-        <Button
-          className="w-full bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/90"
-          size="lg"
-          onClick={handleSubmit(onSubmit)}
-        >
-          Save Changes
-        </Button>
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="location"
+                        className="block font-medium mb-1"
+                      >
+                        Location
+                      </label>
+                      <Controller
+                        name="location"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            id="location"
+                            placeholder="Location"
+                            {...field}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="bio" className="block font-medium mb-1">
+                      Bio
+                    </label>
+                    <Controller
+                      name="bio"
+                      control={control}
+                      render={({ field }) => (
+                        <Textarea
+                          id="bio"
+                          placeholder="Bio"
+                          rows={4}
+                          {...field}
+                        />
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="skills">
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      placeholder="Add A New Skill"
+                      value={skillsInput}
+                      onChange={(e) => setSkillsInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddSkill();
+                        }
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleAddSkill}
+                      className="bg-[var(--r-blue)]"
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-2 min-h-[48px]">
+                    {(skills || []).map((skill) => (
+                      <span
+                        key={skill}
+                        className="inline-flex items-center pl-4 pr-2 py-1 rounded-full bg-[var(--r-gray)] text-sm font-medium"
+                      >
+                        {skill}
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          className="ml-1 rounded-full hover:bg-[var(--r-darkgray)]/20 text-lg"
+                          onClick={() => handleRemoveSkill(skill)}
+                        >
+                          ×
+                        </Button>
+                      </span>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="socials">
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <div>
+                    <label
+                      htmlFor="linkedinUrl"
+                      className="block font-medium mb-1"
+                    >
+                      Linkedin URL
+                    </label>
+                    <Controller
+                      name="linkedinUrl"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          id="linkedinUrl"
+                          placeholder="Linkedin URL"
+                          {...field}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="githubUrl"
+                      className="block font-medium mb-1"
+                    >
+                      GitHub URL
+                    </label>
+                    <Controller
+                      name="githubUrl"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          id="githubUrl"
+                          placeholder="GitHub URL"
+                          {...field}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="portfolioUrl"
+                      className="block font-medium mb-1"
+                    >
+                      Your Website
+                    </label>
+                    <Controller
+                      name="portfolioUrl"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          id="portfolioUrl"
+                          placeholder="Your Website"
+                          {...field}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="phone" className="block font-medium mb-1">
+                      Phone Number
+                    </label>
+                    <Controller
+                      name="phone"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          id="phone"
+                          placeholder="Phone Number"
+                          {...field}
+                        />
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+        <div className="w-80 flex flex-col gap-4 mt-17">
+          <Card className="mb-4">
+            <CardContent className="p-4 flex flex-col gap-2">
+              <Button
+                variant={tab === "profile" ? "outline" : "ghost"}
+                onClick={() => setTab("profile")}
+              >
+                Profile
+              </Button>
+              <Button
+                variant={tab === "skills" ? "outline" : "ghost"}
+                onClick={() => setTab("skills")}
+              >
+                Skills
+              </Button>
+              <Button
+                variant={tab === "socials" ? "outline" : "ghost"}
+                onClick={() => setTab("socials")}
+              >
+                Socials
+              </Button>
+            </CardContent>
+          </Card>
+          <Button
+            className="w-full bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/90"
+            size="lg"
+            onClick={handleSubmit(onSubmit)}
+          >
+            Save Changes
+          </Button>
+        </div>
       </div>
     </div>
   );

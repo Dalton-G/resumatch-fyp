@@ -25,9 +25,9 @@ export interface FileUploaderProps {
   maxSize: number;
   folderPath: string;
   fileCategory: "profile-picture" | "resume" | "job-image";
-  label?: string;
   multiple?: boolean;
   onUploadComplete?: (fileName: string) => void;
+  onDelete?: () => void;
 }
 
 export default function FileUploader({
@@ -35,9 +35,9 @@ export default function FileUploader({
   maxSize,
   folderPath,
   fileCategory,
-  label = "Upload file",
   multiple = false,
   onUploadComplete,
+  onDelete,
 }: FileUploaderProps) {
   const [files, setFiles] = useState<UploadFile[]>([]);
 
@@ -70,6 +70,7 @@ export default function FileUploader({
       }
       toast.success("File removed");
       setFiles((prev) => prev.filter((f) => f.id !== fileId));
+      if (onDelete) onDelete();
     } catch (error) {
       toast.error("Failed to delete file");
       setFiles((prev) =>
@@ -227,15 +228,12 @@ export default function FileUploader({
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-      </label>
       {/* Show dropzone only if multiple is true, or if no file is uploaded */}
       {(multiple || files.length === 0) && (
         <Card
           {...getRootProps()}
           className={cn(
-            "relative border transition-colors duration-200 ease-in-out w-full h-40 cursor-pointer",
+            "relative border-dashed border-2 shadow-none transition-colors duration-200 ease-in-out w-full h-40 cursor-pointer",
             isDragActive
               ? "border-[var(--r-blue)] bg-[var(--r-blue)]/10"
               : "border-gray-300 hover:border-[var(--r-blue)]"

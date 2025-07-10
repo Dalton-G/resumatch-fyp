@@ -9,7 +9,6 @@ export default function ResumeUploader(props: Partial<FileUploaderProps>) {
       maxSize={config.maxSize}
       folderPath={config.folder}
       fileCategory="resume"
-      label="Upload Resume (PDF)"
       multiple={false}
       {...props}
     />
