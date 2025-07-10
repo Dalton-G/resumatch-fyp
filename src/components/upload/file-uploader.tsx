@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,18 @@ export interface FileUploaderProps {
   multiple?: boolean;
   onUploadComplete?: (fileName: string) => void;
   onDelete?: () => void;
+  initialFileUrl?: string;
+}
+
+// Helper to extract S3 key from URL
+function extractS3KeyFromUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    // Remove leading slash if present
+    return u.pathname.replace(/^\//, "");
+  } catch {
+    return url;
+  }
 }
 
 export default function FileUploader({
@@ -38,8 +50,39 @@ export default function FileUploader({
   multiple = false,
   onUploadComplete,
   onDelete,
+  initialFileUrl,
 }: FileUploaderProps) {
   const [files, setFiles] = useState<UploadFile[]>([]);
+
+  // Show initial file if provided
+  useEffect(() => {
+    if (
+      initialFileUrl &&
+      typeof initialFileUrl === "string" &&
+      initialFileUrl.length > 0 &&
+      files.length === 0
+    ) {
+      const isPdf = initialFileUrl.toLowerCase().endsWith(".pdf");
+      const s3Key = extractS3KeyFromUrl(initialFileUrl);
+      setFiles([
+        {
+          id: "initial",
+          file: {
+            name: s3Key,
+            size: 0,
+            type: isPdf ? "application/pdf" : "image/*",
+          } as File,
+          uploading: false,
+          progress: 100,
+          fileName: s3Key,
+          isDeleting: false,
+          error: false,
+          objectUrl: initialFileUrl,
+        },
+      ]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialFileUrl]);
 
   async function removeFile(fileId: string) {
     setFiles((prev) =>

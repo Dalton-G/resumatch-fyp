@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,8 @@ import type { JobSeekerProfile } from "@prisma/client";
 import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
 import { api } from "@/config/directory";
+import { useQueryClient } from "@tanstack/react-query";
+import { cacheKeys } from "@/config/cache-keys";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -39,6 +41,7 @@ export default function JobSeekerEditProfile({
   role: string;
 }) {
   // All hooks must be called unconditionally
+  const queryClient = useQueryClient();
   const {
     data: profile,
     isLoading,
@@ -64,6 +67,14 @@ export default function JobSeekerEditProfile({
     portfolioUrl: jobSeekerProfile.portfolioUrl || "",
     phone: jobSeekerProfile.phone || "",
   };
+
+  useEffect(() => {
+    if (jobSeekerProfile.profilePicture) {
+      setProfilePicture(jobSeekerProfile.profilePicture);
+    } else {
+      setProfilePicture("");
+    }
+  }, [jobSeekerProfile.profilePicture, userId, role]);
 
   const {
     control,
@@ -121,6 +132,10 @@ export default function JobSeekerEditProfile({
       );
       if (res.status === 200) {
         toast.success("Profile updated successfully!");
+        if (res.data?.jobSeekerProfile?.profilePicture) {
+          setProfilePicture(res.data.jobSeekerProfile.profilePicture);
+        }
+        queryClient.invalidateQueries({ queryKey: [cacheKeys.profile] });
       } else {
         toast.error(res.data?.error || "Failed to update profile");
       }
@@ -162,6 +177,7 @@ export default function JobSeekerEditProfile({
                     <ProfilePictureUploader
                       onUploadComplete={handleProfilePictureUpload}
                       onDelete={handleProfilePictureDelete}
+                      initialFileUrl={profilePicture}
                     />
                     {errors.profilePicture && (
                       <span className="text-red-500 text-xs">

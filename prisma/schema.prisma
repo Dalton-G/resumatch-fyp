@@ -164,7 +164,7 @@ model CompanyProfile {
   industry    String?
   size        String?
   address     String?
-  logoUrl     String?
+  profilePicture     String?
   views       Int     @default(0)
 
   jobPostings JobPosting[]

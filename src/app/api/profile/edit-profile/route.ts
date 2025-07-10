@@ -34,27 +34,26 @@ export async function PUT(request: NextRequest) {
 
     // Update logic for job seeker
     if (role === "JOB_SEEKER") {
-      console.log("Received data", body);
-      //   // Update User
-      //   const user = await prisma.user.update({
-      //     where: { id: userId },
-      //     data: {
-      //       name: `${firstName} ${lastName}`,
-      //       image: profilePicture,
-      //     },
-      //   });
-      //   // Update JobSeekerProfile
-      //   const jobSeekerProfile = await prisma.jobSeekerProfile.update({
-      //     where: { userId },
-      //     data: {
-      //       firstName,
-      //       lastName,
-      //       profilePicture,
-      //       ...profileFields,
-      //     },
-      //   });
-      //   return NextResponse.json({ user, jobSeekerProfile }, { status: 200 });
-      return NextResponse.json({ message: "Profile updated" }, { status: 200 });
+      // Update User
+      const user = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          name: `${firstName} ${lastName}`,
+          image: profilePicture,
+        },
+      });
+      // Update JobSeekerProfile
+      const jobSeekerProfile = await prisma.jobSeekerProfile.update({
+        where: { userId },
+        data: {
+          firstName,
+          lastName,
+          profilePicture,
+          ...profileFields,
+        },
+      });
+
+      return NextResponse.json({ user, jobSeekerProfile }, { status: 200 });
     }
 
     // If not job seeker, not implemented

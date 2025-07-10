@@ -3,10 +3,11 @@
 import axiosInstance from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/config/directory";
+import { cacheKeys } from "@/config/cache-keys";
 
 export function useCurrentUserProfile(userId: string, role: string) {
   return useQuery({
-    queryKey: ["profile", userId, role],
+    queryKey: [cacheKeys.profile, userId, role],
     queryFn: async () => {
       try {
         const response = await axiosInstance.get(
