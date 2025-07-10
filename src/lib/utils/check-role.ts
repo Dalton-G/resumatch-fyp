@@ -8,3 +8,9 @@ export async function ensureRole(expectedRole: string) {
   if (session.user.role !== expectedRole) redirect(pages.jobPortal);
   return session;
 }
+
+export async function ensureAuth() {
+  const session = await auth();
+  if (!session || !session.user) redirect(pages.login);
+  return session;
+}
