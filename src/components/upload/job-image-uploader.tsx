@@ -1,5 +1,5 @@
 import FileUploader, { FileUploaderProps } from "./file-uploader";
-import { FILE_CATEGORY_CONFIG } from "@/lib/utils/s3-utils";
+import { FILE_CATEGORY_CONFIG } from "@/config/file-category-config";
 
 export default function JobImageUploader(props: Partial<FileUploaderProps>) {
   const config = FILE_CATEGORY_CONFIG["job-image"];

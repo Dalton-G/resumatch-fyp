@@ -119,7 +119,8 @@ export default function FileUploader({
         );
         return;
       }
-      const { presignedUrl, fileName } = await presignedUrlResponse.json();
+      const { presignedUrl, fileName, fileUrl } =
+        await presignedUrlResponse.json();
       await new Promise<void>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.upload.onprogress = (event) => {
@@ -148,8 +149,8 @@ export default function FileUploader({
               )
             );
             toast.success("File uploaded successfully");
-            if (onUploadComplete && fileName) {
-              onUploadComplete(fileName);
+            if (onUploadComplete && fileUrl) {
+              onUploadComplete(fileUrl);
             }
             resolve();
           } else {

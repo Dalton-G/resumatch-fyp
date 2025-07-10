@@ -1,5 +1,5 @@
-import ProfileDisplay from "@/components/profile/profile-display";
 import { ensureAuth } from "@/lib/utils/check-role";
+import ProfileDisplay from "./components/profile-display";
 
 export default async function JobPortalPage() {
   const session = await ensureAuth();

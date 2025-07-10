@@ -1,3 +1,4 @@
+// NOTE: Do not import this file in client components. This is server-only code.
 import { S3Client, S3ClientConfig } from "@aws-sdk/client-s3";
 import { env } from "@/config/env";
 

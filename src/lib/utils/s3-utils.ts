@@ -1,3 +1,4 @@
+// NOTE: Do not import this file in client components. This is server-only code.
 import { v4 as uuidv4 } from "uuid";
 import {
   PutObjectCommand,
