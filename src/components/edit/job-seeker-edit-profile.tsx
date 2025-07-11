@@ -13,9 +13,10 @@ import { useCurrentUserProfile } from "@/hooks/use-profile";
 import type { JobSeekerProfile } from "@prisma/client";
 import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
-import { api } from "@/config/directory";
+import { api, pages } from "@/config/directory";
 import { useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "@/config/cache-keys";
+import Link from "next/link";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -442,6 +443,14 @@ export default function JobSeekerEditProfile({
               </Button>
             </CardContent>
           </Card>
+          <Link href={`${pages.viewProfile}/${userId}`}>
+            <Button
+              className="w-full text-black mb-2 bg-white border-1 hover:border-[var(--r-blue)] hover:bg-white"
+              variant="default"
+            >
+              View Profile
+            </Button>
+          </Link>
           <Button
             className="w-full bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/90"
             size="lg"
