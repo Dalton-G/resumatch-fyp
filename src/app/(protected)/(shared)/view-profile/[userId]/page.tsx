@@ -6,7 +6,7 @@ import axios from "@/lib/axios";
 import { api } from "@/config/directory";
 import JobSeekerProfileView from "@/components/profile/job-seeker-profile-view";
 import CompanyProfileView from "@/components/profile/company-profile-view";
-// import AdminProfileView from '@/components/profile/admin-profile-view';
+import AdminProfileView from "@/components/profile/admin-profile-view";
 
 interface ViewProfilePageProps {
   params: Promise<{ userId: string }>;
@@ -74,8 +74,15 @@ export default function ViewProfilePage({ params }: ViewProfilePageProps) {
         />
       );
     case "ADMIN":
-      // return <AdminProfileView {...profile} />;
-      return <div>Admin Profile View (to be implemented)</div>;
+      return (
+        <AdminProfileView
+          firstName={profile.firstName}
+          lastName={profile.lastName}
+          profilePicture={profile.profilePicture}
+          email={profile.email}
+          views={profile.views}
+        />
+      );
     default:
       return <div>Unknown profile type</div>;
   }
