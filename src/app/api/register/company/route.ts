@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       industry: companyIndustry,
       size: companySize,
       address: companyAddress,
-      logoUrl: companyLogo,
+      profilePicture: companyLogo,
     },
   };
 

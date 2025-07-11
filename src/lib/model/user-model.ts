@@ -19,7 +19,7 @@ export type CompanyProfileCreationModel = {
   industry: string;
   size: string;
   address: string;
-  logoUrl: string;
+  profilePicture: string;
 };
 
 export type AdminProfileCreationModel = {
