@@ -50,6 +50,7 @@
   --r-purple: #efddf4;
   --r-orange: #faf0e7;
   --r-darkgray: #cdcdcd;
+  --r-boldgray: #727272;
 }
 
 @media (prefers-color-scheme: light) {
