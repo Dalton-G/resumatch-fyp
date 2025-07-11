@@ -1,6 +1,7 @@
 import { ensureAuth } from "@/lib/utils/check-role";
 import JobSeekerEditProfile from "@/components/edit/job-seeker-edit-profile";
 import CompanyEditProfile from "@/components/edit/company-edit-profile";
+import AdminEditProfile from "@/components/edit/admin-edit-profile";
 
 export default async function Page() {
   const session = await ensureAuth();
@@ -12,6 +13,9 @@ export default async function Page() {
   }
   if (role === "COMPANY") {
     return <CompanyEditProfile userId={userId} role={role} />;
+  }
+  if (role === "ADMIN") {
+    return <AdminEditProfile userId={userId} role={role} />;
   }
   // Placeholder for other roles
   return (

@@ -106,6 +106,35 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json(companyProfile, { status: 200 });
     }
 
+    // Update logic for admin
+    if (role === "ADMIN") {
+      const { firstName, lastName, profilePicture } = body;
+      if (!firstName || !lastName || !profilePicture) {
+        return NextResponse.json(
+          { error: "Missing required fields" },
+          { status: 400 }
+        );
+      }
+      // Update User
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          name: `${firstName} ${lastName}`,
+          image: profilePicture,
+        },
+      });
+      // Update AdminProfile
+      const adminProfile = await prisma.adminProfile.update({
+        where: { userId },
+        data: {
+          firstName,
+          lastName,
+          profilePicture,
+        },
+      });
+      return NextResponse.json(adminProfile, { status: 200 });
+    }
+
     // If not job seeker, not implemented
     return NextResponse.json(
       { error: "Profile editing for this role is not implemented." },
