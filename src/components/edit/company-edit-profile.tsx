@@ -20,6 +20,8 @@ import { industryOptions, sizeOptions } from "@/config/company-options";
 import axiosInstance from "@/lib/axios";
 import { toast } from "sonner";
 import { api } from "@/config/directory";
+import { pages } from "@/config/directory";
+import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "@/config/cache-keys";
 
@@ -287,10 +289,18 @@ export default function CompanyEditProfile({
                 </span>
               )}
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+              <Link href={`${pages.viewProfile}/${userId}`}>
+                <Button
+                  className="w-48 text-black bg-white border-1 font-dm-serif hover:border-[var(--r-blue)] hover:bg-white mr-4"
+                  variant="default"
+                >
+                  View Profile
+                </Button>
+              </Link>
               <Button
                 type="submit"
-                className="bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/90 w-48"
+                className="bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/90 w-48 font-dm-serif"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Saving..." : "Save Changes"}

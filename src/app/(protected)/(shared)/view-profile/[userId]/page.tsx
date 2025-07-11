@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "@/lib/axios";
 import { api } from "@/config/directory";
 import JobSeekerProfileView from "@/components/profile/job-seeker-profile-view";
-// import CompanyProfileView from '@/components/profile/company-profile-view';
+import CompanyProfileView from "@/components/profile/company-profile-view";
 // import AdminProfileView from '@/components/profile/admin-profile-view';
 
 interface ViewProfilePageProps {
@@ -60,8 +60,19 @@ export default function ViewProfilePage({ params }: ViewProfilePageProps) {
         />
       );
     case "COMPANY":
-      // return <CompanyProfileView {...profile} />;
-      return <div>Company Profile View (to be implemented)</div>;
+      return (
+        <CompanyProfileView
+          name={profile.name}
+          profilePicture={profile.profilePicture}
+          industry={profile.industry}
+          size={profile.size}
+          address={profile.address}
+          views={profile.views}
+          website={profile.website}
+          email={profile.email}
+          description={profile.description}
+        />
+      );
     case "ADMIN":
       // return <AdminProfileView {...profile} />;
       return <div>Admin Profile View (to be implemented)</div>;
