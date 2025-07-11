@@ -23,17 +23,17 @@ export async function PUT(request: NextRequest) {
 
     // Parse body
     const body = await request.json();
-    // Required fields: firstName, lastName, profilePicture
-    const { firstName, lastName, profilePicture, ...profileFields } = body;
-    if (!firstName || !lastName || !profilePicture) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
 
     // Update logic for job seeker
     if (role === "JOB_SEEKER") {
+      // Required fields: firstName, lastName, profilePicture
+      const { firstName, lastName, profilePicture, ...profileFields } = body;
+      if (!firstName || !lastName || !profilePicture) {
+        return NextResponse.json(
+          { error: "Missing required fields" },
+          { status: 400 }
+        );
+      }
       // Update User
       const user = await prisma.user.update({
         where: { id: userId },
@@ -54,6 +54,56 @@ export async function PUT(request: NextRequest) {
       });
 
       return NextResponse.json({ user, jobSeekerProfile }, { status: 200 });
+    }
+
+    // Update logic for company
+    if (role === "COMPANY") {
+      // Required fields for company
+      const {
+        name,
+        profilePicture,
+        website,
+        industry,
+        size,
+        address,
+        description,
+      } = body;
+      if (
+        !name ||
+        !profilePicture ||
+        !website ||
+        !industry ||
+        !size ||
+        !address ||
+        !description
+      ) {
+        return NextResponse.json(
+          { error: "Missing required fields" },
+          { status: 400 }
+        );
+      }
+      // Update User
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          name: name,
+          image: profilePicture,
+        },
+      });
+      // Update CompanyProfile
+      const companyProfile = await prisma.companyProfile.update({
+        where: { userId },
+        data: {
+          name,
+          profilePicture,
+          website,
+          industry,
+          size,
+          address,
+          description,
+        },
+      });
+      return NextResponse.json(companyProfile, { status: 200 });
     }
 
     // If not job seeker, not implemented

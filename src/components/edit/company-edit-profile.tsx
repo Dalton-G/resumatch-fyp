@@ -17,6 +17,11 @@ import {
 import ProfilePictureUploader from "@/components/upload/profile-picture-uploader";
 import { useCurrentUserProfile } from "@/hooks/use-profile";
 import { industryOptions, sizeOptions } from "@/config/company-options";
+import axiosInstance from "@/lib/axios";
+import { toast } from "sonner";
+import { api } from "@/config/directory";
+import { useQueryClient } from "@tanstack/react-query";
+import { cacheKeys } from "@/config/cache-keys";
 
 const companyProfileSchema = z.object({
   name: z.string().min(1, "Company name is required"),
@@ -43,6 +48,8 @@ export default function CompanyEditProfile({
     isError,
   } = useCurrentUserProfile(userId, role);
   const [logo, setLogo] = useState("");
+  const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Prefill form with profile data
   const defaultValues: CompanyProfileFormType = {
@@ -86,8 +93,24 @@ export default function CompanyEditProfile({
     setLogo("");
   };
 
-  const onSubmit = (data: CompanyProfileFormType) => {
-    console.log("[CompanyEditProfile] Save Data:", data);
+  const onSubmit = async (data: CompanyProfileFormType) => {
+    setIsSubmitting(true);
+    try {
+      const res = await axiosInstance.put(
+        `${api.editProfile}?userId=${userId}&role=${role}`,
+        data
+      );
+      if (res.status === 200) {
+        toast.success("Profile updated successfully!");
+        queryClient.invalidateQueries({ queryKey: [cacheKeys.profile] });
+      } else {
+        toast.error(res.data?.error || "Failed to update profile");
+      }
+    } catch (e: any) {
+      toast.error(e.response?.data?.error || "Failed to update profile");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isLoading) return <div className="p-8">Loading profile...</div>;
@@ -95,10 +118,12 @@ export default function CompanyEditProfile({
     return <div className="p-8 text-red-500">Failed to load profile.</div>;
 
   return (
-    <div className="flex justify-center items-start min-h-screen bg-[var(--r-gray)]">
+    <div className="flex justify-center items-start min-h-screen bg-[var(--r-gray)] font-libertinus">
       <Card className="w-full max-w-5xl mt-12 mb-12 mx-4">
-        <CardContent className="p-10">
-          <h2 className="text-2xl font-bold mb-8">Edit Profile</h2>
+        <CardContent className="px-10 py-6">
+          <h1 className="text-3xl font-bold font-dm-serif mb-6">
+            Edit Profile
+          </h1>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-8">
               <label className="block font-medium mb-2">Company Logo</label>
@@ -266,8 +291,9 @@ export default function CompanyEditProfile({
               <Button
                 type="submit"
                 className="bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/90 w-48"
+                disabled={isSubmitting}
               >
-                Save Changes
+                {isSubmitting ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </form>
