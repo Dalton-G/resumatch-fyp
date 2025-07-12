@@ -9,15 +9,11 @@ import axios from "axios";
 export const extractTextFromS3Url = async (s3Url: string): Promise<string> => {
   if (!s3Url) throw new Error("Missing S3 URL");
 
-  console.log("Extracting text from S3 URL:", s3Url);
-
   const response = await axios.get<ArrayBuffer>(s3Url, {
     responseType: "arraybuffer",
   });
 
   const buffer = Buffer.from(response.data);
-
-  console.log("PDF buffer size:", buffer.length);
 
   const data = await pdfParse(buffer);
   return data.text;

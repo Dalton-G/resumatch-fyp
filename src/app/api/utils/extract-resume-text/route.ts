@@ -9,8 +9,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing URL" }, { status: 400 });
     }
 
-    console.log("Received URL:", url);
-
     const text = await extractTextFromS3Url(url);
 
     return NextResponse.json({ text }, { status: 200 });
