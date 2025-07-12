@@ -22,4 +22,5 @@ export const api = {
   adminRegister: "/api/register/admin",
   profile: "/api/profile",
   editProfile: "/api/profile/edit-profile",
+  jobSeekerResume: "/api/job-seeker/upload-resume",
 };
