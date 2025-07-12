@@ -1,18 +1,245 @@
-// Final, simplified Prisma schema with profile picture upload support and cleaned Resume
-
-// =================== GENERATORS ===================
 generator client {
   provider = "prisma-client-js"
 }
 
-// =================== DATASOURCE ===================
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-// =================== ENUMS ===================
+model User {
+  id               String            @id @default(cuid())
+  name             String?
+  email            String            @unique
+  emailVerified    DateTime?
+  image            String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  password         String?
+  isApproved       Boolean           @default(true)
+  role             UserRole          @default(JOB_SEEKER)
+  accounts         Account[]
+  adminProfile     AdminProfile?
+  Authenticator    Authenticator[]
+  companyProfile   CompanyProfile?
+  jobSeekerProfile JobSeekerProfile?
+  sessions         Session[]
+
+  @@index([role])
+  @@index([email])
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
+
+model JobSeekerProfile {
+  id             String           @id @default(cuid())
+  userId         String           @unique
+  firstName      String?
+  lastName       String?
+  phone          String?
+  location       String?
+  bio            String?
+  linkedinUrl    String?
+  githubUrl      String?
+  portfolioUrl   String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  profilePicture String?
+  skills         String[]         @default([])
+  views          Int              @default(0)
+  profession     String?
+  applications   JobApplication[]
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resumes        Resume[]
+
+  @@index([location])
+  @@index([userId])
+}
+
+model CompanyProfile {
+  id             String       @id @default(cuid())
+  userId         String       @unique
+  name           String
+  description    String?
+  website        String?
+  industry       String?
+  size           String?
+  address        String?
+  profilePicture String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  views          Int          @default(0)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobPostings    JobPosting[]
+
+  @@index([name])
+  @@index([address])
+  @@index([userId])
+}
+
+model AdminProfile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  firstName      String?
+  lastName       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  profilePicture String?
+  views          Int      @default(0)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Resume {
+  id              String           @id @default(cuid())
+  fileName        String
+  s3Url           String
+  fileSize        Int
+  chunks          ResumeChunk[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  jobSeekerId     String
+  jobApplications JobApplication[] @relation("ResumeToJobApplication")
+  jobSeeker       JobSeekerProfile @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
+
+  @@index([jobSeekerId])
+}
+
+model JobPosting {
+  id           String            @id @default(cuid())
+  title        String
+  description  String
+  location     String
+  salaryMin    Int?
+  salaryMax    Int?
+  status       JobStatus         @default(HIRING)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  companyId    String
+  workType     WorkType
+  views        Int               @default(0)
+  chunks       JobPostingChunk[]
+  applications JobApplication[]
+  company      CompanyProfile    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([companyId])
+  @@index([title, description])
+  @@index([location])
+  @@index([createdAt])
+}
+
+model JobApplication {
+  id          String            @id @default(cuid())
+  jobId       String
+  resumeId    String
+  coverLetter String?
+  status      ApplicationStatus @default(APPLIED)
+  appliedAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  jobSeekerId String
+  job         JobPosting        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobSeeker   JobSeekerProfile  @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
+  resume      Resume            @relation("ResumeToJobApplication", fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, jobSeekerId])
+  @@index([jobSeekerId])
+  @@index([jobId])
+  @@index([resumeId])
+  @@index([status])
+  @@index([appliedAt])
+}
+
+model ResumeChunk {
+  id            String   @id
+  jobSeekerId   String
+  resumeId      String
+  resume        Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  chunkIndex    Int
+  totalChunks   Int
+  content       String
+  embedding     Float[]
+  appliedJobIds String[]
+  source        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([jobSeekerId])
+  @@index([resumeId])
+}
+
+model JobPostingChunk {
+  id          String     @id
+  companyId   String
+  jobId       String
+  job         JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  chunkIndex  Int
+  totalChunks Int
+  content     String
+  embedding   Float[]
+  active      Boolean    @default(true)
+  source      String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([companyId])
+  @@index([jobId])
+  @@index([active])
+}
+
 enum UserRole {
   JOB_SEEKER
   COMPANY
@@ -37,271 +264,4 @@ enum WorkType {
   ONSITE
   REMOTE
   HYBRID
-}
-
-// =================== AUTH MODELS ===================
-model User {
-  id            String          @id @default(cuid())
-  name          String?
-  email         String          @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  accounts      Account[]
-  sessions      Session[]
-  Authenticator Authenticator[]
-
-  role       UserRole @default(JOB_SEEKER)
-  isApproved Boolean  @default(true)
-
-  jobSeekerProfile JobSeekerProfile?
-  companyProfile   CompanyProfile?
-  adminProfile     AdminProfile?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([role])
-  @@index([email])
-}
-
-model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([provider, providerAccountId])
-  @@index([userId])
-}
-
-model Session {
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-}
-
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@id([identifier, token])
-}
-
-model Authenticator {
-  credentialID         String  @unique
-  userId               String
-  providerAccountId    String
-  credentialPublicKey  String
-  counter              Int
-  credentialDeviceType String
-  credentialBackedUp   Boolean
-  transports           String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([userId, credentialID])
-}
-
-// =================== PROFILE MODELS ===================
-
-model JobSeekerProfile {
-  id     String @id @default(cuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  firstName      String?
-  lastName       String?
-  phone          String?
-  location       String?
-  bio            String?
-  linkedinUrl    String?
-  githubUrl      String?
-  portfolioUrl   String?
-  profilePicture String?
-  skills         String[] @default([])
-  views          Int      @default(0)
-  profession     String?
-
-  resumes      Resume[]
-  applications JobApplication[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([location])
-  @@index([userId])
-}
-
-model CompanyProfile {
-  id     String @id @default(cuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  name        String
-  description String?
-  website     String?
-  industry    String?
-  size        String?
-  address     String?
-  profilePicture     String?
-  views       Int     @default(0)
-
-  jobPostings JobPosting[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([name])
-  @@index([address])
-  @@index([userId])
-}
-
-model AdminProfile {
-  id     String @id @default(cuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  firstName      String?
-  lastName       String?
-  profilePicture String?
-  views          Int     @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-}
-
-// =================== RESUME ===================
-
-model Resume {
-  id          String           @id @default(cuid())
-  jobSeekerId String
-  jobSeeker   JobSeekerProfile @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
-
-  fileName String
-  s3Url    String
-  fileSize Int
-
-  jobApplications JobApplication[] @relation("ResumeToJobApplication")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([jobSeekerId])
-}
-
-// =================== JOB POSTING ===================
-
-model JobPosting {
-  id        String         @id @default(cuid())
-  companyId String
-  company   CompanyProfile @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  title       String
-  description String
-  location    String
-  workType    WorkType
-  salaryMin   Int?
-  salaryMax   Int?
-  status      JobStatus @default(HIRING)
-  views       Int       @default(0)
-
-  applications JobApplication[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([status])
-  @@index([companyId])
-  @@index([title, description])
-  @@index([location])
-  @@index([createdAt])
-}
-
-// =================== JOB APPLICATION ===================
-
-model JobApplication {
-  id    String     @id @default(cuid())
-  jobId String
-  job   JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
-
-  jobSeekerId String
-  jobSeeker   JobSeekerProfile @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
-
-  resumeId String
-  resume   Resume @relation("ResumeToJobApplication", fields: [resumeId], references: [id], onDelete: Cascade)
-
-  coverLetter String?
-  status      ApplicationStatus @default(APPLIED)
-
-  appliedAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([jobId, jobSeekerId])
-  @@index([jobSeekerId])
-  @@index([jobId])
-  @@index([resumeId])
-  @@index([status])
-  @@index([appliedAt])
-}
-
-// =================== EMBEDDING CHUNKS ===================
-
-model ResumeChunk {
-  id            String   @id
-  jobSeekerId   String
-  resumeId      String
-  chunkIndex    Int
-  totalChunks   Int
-  content       String
-  embedding     Float[]
-  appliedJobIds String[]
-  source        String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([jobSeekerId])
-  @@index([resumeId])
-}
-
-model JobPostingChunk {
-  id          String  @id
-  companyId   String
-  jobId       String
-  chunkIndex  Int
-  totalChunks Int
-  content     String
-  embedding   Float[]
-  active      Boolean @default(true)
-  source      String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([companyId])
-  @@index([jobId])
-  @@index([active])
 }
