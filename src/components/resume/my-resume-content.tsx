@@ -2,7 +2,10 @@
 
 import { Separator } from "@radix-ui/react-separator";
 import ResumeUploader from "../upload/resume-uploader";
-import { IoDocumentTextOutline } from "react-icons/io5";
+import {
+  IoDocumentTextOutline,
+  IoChatbubbleEllipsesOutline,
+} from "react-icons/io5";
 import { useMyResume } from "@/hooks/use-my-resume";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +28,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cacheKeys } from "@/config/cache-keys";
 import { Resume } from "@prisma/client";
+import { useCurrentResumeContent } from "@/hooks/use-resume-content";
+import { ResumeChatPanel } from "../chat/resume-chat-panel";
 
 export default function MyResumeContent() {
   const { data: resumes = [], isLoading } = useMyResume();
@@ -155,9 +160,25 @@ export default function MyResumeContent() {
           )}
         </div>
         <div className="flex flex-col w-full min-h-full">
-          <div className="bg-white p-4 font-dm-serif border-b-1 border-[var(--r-darkgray)] text-xl ">
-            Chat with Your Resume
+          <div className="flex gap-4 items-center bg-white p-4 font-dm-serif border-b-1 border-[var(--r-darkgray)] text-xl">
+            <IoChatbubbleEllipsesOutline className="text-[var(--r-boldgray)] text-2xl" />
+            <p>Chat with your Resume</p>
           </div>
+          {selectedResume ? (
+            <div>
+              <p>{selectedResume.s3Url}</p>
+              <ResumeChatPanel s3Url={selectedResume.s3Url} />
+            </div>
+          ) : (
+            <div className="flex min-h-[calc(100vh-10.1rem)] items-center justify-center w-full font-libertinus">
+              <div className="flex flex-col items-center gap-6 text-[var(--r-boldgray)]">
+                <IoChatbubbleEllipsesOutline className="text-[var(--r-boldgray)] text-6xl" />
+                <p className="text-2xl">
+                  Please Select a Resume to Start Chatting
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
