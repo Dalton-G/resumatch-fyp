@@ -2,6 +2,7 @@
 
 import { Separator } from "@radix-ui/react-separator";
 import ResumeUploader from "../upload/resume-uploader";
+import { IoDocumentTextOutline } from "react-icons/io5";
 import { useMyResume } from "@/hooks/use-my-resume";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ import {
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
 import { cacheKeys } from "@/config/cache-keys";
+import { Resume } from "@prisma/client";
 
 export default function MyResumeContent() {
   const { data: resumes = [], isLoading } = useMyResume();
@@ -47,11 +49,13 @@ export default function MyResumeContent() {
     }
   };
 
-  const selectedResume = resumes.find((r: any) => r.id === selectedResumeId);
+  const selectedResume: Resume = resumes.find(
+    (r: any) => r.id === selectedResumeId
+  );
 
   return (
     <div className="flex flex-row">
-      <div className="w-1/6 bg-white p-8 border-r-1 border-[var(--r-darkgray)] min-h-screen">
+      <div className="w-1/6 bg-white p-8 border-r-1 border-[var(--r-darkgray)] min-h-[calc(100vh-6.3rem)]">
         <div className="flex flex-col gap-4">
           <ResumeUploader />
           <Separator className="my-4 border-[var(--r-darkgray)] border-1" />
@@ -75,7 +79,7 @@ export default function MyResumeContent() {
               >
                 <FileText className="w-6 h-6 text-gray-400" />
                 <div className="flex-1">
-                  <p className="text-xs font-medium text-gray-900 truncate overflow-hidden max-w-[120px]">
+                  <p className="text-xs font-medium text-gray-900 truncate overflow-hidden max-w-[100px]">
                     {cleanFilename(resume.fileName)}
                   </p>
                   <p className="text-xs text-gray-500">
@@ -129,16 +133,32 @@ export default function MyResumeContent() {
           )}
         </div>
       </div>
-      <div className="flex-1 flex flex-col items-center justify-center">
-        {selectedResume ? (
-          <div className="p-8">
-            <h2 className="text-xl font-semibold mb-2">Selected Resume</h2>
-            <p className="mb-2">{cleanFilename(selectedResume.fileName)}</p>
-            {/* PDF preview can be implemented here later */}
+      <div className="flex-1 flex flex-row items-center justify-center">
+        <div className="flex flex-col w-full min-h-full border-r-1 border-[var(--r-darkgray)]">
+          <div className="flex gap-4 items-center bg-white p-4 font-dm-serif border-b-1 border-[var(--r-darkgray)] text-xl">
+            <IoDocumentTextOutline className="text-[var(--r-boldgray)] text-2xl" />
+            <p>Preview Resume</p>
           </div>
-        ) : (
-          <h1 className="text-gray-400">Select a resume to preview</h1>
-        )}
+          {selectedResume ? (
+            <iframe
+              src={selectedResume.s3Url}
+              className="w-full min-h-[calc(100vh-10.1rem)]"
+              title="Resume"
+            />
+          ) : (
+            <div className="flex min-h-[calc(100vh-10.1rem)] items-center justify-center w-full font-libertinus">
+              <div className="flex flex-col items-center gap-6 text-[var(--r-boldgray)]">
+                <IoDocumentTextOutline className="text-[var(--r-boldgray)] text-6xl" />
+                <p className="text-2xl">Please Select a Resume to Preview</p>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col w-full min-h-full">
+          <div className="bg-white p-4 font-dm-serif border-b-1 border-[var(--r-darkgray)] text-xl ">
+            Chat with Your Resume
+          </div>
+        </div>
       </div>
     </div>
   );
