@@ -24,4 +24,5 @@ export const api = {
   editProfile: "/api/profile/edit-profile",
   jobSeekerResume: "/api/job-seeker/upload-resume",
   extractResumeText: "/api/utils/extract-resume-text",
+  chatWithResume: "/api/chat/with-resume",
 };

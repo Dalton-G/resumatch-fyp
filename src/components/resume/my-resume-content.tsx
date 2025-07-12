@@ -165,8 +165,7 @@ export default function MyResumeContent() {
             <p>Chat with your Resume</p>
           </div>
           {selectedResume ? (
-            <div>
-              <p>{selectedResume.s3Url}</p>
+            <div className="flex min-h-[calc(100vh-10.1rem)] items-center justify-center w-full font-libertinus">
               <ResumeChatPanel s3Url={selectedResume.s3Url} />
             </div>
           ) : (
