@@ -10,7 +10,15 @@ import { toast } from "sonner";
 import { TbContract } from "react-icons/tb";
 import axiosInstance from "@/lib/axios";
 import { api } from "@/config/directory";
-import { FileText, Loader2, Target, Trash2 } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  FileText,
+  Loader2,
+  Target,
+  Trash2,
+  TrendingUp,
+} from "lucide-react";
 import { cleanFilename } from "@/lib/utils/clean-filename";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -29,6 +37,9 @@ import { Resume } from "@prisma/client";
 import { Textarea } from "../ui/textarea";
 import { useCurrentResumeContent } from "@/hooks/use-resume-content";
 import { useResumeComparison } from "@/hooks/use-resume-comparison";
+import { ScrollArea } from "../ui/scroll-area";
+import { Badge } from "../ui/badge";
+import { Progress } from "../ui/progress";
 
 export default function ResumeOptimizerContent() {
   const { data: resumes = [], isLoading } = useMyResume();
@@ -167,7 +178,7 @@ export default function ResumeOptimizerContent() {
           )}
         </div>
       </div>
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-white">
         <div className="flex flex-col bg-white p-4 border-b-1 border-[var(--r-darkgray)]">
           <div className="font-dm-serif text-xl">
             Compare Resume with Job Description
@@ -229,43 +240,110 @@ export default function ResumeOptimizerContent() {
                     </p>
                   </div>
                 ) : comparisonResult ? (
-                  <div className="space-y-4 max-w-3xl text-left text-sm">
-                    <p className="text-xl font-bold">
-                      Match Score: {comparisonResult.matchScore}%
-                    </p>
+                  <ScrollArea className="flex-1 p-6 h-[calc(100vh-12rem)] overflow-y-auto">
+                    {!comparisonResult ? (
+                      <div className="text-center py-12">
+                        <Target className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                        <h3 className="text-lg font-medium mb-2">
+                          Ready to Compare?
+                        </h3>
+                        <p className="text-gray-600">
+                          Paste a job description on the left to see how well
+                          your resume matches the requirements.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-6">
+                        {/* Match Score */}
+                        <div className="bg-gradient-to-r from-green-100 to-emerald-50 rounded-lg p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-lg font-medium">Match Score</h4>
+                            <div className="text-3xl font-bold text-green-600">
+                              {comparisonResult.matchScore}%
+                            </div>
+                          </div>
+                          <Progress
+                            value={comparisonResult.matchScore}
+                            className="mb-2"
+                          />
+                          <p className="text-md text-black">
+                            {comparisonResult.matchFeedback}
+                          </p>
+                        </div>
 
-                    <p>
-                      <strong>Feedback:</strong>{" "}
-                      {comparisonResult.matchFeedback}
-                    </p>
+                        {/* Matching Keywords */}
+                        <div className="border rounded-lg p-6 bg-white">
+                          <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
+                            <CheckCircle2 className="h-5 w-5 text-green-500" />
+                            Matching Keywords (
+                            {comparisonResult.matchingKeywords?.length || 0})
+                          </h4>
+                          <div className="flex flex-wrap gap-2">
+                            {comparisonResult.matchingKeywords?.map(
+                              (keyword: string, index: number) => (
+                                <Badge
+                                  key={index}
+                                  variant="secondary"
+                                  className="bg-green-100 text-green-800"
+                                >
+                                  {keyword}
+                                </Badge>
+                              )
+                            )}
+                          </div>
+                        </div>
 
-                    <div>
-                      <strong>Matching Keywords:</strong>
-                      <ul className="list-disc list-inside text-green-700">
-                        {comparisonResult.matchingKeywords.map((kw: string) => (
-                          <li key={kw}>{kw}</li>
-                        ))}
-                      </ul>
-                    </div>
+                        {/* Missing Keywords */}
+                        <div className="border rounded-lg p-6 bg-white">
+                          <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
+                            <AlertTriangle className="h-5 w-5 text-red-500" />
+                            Missing Keywords (
+                            {comparisonResult.missingKeywords?.length || 0})
+                          </h4>
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {comparisonResult.missingKeywords?.map(
+                              (keyword: string, index: number) => (
+                                <Badge
+                                  key={index}
+                                  variant="destructive"
+                                  className="bg-red-100 text-red-800"
+                                >
+                                  {keyword}
+                                </Badge>
+                              )
+                            )}
+                          </div>
+                          {comparisonResult.missingKeywords?.length > 0 && (
+                            <p className="text-sm text-gray-600">
+                              Consider adding these keywords to your resume if
+                              you have relevant experience.
+                            </p>
+                          )}
+                        </div>
 
-                    <div>
-                      <strong>Missing Keywords:</strong>
-                      <ul className="list-disc list-inside text-red-600">
-                        {comparisonResult.missingKeywords.map((kw: string) => (
-                          <li key={kw}>{kw}</li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div>
-                      <strong>Recommendations:</strong>
-                      <ul className="list-disc list-inside text-blue-700">
-                        {comparisonResult.recommendations.map((rec: string) => (
-                          <li key={rec}>{rec}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
+                        {/* Recommendations */}
+                        <div className="border rounded-lg p-6 bg-white">
+                          <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
+                            <TrendingUp className="h-5 w-5 text-blue-500" />
+                            Recommendations
+                          </h4>
+                          <div className="space-y-3">
+                            {comparisonResult.recommendations?.map(
+                              (rec: string, index: number) => (
+                                <div
+                                  key={index}
+                                  className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg"
+                                >
+                                  <TrendingUp className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                                  <p className="text-sm">{rec}</p>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </ScrollArea>
                 ) : (
                   <div className="flex flex-col items-center justify-center w-full text-[var(--r-boldgray)] gap-6">
                     <TbContract className="text-[var(--r-boldgray)] text-6xl" />

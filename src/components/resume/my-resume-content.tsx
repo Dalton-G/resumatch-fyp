@@ -137,7 +137,7 @@ export default function MyResumeContent() {
           )}
         </div>
       </div>
-      <div className="flex-1 flex flex-row items-center justify-center">
+      <div className="flex-1 flex flex-row items-center justify-center bg-white">
         <div className="flex flex-col w-full min-h-full border-r-1 border-[var(--r-darkgray)]">
           <div className="flex gap-4 items-center bg-white p-4 font-dm-serif border-b-1 border-[var(--r-darkgray)] text-xl">
             <IoDocumentTextOutline className="text-[var(--r-boldgray)] text-2xl" />
