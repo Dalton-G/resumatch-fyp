@@ -1,10 +1,10 @@
-import MyResumeHeading from "@/components/resume/my-resume-heading";
+import Heading from "@/components/custom/heading";
 import MyResumeContent from "@/components/resume/my-resume-content";
 
-export default function ManageResume() {
+export default function MyResumePage() {
   return (
     <div>
-      <MyResumeHeading />
+      <Heading title="My Resume" />
       <MyResumeContent />
     </div>
   );

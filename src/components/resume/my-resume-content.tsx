@@ -28,7 +28,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cacheKeys } from "@/config/cache-keys";
 import { Resume } from "@prisma/client";
-import { useCurrentResumeContent } from "@/hooks/use-resume-content";
 import { ResumeChatPanel } from "../chat/resume-chat-panel";
 
 export default function MyResumeContent() {
