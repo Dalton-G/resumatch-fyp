@@ -5,6 +5,7 @@ import { useChat } from "@ai-sdk/react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Bot, Send, User } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface ResumeChatPanelProps {
   s3Url: string;
@@ -30,6 +31,14 @@ export const ResumeChatPanel = ({ s3Url }: ResumeChatPanelProps) => {
       },
     },
   });
+
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   if (isLoading) {
     return (
@@ -103,7 +112,6 @@ export const ResumeChatPanel = ({ s3Url }: ResumeChatPanelProps) => {
               </div>
             </div>
           ))}
-
           {isLoading && (
             <div className="flex gap-3 justify-start">
               <div className="flex gap-3 max-w-[80%]">
@@ -128,6 +136,7 @@ export const ResumeChatPanel = ({ s3Url }: ResumeChatPanelProps) => {
               </div>
             </div>
           )}
+          <div ref={bottomRef} />
         </div>
       </div>
 
