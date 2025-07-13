@@ -25,4 +25,5 @@ export const api = {
   jobSeekerResume: "/api/job-seeker/upload-resume",
   extractResumeText: "/api/utils/extract-resume-text",
   chatWithResume: "/api/chat/with-resume",
+  compareResume: "/api/compare-resume",
 };
