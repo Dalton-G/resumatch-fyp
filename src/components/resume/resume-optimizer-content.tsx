@@ -2,11 +2,12 @@
 
 import { Separator } from "@radix-ui/react-separator";
 import ResumeUploader from "../upload/resume-uploader";
-import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import { MdCompareArrows } from "react-icons/md";
 import { useMyResume } from "@/hooks/use-my-resume";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { TbContract } from "react-icons/tb";
 import axiosInstance from "@/lib/axios";
 import { api } from "@/config/directory";
 import { FileText, Loader2, Target, Trash2 } from "lucide-react";
@@ -89,7 +90,7 @@ export default function ResumeOptimizerContent() {
   return (
     <div className="flex flex-row">
       <div className="w-1/6 bg-white p-8 border-r-1 border-[var(--r-darkgray)] min-h-[calc(100vh-6.3rem)]">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 font-libertinus">
           <ResumeUploader />
           <Separator className="my-4 border-[var(--r-darkgray)] border-1" />
           {/* List of Resumes as cards */}
@@ -177,14 +178,14 @@ export default function ResumeOptimizerContent() {
         </div>
         <div className="flex flex-row items-center justify-center">
           <div className="flex flex-col w-full min-h-full border-r-1 border-[var(--r-darkgray)]">
-            <div className="flex min-h-[calc(100vh-10.1rem)] items-center justify-center w-full font-libertinus">
-              <div className="flex flex-col items-center gap-6 text-black">
+            <div className="flex min-h-[calc(100vh-12rem)] justify-center w-full font-libertinus ">
+              <div className="flex w-full flex-col items-center gap-6 text-black">
                 {/* Text Area for Job Description */}
-                <div className="w-1/2 border-r flex flex-col">
-                  <div className="p-6 flex-1 flex flex-col">
+                <div className="w-full flex flex-col">
+                  <div className="px-6 flex-1 flex flex-col">
                     <label
                       htmlFor="job-description"
-                      className="text-sm font-medium mb-2"
+                      className="text-lg font-medium font-dm-serif mt-2 mb-4"
                     >
                       Job Description
                     </label>
@@ -193,12 +194,12 @@ export default function ResumeOptimizerContent() {
                       placeholder="Paste the job description here..."
                       value={jobDescription}
                       onChange={(e) => setJobDescription(e.target.value)}
-                      className="flex-1 resize-none"
+                      className="resize-none h-[calc(100vh-20rem)] border-2 shadow-none border-[var(--r-darkgray)] focus-visible:border-black focus-visible:ring-0 focus-visible:shadow-none hover:border-black transition-colors"
                     />
                     <Button
                       onClick={compareWithJob}
                       disabled={isComparing || !jobDescription.trim()}
-                      className="mt-4"
+                      className="mt-4 bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80 text-white font-semibold"
                     >
                       {isComparing ? (
                         <>
@@ -219,9 +220,9 @@ export default function ResumeOptimizerContent() {
           </div>
           <div className="flex flex-col w-full min-h-full">
             {selectedResume ? (
-              <div className="flex min-h-[calc(100vh-10.1rem)] items-center justify-center w-full font-libertinus">
+              <div className="flex min-h-[calc(100vh-12rem)] justify-center w-full font-libertinus">
                 {isComparing ? (
-                  <div className="text-center w-full">
+                  <div className="flex flex-col justify-center items-center text-center w-full">
                     <Loader2 className="animate-spin w-6 h-6 mx-auto text-gray-500" />
                     <p className="mt-2">
                       Analyzing resume and job description...
@@ -266,18 +267,21 @@ export default function ResumeOptimizerContent() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-gray-500">
-                    Paste a job description and click "Compare Resume" to get
-                    insights.
-                  </p>
+                  <div className="flex flex-col items-center justify-center w-full text-[var(--r-boldgray)] gap-6">
+                    <TbContract className="text-[var(--r-boldgray)] text-6xl" />
+                    <p className="text-2xl mx-12 text-center">
+                      Paste a job description & Click "Compare Resume" to get
+                      insights.
+                    </p>
+                  </div>
                 )}
               </div>
             ) : (
-              <div className="flex min-h-[calc(100vh-10.1rem)] items-center justify-center w-full font-libertinus">
+              <div className="flex min-h-[calc(100vh-12rem)] items-center justify-center w-full font-libertinus">
                 <div className="flex flex-col items-center gap-6 text-[var(--r-boldgray)]">
-                  <IoChatbubbleEllipsesOutline className="text-[var(--r-boldgray)] text-6xl" />
+                  <MdCompareArrows className="text-[var(--r-boldgray)] text-6xl" />
                   <p className="text-2xl">
-                    Please Select a Resume to Start Chatting
+                    Please Select a Resume to Start Comparing
                   </p>
                 </div>
               </div>

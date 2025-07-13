@@ -60,7 +60,7 @@ export default function MyResumeContent() {
   return (
     <div className="flex flex-row">
       <div className="w-1/6 bg-white p-8 border-r-1 border-[var(--r-darkgray)] min-h-[calc(100vh-6.3rem)]">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 font-libertinus">
           <ResumeUploader />
           <Separator className="my-4 border-[var(--r-darkgray)] border-1" />
           {/* List of Resumes as cards */}

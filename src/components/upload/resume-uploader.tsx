@@ -96,7 +96,7 @@ export default function ResumeUploader() {
   };
 
   return (
-    <div>
+    <div className="font-libertinus">
       {/* Uploader Area */}
       <div
         className="border-dashed border-2 border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer bg-white hover:border-[var(--r-blue)] transition-colors"
