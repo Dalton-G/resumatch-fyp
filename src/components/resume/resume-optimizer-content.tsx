@@ -56,7 +56,7 @@ export default function ResumeOptimizerContent() {
       await axiosInstance.delete(api.jobSeekerResume, {
         data: { resumeId: resumeToDelete.id },
       });
-      toast.success("Resume deleted");
+      toast.success("Resume and all associated data deleted successfully");
       setResumeToDelete(null);
       setDeleteDialogOpen(false);
       if (selectedResumeId === resumeToDelete.id) setSelectedResumeId(null);

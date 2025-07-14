@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Loader2, FileText } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "@/config/cache-keys";
-import { Resume } from "@prisma/client";
 
 export default function ResumeUploader() {
   const queryClient = useQueryClient();

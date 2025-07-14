@@ -74,3 +74,50 @@ export async function storeResumeEmbeddingsInPinecone(
     throw new Error(`Failed to store embeddings: ${error}`);
   }
 }
+
+export async function deleteResumeEmbeddingsFromPinecone(
+  chunkIds: string[]
+): Promise<void> {
+  try {
+    if (chunkIds.length === 0) {
+      console.log("No chunks to delete from Pinecone");
+      return;
+    }
+
+    const index = pc.index(env.PINECONE_INDEX_NAME);
+    const namespace = index.namespace(env.PINECONE_RESUME_NAMESPACE);
+
+    // Delete in batches to avoid API limits
+    const batchSize = 100;
+    for (let i = 0; i < chunkIds.length; i += batchSize) {
+      const batch = chunkIds.slice(i, i + batchSize);
+      await namespace.deleteMany(batch);
+      console.log(
+        `Deleted batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(
+          chunkIds.length / batchSize
+        )} from Pinecone`
+      );
+    }
+
+    console.log(
+      `Successfully deleted ${chunkIds.length} embeddings from Pinecone`
+    );
+  } catch (error) {
+    console.error("Error deleting embeddings from Pinecone:", error);
+    throw new Error(`Failed to delete embeddings from Pinecone: ${error}`);
+  }
+}
+
+export async function generateChunkIds(
+  jobSeekerId: string,
+  resumeId: string,
+  totalChunks: number
+): Promise<string[]> {
+  const chunkIds: string[] = [];
+  for (let i = 0; i < totalChunks; i++) {
+    const chunkId = `${jobSeekerId}-${resumeId}-${i}`;
+    console.log(`Generated chunk ID: ${chunkId}`);
+    chunkIds.push(chunkId);
+  }
+  return chunkIds;
+}

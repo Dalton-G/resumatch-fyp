@@ -35,21 +35,25 @@ export default function MyResumeContent() {
   const [selectedResumeId, setSelectedResumeId] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [resumeToDelete, setResumeToDelete] = useState<any>(null);
+  const [deleting, setDeleting] = useState(false);
   const queryClient = useQueryClient();
 
   const handleDelete = async () => {
     if (!resumeToDelete) return;
+    setDeleting(true);
     try {
       await axiosInstance.delete(api.jobSeekerResume, {
         data: { resumeId: resumeToDelete.id },
       });
-      toast.success("Resume deleted");
+      toast.success("Resume and all associated data deleted successfully");
       setResumeToDelete(null);
       setDeleteDialogOpen(false);
       if (selectedResumeId === resumeToDelete.id) setSelectedResumeId(null);
       queryClient.invalidateQueries({ queryKey: [cacheKeys.myResumeList] });
     } catch (error: any) {
       toast.error(error?.response?.data?.error || "Failed to delete resume");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -105,6 +109,7 @@ export default function MyResumeContent() {
                         setDeleteDialogOpen(true);
                       }}
                       className="hover:bg-red-400 hover:text-white"
+                      disabled={deleting}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -117,17 +122,24 @@ export default function MyResumeContent() {
                         <span className="font-semibold">
                           {cleanFilename(resume.fileName)}
                         </span>
-                        ? This action cannot be undone.
+                        ? This will permanently remove the resume file, all
+                        processed chunks, and embeddings. This action cannot be
+                        undone.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel
                         onClick={() => setDeleteDialogOpen(false)}
+                        disabled={deleting}
                       >
                         Cancel
                       </AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete}>
-                        Delete
+                      <AlertDialogAction
+                        onClick={handleDelete}
+                        disabled={deleting}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        {deleting ? "Deleting..." : "Delete"}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
