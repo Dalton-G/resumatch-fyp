@@ -89,8 +89,8 @@ export default function ResumeUploader() {
         "Resume uploaded successfully, processing embeddings in the background"
       );
 
-      // 4. Chunk, embed, index, and upsert the resume into Pinecone + Supabase
-      await axiosInstance.post(api.processResume, {
+      // 4. Chunk, embed, index, and upsert the resume into Pinecone + Supabase (non-blocking)
+      axiosInstance.post(api.processResume, {
         s3Url: fileUrl,
         resumeId: resume.data.resume.id,
       });
