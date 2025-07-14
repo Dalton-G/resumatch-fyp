@@ -108,7 +108,7 @@ export async function deleteResumeEmbeddingsFromPinecone(
   }
 }
 
-export async function generateChunkIds(
+export async function generateResumeChunkIds(
   jobSeekerId: string,
   resumeId: string,
   totalChunks: number

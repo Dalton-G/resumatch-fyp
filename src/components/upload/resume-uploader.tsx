@@ -85,16 +85,10 @@ export default function ResumeUploader() {
         s3Url: fileUrl,
         fileSize: file.size,
       });
-      toast.success(
-        "Resume uploaded successfully, processing embeddings in the background"
-      );
+      toast.message("Resume uploaded, processing embeddings in the background");
 
       // 4. Chunk, embed, index, and upsert the resume into Pinecone + Supabase (non-blocking)
-      axiosInstance.post(api.processResume, {
-        s3Url: fileUrl,
-        resumeId: resume.data.resume.id,
-      });
-      toast.success("Resume processed and indexed successfully");
+      processResumeInBackground(fileUrl, resume.data.resume.id);
 
       queryClient.invalidateQueries({ queryKey: [cacheKeys.myResumeList] });
     } catch (error: any) {
@@ -102,6 +96,18 @@ export default function ResumeUploader() {
     } finally {
       setUploading(false);
       setUploadProgress(null);
+    }
+  };
+
+  // Process resume in background helper function for non-blocking background processing
+  const processResumeInBackground = async (s3Url: string, resumeId: string) => {
+    try {
+      await axiosInstance.post(api.processResume, { s3Url, resumeId });
+      toast.success("Resume processed and indexed successfully.");
+      queryClient.invalidateQueries({ queryKey: [cacheKeys.myResumeList] });
+    } catch (err) {
+      toast.error("Resume uploaded but processing failed.");
+      console.error("Background resume processing failed:", err);
     }
   };
 

@@ -5,7 +5,7 @@ import { deleteFile as s3DeleteFile } from "@/lib/utils/s3-utils";
 import { FILE_CATEGORY_CONFIG } from "@/config/file-category-config";
 import {
   deleteResumeEmbeddingsFromPinecone,
-  generateChunkIds,
+  generateResumeChunkIds,
 } from "@/lib/rag/embedding-service";
 
 // GET: List all resumes for the current job seeker
@@ -104,7 +104,7 @@ export async function DELETE(request: NextRequest) {
 
     // Step 1: Delete chunks from Pinecone (if any exist)
     if (resume.chunks.length > 0) {
-      const chunkIds = await generateChunkIds(
+      const chunkIds = await generateResumeChunkIds(
         userId,
         resumeId,
         resume.chunks.length
