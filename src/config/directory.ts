@@ -26,4 +26,6 @@ export const api = {
   extractResumeText: "/api/utils/extract-resume-text",
   chatWithResume: "/api/chat/with-resume",
   compareResume: "/api/compare-resume",
+  s3: "/api/s3",
+  processResume: "/api/process-resume",
 };

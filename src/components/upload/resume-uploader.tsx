@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, FileText } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "@/config/cache-keys";
+import { Resume } from "@prisma/client";
 
 export default function ResumeUploader() {
   const queryClient = useQueryClient();
@@ -60,7 +61,7 @@ export default function ResumeUploader() {
     setUploadProgress(0);
     try {
       // 1. Get presigned URL
-      const presignRes = await axiosInstance.post("/api/s3", {
+      const presignRes = await axiosInstance.post(api.s3, {
         fileName: file.name,
         contentType: file.type,
         size: file.size,
@@ -80,12 +81,22 @@ export default function ResumeUploader() {
         },
       });
       // 3. Create DB record
-      await axiosInstance.post(api.jobSeekerResume, {
+      const resume: Resume = await axiosInstance.post(api.jobSeekerResume, {
         fileName,
         s3Url: fileUrl,
         fileSize: file.size,
       });
-      toast.success("Resume uploaded successfully");
+      toast.success(
+        "Resume uploaded successfully, processing embeddings in the background"
+      );
+
+      // 4. Chunk, embed, index, and upsert the resume into Pinecone + Supabase
+      await axiosInstance.post(api.processResume, {
+        s3Url: fileUrl,
+        resumeId: resume.id,
+      });
+      toast.success("Resume processed and indexed successfully");
+
       queryClient.invalidateQueries({ queryKey: [cacheKeys.myResumeList] });
     } catch (error: any) {
       toast.error(error?.response?.data?.error || "Failed to upload resume");
