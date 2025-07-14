@@ -1,4 +1,4 @@
-export function cleanResumeText(raw: string): string {
+export function cleanText(raw: string): string {
   return (
     raw
       // Replace unusual bullet points with a dash

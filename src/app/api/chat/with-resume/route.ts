@@ -3,17 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { streamText } from "ai";
 import { env } from "@/config/env";
 import { openai } from "@ai-sdk/openai";
-import { cleanResumeText } from "@/lib/utils/clean-resume-text";
 
 export async function POST(req: NextRequest) {
   try {
     const { messages, resumeContext } = await req.json();
-    const cleanedResumeText = cleanResumeText(resumeContext);
 
     const systemPrompt = `
         You are ResuMatch AI, an expert resume consultant and career advisor. You will help users understand, improve, and discuss their resume.
         RESUME CONTEXT:
-        ${cleanedResumeText || "No resume content available yet."}
+        ${resumeContext || "No resume content available yet."}
         GUIDELINES:
         - Answer questions based primarily on the provided context
         - If the context doesn't contain enough information to answer a question, say so politely

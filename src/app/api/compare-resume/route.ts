@@ -1,5 +1,5 @@
 import { env } from "@/config/env";
-import { cleanResumeText } from "@/lib/utils/clean-resume-text";
+import { cleanText } from "@/lib/utils/clean-resume-text";
 import { openai } from "@ai-sdk/openai";
 import { generateObject } from "ai";
 import { NextRequest, NextResponse } from "next/server";
@@ -16,8 +16,7 @@ export const comparisonSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const { resumeContext, jobDescription } = await req.json();
-    const cleanedResumeText = cleanResumeText(resumeContext);
-    const cleanedJobDescription = cleanResumeText(jobDescription);
+    const cleanedJobDescription = cleanText(jobDescription);
     const systemPrompt = `
             You are an expert ATS (Applicant Tracking System) analyzer and career coach called ResuMatch AI. 
             
@@ -41,7 +40,7 @@ export async function POST(req: NextRequest) {
       system: systemPrompt,
       schema: comparisonSchema,
       prompt: `
-                Analyze how well this resume "${cleanedResumeText}" matches the following job description:
+                Analyze how well this resume "${resumeContext}" matches the following job description:
     
                 JOB DESCRIPTION:
                 ${cleanedJobDescription}

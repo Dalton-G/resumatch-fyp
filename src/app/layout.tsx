@@ -28,6 +28,7 @@ export default function RootLayout({
         fontDMSerif.variable,
         fontDMSerifItalic.variable
       )}
+      suppressHydrationWarning
     >
       <body>
         <QueryProvider>{children}</QueryProvider>

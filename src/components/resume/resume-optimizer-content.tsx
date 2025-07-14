@@ -205,7 +205,7 @@ export default function ResumeOptimizerContent() {
                       placeholder="Paste the job description here..."
                       value={jobDescription}
                       onChange={(e) => setJobDescription(e.target.value)}
-                      className="resize-none h-[calc(100vh-20rem)] border-2 shadow-none border-[var(--r-darkgray)] focus-visible:border-black focus-visible:ring-0 focus-visible:shadow-none hover:border-black transition-colors"
+                      className="resize-none h-[calc(100vh-20rem)] border-2 shadow-none border-[var(--r-darkgray)] focus-visible:border-black focus-visible:ring-0 focus-visible:shadow-none hover:border-black transition-colors !text-lg"
                     />
                     <Button
                       onClick={compareWithJob}
@@ -240,7 +240,7 @@ export default function ResumeOptimizerContent() {
                     </p>
                   </div>
                 ) : comparisonResult ? (
-                  <ScrollArea className="flex-1 p-6 h-[calc(100vh-12rem)] overflow-y-auto">
+                  <ScrollArea className="flex-1 px-6 h-[calc(100vh-12rem)] overflow-y-auto">
                     {!comparisonResult ? (
                       <div className="text-center py-12">
                         <Target className="h-12 w-12 mx-auto mb-4 text-gray-400" />
@@ -253,92 +253,96 @@ export default function ResumeOptimizerContent() {
                         </p>
                       </div>
                     ) : (
-                      <div className="space-y-6">
-                        {/* Match Score */}
-                        <div className="bg-gradient-to-r from-green-100 to-emerald-50 rounded-lg p-6">
-                          <div className="flex items-center justify-between mb-4">
-                            <h4 className="text-lg font-medium">Match Score</h4>
-                            <div className="text-3xl font-bold text-green-600">
-                              {comparisonResult.matchScore}%
+                      <div>
+                        <div className="text-lg font-medium font-dm-serif mt-2 mb-4">
+                          Results
+                        </div>
+                        <div className="space-y-6">
+                          {/* Match Score */}
+                          <div className="bg-gradient-to-r from-green-100 to-emerald-50 rounded-lg p-6">
+                            <div className="flex items-center justify-between mb-4">
+                              <h4 className="text-2xl font-medium">
+                                Match Score
+                              </h4>
+                              <div className="text-3xl font-bold text-green-600">
+                                {comparisonResult.matchScore}%
+                              </div>
+                            </div>
+                            <Progress
+                              value={comparisonResult.matchScore}
+                              className="mb-2"
+                            />
+                            <p className="text-md text-black">
+                              {comparisonResult.matchFeedback}
+                            </p>
+                          </div>
+                          {/* Matching Keywords */}
+                          <div className="border rounded-lg p-6 bg-white">
+                            <h4 className="text-xl font-medium mb-4 flex items-center gap-2">
+                              <CheckCircle2 className="h-5 w-5 text-green-500" />
+                              Matching Keywords (
+                              {comparisonResult.matchingKeywords?.length || 0})
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                              {comparisonResult.matchingKeywords?.map(
+                                (keyword: string, index: number) => (
+                                  <Badge
+                                    key={index}
+                                    variant="secondary"
+                                    className="bg-green-100 text-green-800 text-md"
+                                  >
+                                    {keyword}
+                                  </Badge>
+                                )
+                              )}
                             </div>
                           </div>
-                          <Progress
-                            value={comparisonResult.matchScore}
-                            className="mb-2"
-                          />
-                          <p className="text-md text-black">
-                            {comparisonResult.matchFeedback}
-                          </p>
-                        </div>
-
-                        {/* Matching Keywords */}
-                        <div className="border rounded-lg p-6 bg-white">
-                          <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
-                            <CheckCircle2 className="h-5 w-5 text-green-500" />
-                            Matching Keywords (
-                            {comparisonResult.matchingKeywords?.length || 0})
-                          </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {comparisonResult.matchingKeywords?.map(
-                              (keyword: string, index: number) => (
-                                <Badge
-                                  key={index}
-                                  variant="secondary"
-                                  className="bg-green-100 text-green-800"
-                                >
-                                  {keyword}
-                                </Badge>
-                              )
+                          {/* Missing Keywords */}
+                          <div className="border rounded-lg p-6 bg-white">
+                            <h4 className="text-xl font-medium mb-4 flex items-center gap-2">
+                              <AlertTriangle className="h-5 w-5 text-red-500" />
+                              Missing Keywords (
+                              {comparisonResult.missingKeywords?.length || 0})
+                            </h4>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              {comparisonResult.missingKeywords?.map(
+                                (keyword: string, index: number) => (
+                                  <Badge
+                                    key={index}
+                                    variant="destructive"
+                                    className="bg-red-100 text-red-800 text-md"
+                                  >
+                                    {keyword}
+                                  </Badge>
+                                )
+                              )}
+                            </div>
+                            {comparisonResult.missingKeywords?.length > 0 && (
+                              <p className="text-md text-gray-600">
+                                Consider adding these keywords to your resume if
+                                you have relevant experience.
+                              </p>
                             )}
                           </div>
-                        </div>
-
-                        {/* Missing Keywords */}
-                        <div className="border rounded-lg p-6 bg-white">
-                          <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
-                            <AlertTriangle className="h-5 w-5 text-red-500" />
-                            Missing Keywords (
-                            {comparisonResult.missingKeywords?.length || 0})
-                          </h4>
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {comparisonResult.missingKeywords?.map(
-                              (keyword: string, index: number) => (
-                                <Badge
-                                  key={index}
-                                  variant="destructive"
-                                  className="bg-red-100 text-red-800"
-                                >
-                                  {keyword}
-                                </Badge>
-                              )
-                            )}
-                          </div>
-                          {comparisonResult.missingKeywords?.length > 0 && (
-                            <p className="text-sm text-gray-600">
-                              Consider adding these keywords to your resume if
-                              you have relevant experience.
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Recommendations */}
-                        <div className="border rounded-lg p-6 bg-white">
-                          <h4 className="text-lg font-medium mb-4 flex items-center gap-2">
-                            <TrendingUp className="h-5 w-5 text-blue-500" />
-                            Recommendations
-                          </h4>
-                          <div className="space-y-3">
-                            {comparisonResult.recommendations?.map(
-                              (rec: string, index: number) => (
-                                <div
-                                  key={index}
-                                  className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg"
-                                >
-                                  <TrendingUp className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
-                                  <p className="text-sm">{rec}</p>
-                                </div>
-                              )
-                            )}
+                          {/* Recommendations */}
+                          <div className="border rounded-lg p-6 bg-white">
+                            <h4 className="text-xl font-medium mb-4 flex items-center gap-2">
+                              <TrendingUp className="h-5 w-5 text-blue-500" />
+                              Recommendations
+                            </h4>
+                            <div className="space-y-3">
+                              {comparisonResult.recommendations?.map(
+                                (rec: string, index: number) => (
+                                  <div
+                                    key={index}
+                                    className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg"
+                                  >
+                                    <TrendingUp className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                                    <p className="text-md">{rec}</p>
+                                  </div>
+                                )
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>

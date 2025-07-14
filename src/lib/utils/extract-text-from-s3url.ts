@@ -1,5 +1,6 @@
 import pdfParse from "pdf-parse";
 import axios from "axios";
+import { cleanText } from "./clean-resume-text";
 
 /**
  * Downloads a PDF file from a public S3 URL and extracts its plain text content.
@@ -16,5 +17,8 @@ export const extractTextFromS3Url = async (s3Url: string): Promise<string> => {
   const buffer = Buffer.from(response.data);
 
   const data = await pdfParse(buffer);
-  return data.text;
+
+  const cleanedText = cleanText(data.text);
+
+  return cleanedText;
 };
