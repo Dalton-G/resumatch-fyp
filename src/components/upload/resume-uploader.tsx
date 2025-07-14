@@ -81,7 +81,7 @@ export default function ResumeUploader() {
         },
       });
       // 3. Create DB record
-      const resume: Resume = await axiosInstance.post(api.jobSeekerResume, {
+      const resume = await axiosInstance.post(api.jobSeekerResume, {
         fileName,
         s3Url: fileUrl,
         fileSize: file.size,
@@ -93,7 +93,7 @@ export default function ResumeUploader() {
       // 4. Chunk, embed, index, and upsert the resume into Pinecone + Supabase
       await axiosInstance.post(api.processResume, {
         s3Url: fileUrl,
-        resumeId: resume.id,
+        resumeId: resume.data.resume.id,
       });
       toast.success("Resume processed and indexed successfully");
 
