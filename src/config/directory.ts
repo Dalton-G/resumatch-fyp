@@ -14,6 +14,7 @@ export const pages = {
   jobMatcher: "/job-matcher",
   editProfile: "/edit-profile",
   viewProfile: "/view-profile",
+  createJob: "/create-job",
 };
 
 export const api = {
