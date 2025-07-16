@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { FaBuilding, FaEye, FaEnvelope, FaGlobe } from "react-icons/fa";
 
 interface CompanyProfileViewProps {

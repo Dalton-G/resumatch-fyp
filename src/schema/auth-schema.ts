@@ -1,4 +1,3 @@
-import { industryOptions } from "@/config/company-options";
 import { z } from "zod";
 
 export const signInSchema = z.object({

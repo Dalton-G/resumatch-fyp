@@ -4,19 +4,6 @@ import CompanyForm from "@/components/auth/company-form";
 import { RiStarSmileFill } from "react-icons/ri";
 import { pages } from "@/config/directory";
 
-const initialCompanyData = {
-  email: "",
-  password: "",
-  confirmPassword: "",
-  companyName: "",
-  companyDescription: "",
-  companyWebsite: "",
-  companyIndustry: "",
-  companySize: "",
-  companyAddress: "",
-  companyLogo: "",
-};
-
 export default function CompanyRegisterPage() {
   return (
     <div className="min-h-svh flex">

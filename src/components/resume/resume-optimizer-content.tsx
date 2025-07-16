@@ -43,11 +43,7 @@ export default function ResumeOptimizerContent() {
     (r: any) => r.id === selectedResumeId
   );
 
-  const {
-    data: resumeContent,
-    isLoading: isResumeLoading,
-    isError: isResumeError,
-  } = useCurrentResumeContent({
+  const { data: resumeContent } = useCurrentResumeContent({
     s3Url: selectedResume?.s3Url || null,
     enabled: !!selectedResume,
   });
@@ -56,16 +52,12 @@ export default function ResumeOptimizerContent() {
     setShouldCompare(true);
   };
 
-  const {
-    data: comparisonResult,
-    isLoading: isComparing,
-    isError: isCompareError,
-    error: compareError,
-  } = useResumeComparison({
-    resumeContent: resumeContent || null,
-    jobDescription,
-    enabled: !!resumeContent && !!jobDescription && shouldCompare,
-  });
+  const { data: comparisonResult, isLoading: isComparing } =
+    useResumeComparison({
+      resumeContent: resumeContent || null,
+      jobDescription,
+      enabled: !!resumeContent && !!jobDescription && shouldCompare,
+    });
 
   useEffect(() => {
     setShouldCompare(false);

@@ -1,17 +1,9 @@
 import { env } from "@/config/env";
 import { cleanText } from "@/lib/utils/clean-resume-text";
+import { comparisonSchema } from "@/schema/comparison-schema";
 import { openai } from "@ai-sdk/openai";
 import { generateObject } from "ai";
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-
-export const comparisonSchema = z.object({
-  matchScore: z.number().min(0).max(100),
-  matchFeedback: z.string(),
-  matchingKeywords: z.array(z.string()),
-  missingKeywords: z.array(z.string()),
-  recommendations: z.array(z.string()),
-});
 
 export async function POST(req: NextRequest) {
   try {

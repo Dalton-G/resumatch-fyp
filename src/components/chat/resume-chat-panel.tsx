@@ -21,7 +21,7 @@ export const ResumeChatPanel = ({ s3Url }: ResumeChatPanelProps) => {
     error,
   } = useCurrentResumeContent({ s3Url });
 
-  const { messages, input, handleInputChange, handleSubmit, status } = useChat({
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
     api: api.chatWithResume,
     body: {
       resumeContext: extractedText || "No resume content available yet.",

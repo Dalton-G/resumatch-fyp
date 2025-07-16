@@ -1,5 +1,3 @@
-import { JobSeekerProfile } from "@prisma/client";
-
 type BaseUserCreationModel = {
   name: string;
   email: string;

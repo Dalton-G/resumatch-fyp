@@ -68,7 +68,6 @@ export default function CompanyEditProfile({
     control,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<CompanyProfileFormType>({
     resolver: zodResolver(companyProfileSchema),

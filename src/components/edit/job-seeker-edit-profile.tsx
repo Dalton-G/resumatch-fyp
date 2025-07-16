@@ -81,7 +81,6 @@ export default function JobSeekerEditProfile({
     control,
     handleSubmit,
     setValue,
-    getValues,
     watch,
     formState: { errors },
   } = useForm<ProfileFormType>({
@@ -89,9 +88,8 @@ export default function JobSeekerEditProfile({
     defaultValues,
   });
 
-  // Watch for skills and profilePicture
+  // Watch for skills
   const skills = watch("skills");
-  const currentProfilePicture = watch("profilePicture");
 
   // Handle profile picture upload
   const handleProfilePictureUpload = (fileUrl: string) => {

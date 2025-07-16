@@ -15,11 +15,6 @@ const uploadRequestSchema = z.object({
   fileCategory: z.enum(["profile-picture", "resume", "job-image"]),
 });
 
-const readRequestSchema = z.object({
-  folderPath: z.string(),
-  fileCategory: z.enum(["profile-picture", "resume", "job-image"]).optional(),
-});
-
 const deleteRequestSchema = z.object({
   key: z.string(),
   folderPath: z.string().optional(),
