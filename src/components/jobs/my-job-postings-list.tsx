@@ -19,7 +19,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { cache, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { WorkType, JobStatus } from "@prisma/client";
@@ -180,7 +180,7 @@ export default function MyJobPostingsList() {
               onClick={(e) => {
                 // Prevent card click when clicking on action buttons
                 if ((e.target as HTMLElement).closest("button")) return;
-                toast.message(`clicked card on ${job.id}`);
+                router.push(pages.viewJob(job.id));
               }}
             >
               <CardContent className="p-8 flex flex-col md:flex-row md:items-center gap-4 relative">
