@@ -23,6 +23,8 @@ import {
 } from "@/config/job-posting-options";
 import { Separator } from "../ui/separator";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { cacheKeys } from "@/config/cache-keys";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),
@@ -52,6 +54,7 @@ export type JobFormType = {
 
 export default function CreateJobForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const {
     control,
     handleSubmit,
@@ -83,6 +86,7 @@ export default function CreateJobForm() {
       // Optionally, show a success message or redirect
       if (response.status === 201) {
         toast.success("Job posting created successfully!");
+        queryClient.invalidateQueries({ queryKey: [cacheKeys.jobPostings] });
       }
       router.push(pages.myJobPostings);
     } catch (error: any) {

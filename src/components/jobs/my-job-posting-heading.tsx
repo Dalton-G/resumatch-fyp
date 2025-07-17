@@ -11,7 +11,7 @@ export default function MyJobPostingsHeading() {
     <div className="flex bg-white p-8 border-b-1 border-[var(--r-darkgray)] font-dm-serif justify-between">
       <h1 className="text-3xl">My Job Postings</h1>
       <Button
-        className="bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80"
+        className="bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80 text-md"
         onClick={() => router.push(pages.createJob)}
       >
         <BiEdit />
