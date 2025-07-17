@@ -16,20 +16,11 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-
-// Enum values from prisma schema
-export const workTypeOptions = [
-  { value: "FULL_TIME", label: "Full Time" },
-  { value: "PART_TIME", label: "Part Time" },
-  { value: "CONTRACT", label: "Contract" },
-  { value: "INTERNSHIP", label: "Internship" },
-  { value: "TEMPORARY", label: "Temporary" },
-];
-export const jobStatusOptions = [
-  { value: "HIRING", label: "Hiring" },
-  { value: "CLOSED", label: "Closed" },
-  { value: "PAUSED", label: "Paused" },
-];
+import {
+  workTypeOptions,
+  jobStatusOptions,
+} from "@/config/job-posting-options";
+import { Separator } from "../ui/separator";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),
@@ -37,11 +28,25 @@ const jobFormSchema = z.object({
   location: z.string().min(1, "Location is required"),
   workType: z.string().min(1, "Work type is required"),
   status: z.string().min(1, "Status is required"),
-  salaryMin: z.coerce.number().min(1, "Salary Min is required"),
-  salaryMax: z.coerce.number().min(1, "Salary Max is required"),
+  salaryMin: z.preprocess(
+    (val) => (val === "" ? undefined : Number(val)),
+    z.number().min(1, "Salary Min is required")
+  ),
+  salaryMax: z.preprocess(
+    (val) => (val === "" ? undefined : Number(val)),
+    z.number().min(1, "Salary Max is required")
+  ),
 });
 
-export type JobFormType = z.infer<typeof jobFormSchema>;
+export type JobFormType = {
+  title: string;
+  description: string;
+  location: string;
+  workType: string;
+  status: string;
+  salaryMin: string | number;
+  salaryMax: string | number;
+};
 
 export default function CreateJobForm() {
   const router = useRouter();
@@ -49,7 +54,7 @@ export default function CreateJobForm() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<JobFormType>({
+  } = useForm({
     resolver: zodResolver(jobFormSchema),
     defaultValues: {
       title: "",
@@ -57,23 +62,29 @@ export default function CreateJobForm() {
       location: "",
       workType: "",
       status: "",
-      salaryMin: undefined,
-      salaryMax: undefined,
+      salaryMin: "",
+      salaryMax: "",
     },
   });
 
-  const onSubmit = (data: JobFormType) => {
-    console.log("Create Job Data:", data);
+  const onSubmit = (data: any) => {
+    // Convert salaryMin and salaryMax to numbers for output
+    const output = {
+      ...data,
+      salaryMin: Number(data.salaryMin),
+      salaryMax: Number(data.salaryMax),
+    };
+    console.log("Create Job Data:", output);
   };
 
   return (
-    <div className="flex justify-center items-start min-h-screen bg-[var(--r-gray)] font-libertinus">
+    <div className="flex justify-center items-start bg-[var(--r-gray)] font-libertinus">
       <Card className="w-full max-w-2xl mt-12 mb-12 mx-4 rounded-xl shadow-md">
         <CardContent className="px-10 py-8">
-          <h2 className="text-2xl font-dm-serif font-bold text-[var(--r-black)] mb-2">
+          <h2 className="text-2xl font-dm-serif text-[var(--r-black)] mb-2">
             Job Details
           </h2>
-          <p className="font-libertinus text-[var(--r-boldgray)] font-semibold mb-8">
+          <p className="font-libertinus text-[var(--r-boldgray)] mb-8">
             Fill in the information about your job description
           </p>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -135,7 +146,7 @@ export default function CreateJobForm() {
                   control={control}
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select work type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -156,48 +167,68 @@ export default function CreateJobForm() {
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
-              <div>
-                <label className="block font-medium mb-2">Salary Min:</label>
-                <Controller
-                  name="salaryMin"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="Minimum salary"
-                      min={0}
-                    />
+              {/* Salary Range */}
+              <div className="flex gap-6">
+                <div>
+                  <label className="font-medium mb-2">Salary Min:</label>
+                  <Controller
+                    name="salaryMin"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        value={
+                          typeof field.value === "string" ||
+                          typeof field.value === "number"
+                            ? String(field.value)
+                            : ""
+                        }
+                        type="number"
+                        placeholder="Min Salary"
+                        min={0}
+                        className="mt-2"
+                      />
+                    )}
+                  />
+                  {errors.salaryMin && (
+                    <span className="text-red-500 text-sm">
+                      {errors.salaryMin.message}
+                    </span>
                   )}
+                </div>
+                <Separator
+                  orientation="horizontal"
+                  className="max-w-3 -mx-3 mt-12 border-1 border-[var(--r-darkgray)]"
                 />
-                {errors.salaryMin && (
-                  <span className="text-red-500 text-sm">
-                    {errors.salaryMin.message}
-                  </span>
-                )}
-              </div>
-              <div>
-                <label className="block font-medium mb-2">Salary Max:</label>
-                <Controller
-                  name="salaryMax"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="number"
-                      placeholder="Maximum salary"
-                      min={0}
-                    />
+                <div>
+                  <label className="font-medium mb-2">Salary Max:</label>
+                  <Controller
+                    name="salaryMax"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        value={
+                          typeof field.value === "string" ||
+                          typeof field.value === "number"
+                            ? String(field.value)
+                            : ""
+                        }
+                        type="number"
+                        placeholder="Max Salary"
+                        min={0}
+                        className="mt-2"
+                      />
+                    )}
+                  />
+                  {errors.salaryMax && (
+                    <span className="text-red-500 text-sm">
+                      {errors.salaryMax.message}
+                    </span>
                   )}
-                />
-                {errors.salaryMax && (
-                  <span className="text-red-500 text-sm">
-                    {errors.salaryMax.message}
-                  </span>
-                )}
+                </div>
               </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+              {/* Status */}
               <div>
                 <label className="block font-medium mb-2">Status:</label>
                 <Controller
@@ -205,7 +236,7 @@ export default function CreateJobForm() {
                   control={control}
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent>
