@@ -37,7 +37,12 @@ export default function ViewProfilePage({ params }: ViewProfilePageProps) {
       .finally(() => setLoading(false));
   }, [userId]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        Loading...
+      </div>
+    );
   if (error) return <div>{error}</div>;
   if (!profile) return <div>Profile not found</div>;
 

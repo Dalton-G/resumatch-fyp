@@ -4,4 +4,5 @@ export const cacheKeys = {
   resumeContent: "resume-content",
   resumeComparison: "resume-comparison",
   jobPostings: "job-postings",
+  jobView: "job-view",
 };
