@@ -19,10 +19,13 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useMemo, useState } from "react";
+import { cache, useMemo, useState } from "react";
+import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import { WorkType, JobStatus } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { pages } from "@/config/directory";
+import { cacheKeys } from "@/config/cache-keys";
 
 // Editable: max chars for description preview
 const DESCRIPTION_PREVIEW_LENGTH = 120;
@@ -51,10 +54,25 @@ function truncate(str: string, n: number) {
 export default function MyJobPostingsList() {
   const { data, isLoading, isError } = useMyJobPostings();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [workType, setWorkType] = useState("");
   const [status, setStatus] = useState("");
   const [sort, setSort] = useState("latest");
+  const [deletingJobId, setDeletingJobId] = useState<string | null>(null);
+
+  const handleDelete = async (jobId: string) => {
+    setDeletingJobId(jobId);
+    try {
+      await axios.delete(`/api/jobs/delete/${jobId}`);
+      toast.success("Job deleted successfully.");
+      queryClient.invalidateQueries({ queryKey: [cacheKeys.jobPostings] });
+    } catch (error: any) {
+      toast.error(error?.response?.data?.error || "Failed to delete job.");
+    } finally {
+      setDeletingJobId(null);
+    }
+  };
 
   const filtered = useMemo(() => {
     if (!data) return [];
@@ -252,9 +270,8 @@ export default function MyJobPostingsList() {
                     <Button
                       size="icon"
                       variant="destructive"
-                      onClick={() =>
-                        toast.message(`clicked delete on ${job.id}`)
-                      }
+                      onClick={() => handleDelete(job.id)}
+                      disabled={deletingJobId === job.id}
                     >
                       <FaRegTrashAlt />
                     </Button>
