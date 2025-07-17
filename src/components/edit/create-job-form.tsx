@@ -260,14 +260,14 @@ export default function CreateJobForm() {
               <Button
                 type="button"
                 variant="outline"
-                className="font-bold px-8 py-2 bg-[var(--r-gray)] text-[var(--r-black)]"
+                className="font-dm-serif px-8 py-2 bg-[var(--r-gray)] text-[var(--r-black)] w-[280px]"
                 onClick={() => router.push(pages.myJobPostings)}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="font-bold px-8 py-2 bg-[var(--r-blue)] text-white"
+                className="font-dm-serif px-8 py-2 bg-[var(--r-blue)] text-white w-[280px]"
               >
                 Create Job
               </Button>
