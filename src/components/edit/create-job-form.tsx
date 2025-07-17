@@ -4,7 +4,8 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { pages } from "@/config/directory";
+import { pages, api } from "@/config/directory";
+import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,6 +22,7 @@ import {
   jobStatusOptions,
 } from "@/config/job-posting-options";
 import { Separator } from "../ui/separator";
+import { toast } from "sonner";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),
@@ -67,14 +69,30 @@ export default function CreateJobForm() {
     },
   });
 
-  const onSubmit = (data: any) => {
-    // Convert salaryMin and salaryMax to numbers for output
-    const output = {
+  const onSubmit = async (data: any) => {
+    const payload = {
       ...data,
       salaryMin: Number(data.salaryMin),
       salaryMax: Number(data.salaryMax),
+      // workType and status must match enum values in backend
+      workType: data.workType,
+      status: data.status,
     };
-    console.log("Create Job Data:", output);
+    try {
+      const response = await axios.post(api.createJob, payload);
+      // Optionally, show a success message or redirect
+      if (response.status === 201) {
+        toast.success("Job posting created successfully!");
+      }
+      router.push(pages.myJobPostings);
+    } catch (error: any) {
+      // Optionally, show error message
+      if (error.response?.data?.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Failed to create job posting. Please try again.");
+      }
+    }
   };
 
   return (
@@ -260,14 +278,14 @@ export default function CreateJobForm() {
               <Button
                 type="button"
                 variant="outline"
-                className="font-dm-serif px-8 py-2 bg-[var(--r-gray)] text-[var(--r-black)] w-[280px]"
+                className="font-dm-serif px-8 py-2 bg-[var(--r-gray)] text-[var(--r-black)] w-[280px] hover:border-[var(--r-blue)] trasition-colors"
                 onClick={() => router.push(pages.myJobPostings)}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="font-dm-serif px-8 py-2 bg-[var(--r-blue)] text-white w-[280px]"
+                className="font-dm-serif px-8 py-2 bg-[var(--r-blue)] text-white w-[280px] hover:bg-[var(--r-blue)]/80"
               >
                 Create Job
               </Button>

@@ -177,7 +177,6 @@ model JobPosting {
 
   @@index([status])
   @@index([companyId])
-  @@index([title, description])
   @@index([location])
   @@index([createdAt])
 }
