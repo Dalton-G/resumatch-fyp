@@ -17,25 +17,19 @@ export function JobStatisticsCard({
   return (
     <Card className="p-0">
       <CardContent className="p-6 flex flex-col gap-2">
-        <div className="font-bold text-xl mb-2">Job Statistic</div>
-        <div className="flex flex-col gap-1 text-lg">
-          <div>
-            Views: <span className="font-semibold">{views}</span>
+        <div className="font-dm-serif text-2xl mb-2">Job Statistic</div>
+        <div className="flex flex-col gap-2 text-lg">
+          <div className="flex justify-between">
+            Views: <span>{views}</span>
           </div>
-          <div>
-            Applications: <span className="font-semibold">{applications}</span>
+          <div className="flex justify-between">
+            Applications: <span>{applications}</span>
           </div>
-          <div>
-            Posted:{" "}
-            <span className="font-semibold">
-              {new Date(posted).toLocaleDateString()}
-            </span>
+          <div className="flex justify-between">
+            Posted: <span>{new Date(posted).toLocaleDateString()}</span>
           </div>
-          <div>
-            Updated:{" "}
-            <span className="font-semibold">
-              {new Date(updated).toLocaleDateString()}
-            </span>
+          <div className="flex justify-between">
+            Updated: <span>{new Date(updated).toLocaleDateString()}</span>
           </div>
         </div>
       </CardContent>

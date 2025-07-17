@@ -64,7 +64,7 @@ export function JobDetailCard({ job, company }: JobDetailCardProps) {
               className="rounded-full object-cover w-20 h-20"
             />
           ) : (
-            <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold">
+            <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-2xl">
               {company.name
                 .split(" ")
                 .map((n) => n[0])

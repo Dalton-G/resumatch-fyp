@@ -18,16 +18,16 @@ export function ReadyToApplyCard({
   return (
     <Card className="p-0">
       <CardContent className="p-6 flex flex-col gap-4">
-        <div className="font-bold text-xl">Ready to Apply?</div>
-        <div className="text-base mb-2">
-          Join {companyName} and take your career to the next level
+        <div className="font-dm-serif text-2xl">Ready to Apply?</div>
+        <div className="text-lg mb-2">
+          Join {companyName} and take your career to the next level.
         </div>
-        <div className="text-base">
-          Current Application:{" "}
-          <span className="font-semibold">{applicationCount}</span>
+        <div className="text-lg flex justify-between items-center">
+          <div>Current Application:</div>
+          <span>{applicationCount}</span>
         </div>
         <Button
-          className="bg-[var(--r-blue)] text-white w-full text-md mt-4"
+          className="bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80 text-white w-full text-md mt-4"
           disabled={hasApplied}
           onClick={onApply}
         >
