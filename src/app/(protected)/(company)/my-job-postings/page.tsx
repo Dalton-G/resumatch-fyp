@@ -1,3 +1,10 @@
+import MyJobPostingsHeading from "@/components/jobs/my-job-posting-heading";
+
 export default function MyJobPostings() {
-  return <div>My Job Postings</div>;
+  return (
+    <div>
+      <MyJobPostingsHeading />
+      {/* Content goes here */}
+    </div>
+  );
 }
