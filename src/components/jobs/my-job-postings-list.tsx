@@ -146,7 +146,7 @@ export default function MyJobPostingsList() {
       </div>
 
       {/* Job Cards */}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 overflow-y-auto max-h-[calc(100vh-14.3rem)]">
         {filtered.length === 0 ? (
           <div className="text-center text-gray-500 py-12">
             No job postings found.
