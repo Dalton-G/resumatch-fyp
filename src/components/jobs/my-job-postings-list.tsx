@@ -21,6 +21,8 @@ import {
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
 import { WorkType, JobStatus } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { pages } from "@/config/directory";
 
 // Editable: max chars for description preview
 const DESCRIPTION_PREVIEW_LENGTH = 120;
@@ -48,6 +50,7 @@ function truncate(str: string, n: number) {
 
 export default function MyJobPostingsList() {
   const { data, isLoading, isError } = useMyJobPostings();
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [workType, setWorkType] = useState("");
   const [status, setStatus] = useState("");
@@ -239,7 +242,10 @@ export default function MyJobPostingsList() {
                     <Button
                       size="icon"
                       variant="outline"
-                      onClick={() => toast.message(`clicked edit on ${job.id}`)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(pages.editJob(job.id));
+                      }}
                     >
                       <FaRegEdit />
                     </Button>

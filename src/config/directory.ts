@@ -15,6 +15,7 @@ export const pages = {
   editProfile: "/edit-profile",
   viewProfile: "/view-profile",
   createJob: "/create-job",
+  editJob: (id: string) => `/edit-job/${id}`,
 };
 
 export const api = {
@@ -31,4 +32,5 @@ export const api = {
   processResume: "/api/process-resume",
   createJob: "/api/jobs/create",
   getMyJobPostings: "/api/jobs/by-user",
+  updateJob: (id: string) => `/api/jobs/update/${id}`,
 };

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import {
   workTypeOptions,
-  baseJobStatusOptions,
+  companyUpdateJobStatusOptions,
 } from "@/config/job-posting-options";
 import { Separator } from "../ui/separator";
 import { toast } from "sonner";
@@ -52,9 +52,24 @@ export type JobFormType = {
   salaryMax: string | number;
 };
 
-export default function CreateJobForm() {
+// Accept job details directly from parent
+export type EditJobFormProps = {
+  job: {
+    id: string;
+    title: string;
+    description: string;
+    location: string;
+    workType: string;
+    status: string;
+    salaryMin: string | number;
+    salaryMax: string | number;
+  };
+};
+
+export default function EditJobForm({ job }: EditJobFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+
   const {
     control,
     handleSubmit,
@@ -62,39 +77,36 @@ export default function CreateJobForm() {
   } = useForm({
     resolver: zodResolver(jobFormSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      location: "",
-      workType: "",
-      status: "",
-      salaryMin: "",
-      salaryMax: "",
+      title: job.title,
+      description: job.description,
+      location: job.location,
+      workType: job.workType,
+      status: job.status,
+      salaryMin: job.salaryMin,
+      salaryMax: job.salaryMax,
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (formData: any) => {
     const payload = {
-      ...data,
-      salaryMin: Number(data.salaryMin),
-      salaryMax: Number(data.salaryMax),
-      // workType and status must match enum values in backend
-      workType: data.workType,
-      status: data.status,
+      ...formData,
+      salaryMin: Number(formData.salaryMin),
+      salaryMax: Number(formData.salaryMax),
+      workType: formData.workType,
+      status: formData.status,
     };
     try {
-      const response = await axios.post(api.createJob, payload);
-      // Optionally, show a success message or redirect
-      if (response.status === 201) {
-        toast.success("Job posting created successfully!");
+      const response = await axios.patch(api.updateJob(job.id), payload);
+      if (response.status === 200) {
+        toast.success("Job posting updated successfully!");
         queryClient.invalidateQueries({ queryKey: [cacheKeys.jobPostings] });
+        router.push(pages.myJobPostings);
       }
-      router.push(pages.myJobPostings);
     } catch (error: any) {
-      // Optionally, show error message
       if (error.response?.data?.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("Failed to create job posting. Please try again.");
+        toast.error("Failed to update job posting. Please try again.");
       }
     }
   };
@@ -104,10 +116,10 @@ export default function CreateJobForm() {
       <Card className="w-full max-w-2xl mt-12 mb-12 mx-4 rounded-xl shadow-md">
         <CardContent className="px-10 py-8">
           <h2 className="text-2xl font-dm-serif text-[var(--r-black)] mb-2">
-            Job Details
+            Edit Job Details
           </h2>
           <p className="font-libertinus text-[var(--r-boldgray)] mb-8">
-            Fill in the information about your job description
+            Update the information about your job posting
           </p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6">
@@ -166,20 +178,26 @@ export default function CreateJobForm() {
                 <Controller
                   name="workType"
                   control={control}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select work type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {workTypeOptions.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
+                  render={({ field }) => {
+                    return (
+                      <Select
+                        key={job.id || "empty-worktype"}
+                        value={field.value ?? ""}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select work type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {workTypeOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    );
+                  }}
                 />
                 {errors.workType && (
                   <span className="text-red-500 text-sm">
@@ -256,20 +274,26 @@ export default function CreateJobForm() {
                 <Controller
                   name="status"
                   control={control}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {baseJobStatusOptions.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
+                  render={({ field }) => {
+                    return (
+                      <Select
+                        key={job.id || "empty-status"}
+                        value={field.value ?? ""}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {companyUpdateJobStatusOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    );
+                  }}
                 />
                 {errors.status && (
                   <span className="text-red-500 text-sm">
@@ -291,7 +315,7 @@ export default function CreateJobForm() {
                 type="submit"
                 className="font-dm-serif px-8 py-2 bg-[var(--r-blue)] text-white w-[280px] hover:bg-[var(--r-blue)]/80"
               >
-                Create Job
+                Update Job
               </Button>
             </div>
           </form>
