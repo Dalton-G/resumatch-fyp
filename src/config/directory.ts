@@ -30,4 +30,5 @@ export const api = {
   s3: "/api/s3",
   processResume: "/api/process-resume",
   createJob: "/api/jobs/create",
+  getMyJobPostings: "/api/jobs/by-user",
 };
