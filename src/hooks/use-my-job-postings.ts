@@ -7,7 +7,7 @@ import { cacheKeys } from "@/config/cache-keys";
 
 export function useMyJobPostings() {
   return useQuery({
-    queryKey: [cacheKeys.jobPostings],
+    queryKey: [cacheKeys.myJobPostings],
     queryFn: async () => {
       try {
         const response = await axiosInstance.get(api.getMyJobPostings);

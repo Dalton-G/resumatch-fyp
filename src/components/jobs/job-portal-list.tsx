@@ -1,16 +1,12 @@
 "use client";
 
-import { useMyJobPostings } from "@/hooks/use-my-job-postings";
+import { useJobListings } from "@/hooks/use-job-listings";
+import { useMemo, useState } from "react";
+import { pages } from "@/config/directory";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { MdFilterAltOff } from "react-icons/md";
-import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
-import { FiMapPin } from "react-icons/fi";
-import { IoCashOutline } from "react-icons/io5";
-import { FaRegEye } from "react-icons/fa";
-import { GrGroup } from "react-icons/gr";
 import {
   Select,
   SelectTrigger,
@@ -19,62 +15,46 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useMemo, useState } from "react";
-import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
-import { WorkType, JobStatus } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { api, pages } from "@/config/directory";
-import { cacheKeys } from "@/config/cache-keys";
+import { FiMapPin } from "react-icons/fi";
+import { IoCashOutline } from "react-icons/io5";
+import { FaRegEye } from "react-icons/fa";
 
-// Editable: max chars for description preview
 const DESCRIPTION_PREVIEW_LENGTH = 120;
 
 const workTypeOptions = [
-  { value: WorkType.ONSITE, label: "Onsite" },
-  { value: WorkType.REMOTE, label: "Remote" },
-  { value: WorkType.HYBRID, label: "Hybrid" },
+  { value: "ONSITE", label: "Onsite" },
+  { value: "REMOTE", label: "Remote" },
+  { value: "HYBRID", label: "Hybrid" },
 ];
 const jobStatusOptions = [
-  { value: JobStatus.URGENTLY_HIRING, label: "Urgently Hiring" },
-  { value: JobStatus.HIRING, label: "Hiring" },
-  { value: JobStatus.CLOSED, label: "Closed" },
-  { value: JobStatus.CLOSED_BY_ADMIN, label: "Closed by Admin" },
-];
-const sortOptions = [
-  { value: "latest", label: "Latest" },
-  { value: "views", label: "Most Views" },
-  { value: "applicants", label: "Most Applicants" },
+  { value: "URGENTLY_HIRING", label: "Urgently Hiring" },
+  { value: "HIRING", label: "Hiring" },
+  { value: "CLOSED", label: "Closed" },
+  { value: "CLOSED_BY_ADMIN", label: "Closed by Admin" },
 ];
 
 function truncate(str: string, n: number) {
   return str.length > n ? str.slice(0, n - 1) + "…" : str;
 }
 
-export default function MyJobPostingsList() {
-  const { data, isLoading, isError } = useMyJobPostings();
-  const router = useRouter();
-  const queryClient = useQueryClient();
+function getInitials(name: string) {
+  if (!name) return "?";
+  const parts = name.split(" ");
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+interface JobPortalListProps {
+  userRole: "JOB_SEEKER" | "COMPANY" | "ADMIN";
+}
+
+export default function JobPortalList({ userRole }: JobPortalListProps) {
+  const { data, isLoading, isError } = useJobListings();
   const [search, setSearch] = useState("");
   const [workType, setWorkType] = useState("");
   const [status, setStatus] = useState("");
-  const [sort, setSort] = useState("latest");
-  const [deletingJobId, setDeletingJobId] = useState<string | null>(null);
-
-  const handleDelete = async (jobId: string) => {
-    setDeletingJobId(jobId);
-    try {
-      const response = await axios.delete(api.deleteJob(jobId));
-      if (response.status === 200) toast.success("Job deleted successfully.");
-      queryClient.invalidateQueries({
-        queryKey: [cacheKeys.jobPostings, cacheKeys.myJobPostings],
-      });
-    } catch (error: any) {
-      toast.error(error?.response?.data?.error || "Failed to delete job.");
-    } finally {
-      setDeletingJobId(null);
-    }
-  };
+  const router = useRouter();
 
   const filtered = useMemo(() => {
     if (!data) return [];
@@ -89,16 +69,8 @@ export default function MyJobPostingsList() {
     }
     if (workType) jobs = jobs.filter((j) => j.workType === workType);
     if (status) jobs = jobs.filter((j) => j.status === status);
-    if (sort === "views") jobs.sort((a, b) => b.views - a.views);
-    else if (sort === "applicants")
-      jobs.sort((a, b) => b.applicantCount - a.applicantCount);
-    else
-      jobs.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
     return jobs;
-  }, [data, search, workType, status, sort]);
+  }, [data, search, workType, status]);
 
   if (isLoading) return <div className="p-8 text-center">Loading...</div>;
   if (isError)
@@ -142,18 +114,6 @@ export default function MyJobPostingsList() {
             ))}
           </SelectContent>
         </Select>
-        <Select value={sort} onValueChange={setSort}>
-          <SelectTrigger className="w-full md:w-1/8 bg-white !text-lg min-h-12">
-            <SelectValue placeholder="Sort" />
-          </SelectTrigger>
-          <SelectContent>
-            {sortOptions.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
         <Button
           variant="outline"
           className="h-12 px-6 mt-2 md:mt-0 !text-lg !text-[var(--r-boldgray)]"
@@ -161,10 +121,9 @@ export default function MyJobPostingsList() {
             setSearch("");
             setWorkType("");
             setStatus("");
-            setSort("latest");
           }}
         >
-          <MdFilterAltOff className="text-lg" />
+          Clear Filters
         </Button>
       </div>
 
@@ -186,8 +145,20 @@ export default function MyJobPostingsList() {
               }}
             >
               <CardContent className="p-8 flex flex-col md:flex-row md:items-center gap-4 relative">
+                {/* Company Profile Picture or Initials */}
+                <div className="w-20 h-20 rounded-full bg-[var(--r-darkgray)] flex items-center justify-center text-3xl font-bold mr-8 overflow-hidden">
+                  {job.company?.profilePicture ? (
+                    <img
+                      src={job.company.profilePicture}
+                      alt={job.company.name}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <span>{getInitials(job.company?.name)}</span>
+                  )}
+                </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap gap-2 mb-2">
+                  <div className="flex flex-wrap gap-2 mb-2 items-center">
                     <span className="text-2xl font-dm-serif text-[var(--r-black)] mr-2">
                       {job.title}
                     </span>
@@ -195,13 +166,13 @@ export default function MyJobPostingsList() {
                     <Badge
                       variant="secondary"
                       className={
-                        job.status === JobStatus.URGENTLY_HIRING
+                        job.status === "URGENTLY_HIRING"
                           ? "bg-red-100 text-red-800"
-                          : job.status === JobStatus.HIRING
+                          : job.status === "HIRING"
                           ? "bg-green-100 text-green-800"
-                          : job.status === JobStatus.CLOSED
+                          : job.status === "CLOSED"
                           ? "bg-slate-200 text-slate-600"
-                          : job.status === JobStatus.CLOSED_BY_ADMIN
+                          : job.status === "CLOSED_BY_ADMIN"
                           ? "bg-zinc-300 text-zinc-700"
                           : ""
                       }
@@ -219,11 +190,11 @@ export default function MyJobPostingsList() {
                     <Badge
                       variant="secondary"
                       className={
-                        job.workType === WorkType.ONSITE
+                        job.workType === "ONSITE"
                           ? "bg-yellow-100 text-yellow-800"
-                          : job.workType === WorkType.REMOTE
+                          : job.workType === "REMOTE"
                           ? "bg-blue-100 text-blue-800"
-                          : job.workType === WorkType.HYBRID
+                          : job.workType === "HYBRID"
                           ? "bg-purple-100 text-purple-800"
                           : ""
                       }
@@ -246,45 +217,32 @@ export default function MyJobPostingsList() {
                         : "-"}
                     </span>
                     <span className="flex items-center gap-1">
-                      <GrGroup className="mr-1" /> {job.applicantCount}{" "}
-                      applicants
-                    </span>
-                    <span className="flex items-center gap-1">
                       <FaRegEye className="mr-1" /> {job.views} views
                     </span>
                   </div>
                   <div className="text-lg text-[var(--r-boldgray)]">
-                    Posted: {new Date(job.createdAt).toLocaleDateString()}
+                    Posted:{" "}
+                    {(() => {
+                      const days = Math.floor(
+                        (Date.now() - new Date(job.createdAt).getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      );
+                      return days === 0
+                        ? "Today"
+                        : `${days} day${days > 1 ? "s" : ""} ago`;
+                    })()}
                   </div>
                 </div>
-                <div className="flex flex-col gap-12 md:ml-8 md:items-end">
-                  <div className="flex gap-4 mb-2">
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(pages.editJob(job.id));
-                      }}
-                    >
-                      <FaRegEdit />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="destructive"
-                      onClick={() => handleDelete(job.id)}
-                      disabled={deletingJobId === job.id}
-                    >
-                      <FaRegTrashAlt />
-                    </Button>
-                  </div>
+                <div className="flex flex-col gap-4 md:ml-8 md:items-end">
                   <Button
-                    onClick={() =>
-                      toast.message(`clicked view applicants on ${job.id}`)
-                    }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toast.message(`clicked applied on job: ${job.id}`);
+                    }}
                     className="bg-[var(--r-blue)] text-white w-40 text-md"
+                    disabled={userRole === "COMPANY" || userRole === "ADMIN"}
                   >
-                    View Applicants
+                    Apply Now
                   </Button>
                 </div>
               </CardContent>

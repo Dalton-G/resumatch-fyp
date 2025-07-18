@@ -116,7 +116,9 @@ export default function EditJobForm({ job }: EditJobFormProps) {
           toast.success("Job posting updated successfully!");
         }
 
-        queryClient.invalidateQueries({ queryKey: [cacheKeys.jobPostings] });
+        queryClient.invalidateQueries({
+          queryKey: [cacheKeys.jobPostings, cacheKeys.myJobPostings],
+        });
         router.push(pages.myJobPostings);
       }
     } catch (error: any) {

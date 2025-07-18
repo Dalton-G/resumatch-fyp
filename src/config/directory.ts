@@ -38,4 +38,5 @@ export const api = {
   viewJob: (id: string) => `/api/jobs/${id}/view`,
   processJobPosting: "/api/process-job-posting",
   deleteJob: (id: string) => `/api/jobs/delete/${id}`,
+  listJobs: "/api/jobs/list",
 };

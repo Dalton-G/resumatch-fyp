@@ -1,13 +1,13 @@
+import JobPortalHeading from "@/components/jobs/job-portal-heading";
+import JobPortalList from "@/components/jobs/job-portal-list";
 import { ensureAuth } from "@/lib/utils/check-role";
-import ProfileDisplay from "./components/profile-display";
 
 export default async function JobPortalPage() {
   const session = await ensureAuth();
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-      <ProfileDisplay userId={session.user.id} role={session.user.role} />
+    <div className="flex flex-col min-h-screen bg-[var(--r-gray)]">
+      <JobPortalHeading />
+      <JobPortalList userRole={session.user.role} />
     </div>
   );
 }

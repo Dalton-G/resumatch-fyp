@@ -89,7 +89,9 @@ export default function CreateJobForm() {
         toast.message(
           "Job posting created successfully! Processing embedding in the background."
         );
-        queryClient.invalidateQueries({ queryKey: [cacheKeys.jobPostings] });
+        queryClient.invalidateQueries({
+          queryKey: [cacheKeys.jobPostings, cacheKeys.myJobPostings],
+        });
       }
       processJobPostingInBackground(response.data);
       router.push(pages.myJobPostings);
