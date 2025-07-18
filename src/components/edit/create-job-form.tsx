@@ -25,6 +25,7 @@ import { Separator } from "../ui/separator";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "@/config/cache-keys";
+import { JobPosting } from "@prisma/client";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),
@@ -85,9 +86,12 @@ export default function CreateJobForm() {
       const response = await axios.post(api.createJob, payload);
       // Optionally, show a success message or redirect
       if (response.status === 201) {
-        toast.success("Job posting created successfully!");
+        toast.message(
+          "Job posting created successfully! Processing embedding in the background."
+        );
         queryClient.invalidateQueries({ queryKey: [cacheKeys.jobPostings] });
       }
+      processJobPostingInBackground(response.data);
       router.push(pages.myJobPostings);
     } catch (error: any) {
       // Optionally, show error message
@@ -96,6 +100,16 @@ export default function CreateJobForm() {
       } else {
         toast.error("Failed to create job posting. Please try again.");
       }
+    }
+  };
+
+  const processJobPostingInBackground = async (job: JobPosting) => {
+    try {
+      await axios.post(api.processJobPosting, { job });
+      toast.success("Job posting processed and indexed successfully.");
+    } catch (error: any) {
+      console.error("Error processing job posting in background:", error);
+      toast.error("Job posting created but processing failed.");
     }
   };
 

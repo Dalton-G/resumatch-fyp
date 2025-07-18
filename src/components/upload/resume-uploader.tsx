@@ -104,7 +104,6 @@ export default function ResumeUploader() {
     try {
       await axiosInstance.post(api.processResume, { s3Url, resumeId });
       toast.success("Resume processed and indexed successfully.");
-      queryClient.invalidateQueries({ queryKey: [cacheKeys.myResumeList] });
     } catch (err) {
       toast.error("Resume uploaded but processing failed.");
       console.error("Background resume processing failed:", err);

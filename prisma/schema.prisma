@@ -144,36 +144,36 @@ model AdminProfile {
 }
 
 model Resume {
-  id              String            @id @default(cuid())
+  id              String           @id @default(cuid())
   fileName        String
   s3Url           String
   fileSize        Int
   embedding       ResumeEmbedding?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
   jobSeekerId     String
-  jobApplications JobApplication[]  @relation("ResumeToJobApplication")
-  jobSeeker       JobSeekerProfile  @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
+  jobApplications JobApplication[] @relation("ResumeToJobApplication")
+  jobSeeker       JobSeekerProfile @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
 
   @@index([jobSeekerId])
 }
 
 model JobPosting {
-  id           String            @id @default(cuid())
+  id           String               @id @default(cuid())
   title        String
   description  String
   location     String
   salaryMin    Int?
   salaryMax    Int?
-  status       JobStatus         @default(HIRING)
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  status       JobStatus            @default(HIRING)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
   companyId    String
   workType     WorkType
-  views        Int               @default(0)
-  chunks       JobPostingChunk[]
+  views        Int                  @default(0)
+  embedding    JobPostingEmbedding?
   applications JobApplication[]
-  company      CompanyProfile    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company      CompanyProfile       @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@index([status])
   @@index([companyId])
@@ -218,19 +218,17 @@ model ResumeEmbedding {
   @@index([resumeId])
 }
 
-model JobPostingChunk {
-  id          String     @id
-  companyId   String
-  jobId       String
-  job         JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  chunkIndex  Int
-  totalChunks Int
-  content     String
-  embedding   Float[]
-  active      Boolean    @default(true)
-  source      String?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+model JobPostingEmbedding {
+  id        String     @id
+  companyId String
+  jobId     String     @unique
+  job       JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  content   String
+  embedding Float[]
+  active    Boolean    @default(true)
+  source    String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   @@index([companyId])
   @@index([jobId])

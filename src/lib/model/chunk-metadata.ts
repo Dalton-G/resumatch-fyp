@@ -8,19 +8,22 @@ export interface ResumeMetadata {
   };
 }
 
-export interface JobPostingChunkMetadata {
+export interface JobPostingMetadata {
   content: string;
   metadata: {
     companyId: string;
     jobId: string;
-    chunkIndex: string;
-    totalChunks: number;
     source: string;
     active: boolean;
   };
 }
 
 export interface EmbeddedResumeMetadata extends ResumeMetadata {
+  id: string;
+  embedding: number[];
+}
+
+export interface EmbeddedJobPostingMetadata extends JobPostingMetadata {
   id: string;
   embedding: number[];
 }

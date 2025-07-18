@@ -1,6 +1,8 @@
 import { openai } from "@ai-sdk/openai";
 import {
+  EmbeddedJobPostingMetadata,
   EmbeddedResumeMetadata,
+  JobPostingMetadata,
   ResumeMetadata,
 } from "../model/chunk-metadata";
 import { env } from "@/config/env";
@@ -42,6 +44,27 @@ export async function generateResumeEmbedding(
   }
 }
 
+export async function generateJobPostingEmbedding(
+  jobPostingMetadata: JobPostingMetadata
+): Promise<EmbeddedJobPostingMetadata> {
+  console.log(`Generating embedding for job posting...`);
+  try {
+    const embedding = await generateEmbedding(jobPostingMetadata.content);
+    const embeddedJobPosting: EmbeddedJobPostingMetadata = {
+      ...jobPostingMetadata,
+      id: jobPostingMetadata.metadata.jobId,
+      embedding,
+    };
+    console.log(
+      `Generated embedding for job posting ${jobPostingMetadata.metadata.jobId}`
+    );
+    return embeddedJobPosting;
+  } catch (error) {
+    console.error(`Error generating embedding for job posting:`, error);
+    throw error;
+  }
+}
+
 export async function storeResumeEmbeddingInPinecone(
   embeddedResume: EmbeddedResumeMetadata
 ): Promise<void> {
@@ -61,6 +84,31 @@ export async function storeResumeEmbeddingInPinecone(
 
     await index.namespace(env.PINECONE_RESUME_NAMESPACE).upsert([vector]);
     console.log(`Successfully stored resume embedding in Pinecone`);
+  } catch (error) {
+    console.error("Error storing embedding:", error);
+    throw new Error(`Failed to store embedding: ${error}`);
+  }
+}
+
+export async function storeJobPostingEmbeddingInPinecone(
+  embeddedJobPosting: EmbeddedJobPostingMetadata
+): Promise<void> {
+  try {
+    const index = pc.index(env.PINECONE_INDEX_NAME);
+    const vector = {
+      id: embeddedJobPosting.id,
+      values: embeddedJobPosting.embedding,
+      metadata: {
+        content: embeddedJobPosting.content,
+        companyId: embeddedJobPosting.metadata.companyId,
+        jobId: embeddedJobPosting.metadata.jobId,
+        source: embeddedJobPosting.metadata.source,
+        active: embeddedJobPosting.metadata.active,
+      },
+    };
+
+    await index.namespace(env.PINECONE_JOB_NAMESPACE).upsert([vector]);
+    console.log(`Successfully stored job posting embedding in Pinecone`);
   } catch (error) {
     console.error("Error storing embedding:", error);
     throw new Error(`Failed to store embedding: ${error}`);
