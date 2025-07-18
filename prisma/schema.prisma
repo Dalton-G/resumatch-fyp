@@ -144,16 +144,16 @@ model AdminProfile {
 }
 
 model Resume {
-  id              String           @id @default(cuid())
+  id              String            @id @default(cuid())
   fileName        String
   s3Url           String
   fileSize        Int
-  chunks          ResumeChunk[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  embedding       ResumeEmbedding?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
   jobSeekerId     String
-  jobApplications JobApplication[] @relation("ResumeToJobApplication")
-  jobSeeker       JobSeekerProfile @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
+  jobApplications JobApplication[]  @relation("ResumeToJobApplication")
+  jobSeeker       JobSeekerProfile  @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
 
   @@index([jobSeekerId])
 }
@@ -202,13 +202,11 @@ model JobApplication {
   @@index([appliedAt])
 }
 
-model ResumeChunk {
+model ResumeEmbedding {
   id            String   @id
   jobSeekerId   String
-  resumeId      String
+  resumeId      String   @unique
   resume        Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
-  chunkIndex    Int
-  totalChunks   Int
   content       String
   embedding     Float[]
   appliedJobIds String[]

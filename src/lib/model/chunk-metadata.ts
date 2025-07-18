@@ -1,10 +1,8 @@
-export interface ResumeChunkMetadata {
+export interface ResumeMetadata {
   content: string;
   metadata: {
     jobSeekerId: string;
     resumeId: string;
-    chunkIndex: number;
-    totalChunks: number;
     source: string;
     appliedJobIds: string[];
   };
@@ -22,7 +20,7 @@ export interface JobPostingChunkMetadata {
   };
 }
 
-export interface EmbeddedResumeChunkMetadata extends ResumeChunkMetadata {
+export interface EmbeddedResumeMetadata extends ResumeMetadata {
   id: string;
   embedding: number[];
 }
