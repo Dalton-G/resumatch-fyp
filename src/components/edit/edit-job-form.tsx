@@ -25,6 +25,7 @@ import { Separator } from "../ui/separator";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "@/config/cache-keys";
+import { useState } from "react";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),
@@ -69,6 +70,7 @@ export type EditJobFormProps = {
 export default function EditJobForm({ job }: EditJobFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const {
     control,
@@ -96,6 +98,7 @@ export default function EditJobForm({ job }: EditJobFormProps) {
       status: formData.status,
     };
     try {
+      setIsUpdating(true);
       const response = await axios.patch(api.updateJob(job.id), payload);
       if (response.status === 200) {
         // Show different messages based on what was updated
@@ -122,6 +125,8 @@ export default function EditJobForm({ job }: EditJobFormProps) {
       } else {
         toast.error("Failed to update job posting. Please try again.");
       }
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -328,6 +333,7 @@ export default function EditJobForm({ job }: EditJobFormProps) {
               <Button
                 type="submit"
                 className="font-dm-serif px-8 py-2 bg-[var(--r-blue)] text-white w-[280px] hover:bg-[var(--r-blue)]/80"
+                disabled={isUpdating}
               >
                 Update Job
               </Button>
