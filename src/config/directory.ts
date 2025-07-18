@@ -17,6 +17,7 @@ export const pages = {
   createJob: "/create-job",
   editJob: (id: string) => `/edit-job/${id}`,
   viewJob: (id: string) => `/jobs/${id}`,
+  redirect: "/redirect",
 };
 
 export const api = {

@@ -39,8 +39,8 @@ export const companySidebar: SidebarConfig = {
       label: "Jobs",
       icon: LuBriefcaseBusiness,
       children: [
-        { label: "Job Portal", href: pages.jobPortal },
         { label: "My Job Postings", href: pages.myJobPostings },
+        { label: "Job Portal", href: pages.jobPortal },
       ],
     },
     {

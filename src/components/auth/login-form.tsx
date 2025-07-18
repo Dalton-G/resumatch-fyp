@@ -42,7 +42,7 @@ export function LoginForm({
       email: data.email,
       password: data.password,
       redirect: false,
-      callbackUrl: pages.jobPortal,
+      callbackUrl: pages.redirect,
     });
 
     if (result?.error) {
