@@ -21,7 +21,7 @@ export const ResumeChatPanel = ({ s3Url }: ResumeChatPanelProps) => {
     error,
   } = useCurrentResumeContent({ s3Url });
 
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, status } = useChat({
     api: api.chatWithResume,
     body: {
       resumeContext: extractedText || "No resume content available yet.",
@@ -112,7 +112,9 @@ export const ResumeChatPanel = ({ s3Url }: ResumeChatPanelProps) => {
               </div>
             </div>
           ))}
-          {isLoading && (
+
+          {/* Show thinking bubble when AI is processing */}
+          {status === "submitted" && (
             <div className="flex gap-3 justify-start">
               <div className="flex gap-3 max-w-[80%]">
                 <div className="flex-shrink-0">
@@ -121,16 +123,21 @@ export const ResumeChatPanel = ({ s3Url }: ResumeChatPanelProps) => {
                   </div>
                 </div>
                 <div className="rounded-lg px-4 py-2 bg-muted">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "0.1s" }}
-                    ></div>
-                    <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                      style={{ animationDelay: "0.2s" }}
-                    ></div>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div
+                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.1s" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.2s" }}
+                      ></div>
+                    </div>
+                    <span className="text-sm text-gray-500 ml-2">
+                      AI is thinking...
+                    </span>
                   </div>
                 </div>
               </div>
@@ -146,13 +153,15 @@ export const ResumeChatPanel = ({ s3Url }: ResumeChatPanelProps) => {
             value={input}
             onChange={handleInputChange}
             placeholder="Type your message..."
-            disabled={isLoading}
+            disabled={status === "submitted" || status === "streaming"}
             className="flex-1"
           />
           <Button
             type="submit"
             className="bg-[var(--r-blue)]"
-            disabled={isLoading || !input.trim()}
+            disabled={
+              status === "submitted" || status === "streaming" || !input.trim()
+            }
           >
             <Send className="w-4 h-4" />
           </Button>
