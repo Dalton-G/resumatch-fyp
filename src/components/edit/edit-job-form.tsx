@@ -98,7 +98,21 @@ export default function EditJobForm({ job }: EditJobFormProps) {
     try {
       const response = await axios.patch(api.updateJob(job.id), payload);
       if (response.status === 200) {
-        toast.success("Job posting updated successfully!");
+        // Show different messages based on what was updated
+        const analysis = response.data._analysis;
+
+        if (analysis?.embeddingAction === "regenerated") {
+          toast.success(
+            "Job posting updated successfully! Embeddings regenerated for better search results."
+          );
+        } else if (analysis?.embeddingAction === "metadata_updated") {
+          toast.success(
+            "Job posting updated successfully! Status updated in search index."
+          );
+        } else {
+          toast.success("Job posting updated successfully!");
+        }
+
         queryClient.invalidateQueries({ queryKey: [cacheKeys.jobPostings] });
         router.push(pages.myJobPostings);
       }
