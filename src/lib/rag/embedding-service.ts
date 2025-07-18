@@ -131,3 +131,19 @@ export async function deleteResumeEmbeddingFromPinecone(
     throw new Error(`Failed to delete embedding from Pinecone: ${error}`);
   }
 }
+
+export async function deleteJobPostingEmbeddingFromPinecone(
+  jobId: string
+): Promise<void> {
+  try {
+    const index = pc.index(env.PINECONE_INDEX_NAME);
+    const namespace = index.namespace(env.PINECONE_JOB_NAMESPACE);
+    await namespace.deleteOne(jobId);
+    console.log(
+      `Successfully deleted job posting embedding from Pinecone: ${jobId}`
+    );
+  } catch (error) {
+    console.error("Error deleting embedding from Pinecone:", error);
+    throw new Error(`Failed to delete embedding from Pinecone: ${error}`);
+  }
+}

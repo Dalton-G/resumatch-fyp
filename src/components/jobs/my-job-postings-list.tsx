@@ -24,7 +24,7 @@ import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { WorkType, JobStatus } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { pages } from "@/config/directory";
+import { api, pages } from "@/config/directory";
 import { cacheKeys } from "@/config/cache-keys";
 
 // Editable: max chars for description preview
@@ -64,8 +64,8 @@ export default function MyJobPostingsList() {
   const handleDelete = async (jobId: string) => {
     setDeletingJobId(jobId);
     try {
-      await axios.delete(`/api/jobs/delete/${jobId}`);
-      toast.success("Job deleted successfully.");
+      const response = await axios.delete(api.deleteJob(jobId));
+      if (response.status === 200) toast.success("Job deleted successfully.");
       queryClient.invalidateQueries({ queryKey: [cacheKeys.jobPostings] });
     } catch (error: any) {
       toast.error(error?.response?.data?.error || "Failed to delete job.");
