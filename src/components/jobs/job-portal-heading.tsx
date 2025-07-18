@@ -3,7 +3,7 @@
 import { Button } from "../ui/button";
 import { pages } from "@/config/directory";
 import { useRouter } from "next/navigation";
-import { HiOutlineSparkles } from "react-icons/hi2";
+import { HiMiniSparkles } from "react-icons/hi2";
 
 export default function JobPortalHeading() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function JobPortalHeading() {
         className="bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80 text-md"
         onClick={() => router.push(pages.jobMatcher)}
       >
-        <HiOutlineSparkles />
+        <HiMiniSparkles />
         AI Job Matching
       </Button>
     </div>

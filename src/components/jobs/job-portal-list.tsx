@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { FaRegClock } from "react-icons/fa6";
+import { MdFilterAltOff } from "react-icons/md";
 import {
   Select,
   SelectTrigger,
@@ -19,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { FiMapPin } from "react-icons/fi";
 import { IoCashOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
+import { cn } from "@/lib/utils";
 
 const DESCRIPTION_PREVIEW_LENGTH = 120;
 
@@ -123,7 +126,7 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
             setStatus("");
           }}
         >
-          Clear Filters
+          <MdFilterAltOff className="text-lg" />
         </Button>
       </div>
 
@@ -144,96 +147,105 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
                 router.push(pages.viewJob(job.id));
               }}
             >
-              <CardContent className="p-8 flex flex-col md:flex-row md:items-center gap-4 relative">
+              <CardContent className="p-8 flex md:flex-row md:items-center gap-4 relative">
                 {/* Company Profile Picture or Initials */}
-                <div className="w-20 h-20 rounded-full bg-[var(--r-darkgray)] flex items-center justify-center text-3xl font-bold mr-8 overflow-hidden">
-                  {job.company?.profilePicture ? (
-                    <img
-                      src={job.company.profilePicture}
-                      alt={job.company.name}
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  ) : (
-                    <span>{getInitials(job.company?.name)}</span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap gap-2 mb-2 items-center">
-                    <span className="text-2xl font-dm-serif text-[var(--r-black)] mr-2">
-                      {job.title}
-                    </span>
-                    {/* JobStatus Badge with custom color */}
-                    <Badge
-                      variant="secondary"
-                      className={
-                        job.status === "URGENTLY_HIRING"
-                          ? "bg-red-100 text-red-800"
-                          : job.status === "HIRING"
-                          ? "bg-green-100 text-green-800"
-                          : job.status === "CLOSED"
-                          ? "bg-slate-200 text-slate-600"
-                          : job.status === "CLOSED_BY_ADMIN"
-                          ? "bg-zinc-300 text-zinc-700"
-                          : ""
-                      }
-                    >
-                      {job.status
-                        .toLowerCase()
-                        .split("_")
-                        .map(
-                          (word: string) =>
-                            word.charAt(0).toUpperCase() + word.slice(1)
-                        )
-                        .join(" ")}
-                    </Badge>
-                    {/* WorkType Badge with custom color */}
-                    <Badge
-                      variant="secondary"
-                      className={
-                        job.workType === "ONSITE"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : job.workType === "REMOTE"
-                          ? "bg-blue-100 text-blue-800"
-                          : job.workType === "HYBRID"
-                          ? "bg-purple-100 text-purple-800"
-                          : ""
-                      }
-                    >
-                      {job.workType.charAt(0) +
-                        job.workType.slice(1).toLowerCase()}
-                    </Badge>
-                  </div>
-                  <div className="text-[var(--r-boldgray)] mb-4 text-lg truncate max-w-full">
-                    {truncate(job.description, DESCRIPTION_PREVIEW_LENGTH)}
-                  </div>
-                  <div className="flex flex-wrap gap-12 items-center text-black text-lg mb-4">
-                    <span className="flex items-center gap-1">
-                      <FiMapPin className="mr-1" /> {job.location}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <IoCashOutline className="mr-1" />
-                      {job.salaryMin && job.salaryMax
-                        ? `RM${job.salaryMin.toLocaleString()} - RM${job.salaryMax.toLocaleString()}`
-                        : "-"}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <FaRegEye className="mr-1" /> {job.views} views
-                    </span>
-                  </div>
-                  <div className="text-lg text-[var(--r-boldgray)]">
-                    Posted:{" "}
-                    {(() => {
-                      const days = Math.floor(
-                        (Date.now() - new Date(job.createdAt).getTime()) /
-                          (1000 * 60 * 60 * 24)
-                      );
-                      return days === 0
-                        ? "Today"
-                        : `${days} day${days > 1 ? "s" : ""} ago`;
-                    })()}
+                <div className="flex flex-col h-[160px] items-center justify-start mr-4 -mt-4">
+                  <div className="w-20 h-20 rounded-full bg-[var(--r-darkgray)] text-3xl font-bold overflow-hidden">
+                    {job.company?.profilePicture ? (
+                      <img
+                        src={job.company.profilePicture}
+                        alt={job.company.name}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <span>{getInitials(job.company?.name)}</span>
+                    )}
                   </div>
                 </div>
-                <div className="flex flex-col gap-4 md:ml-8 md:items-end">
+                <div className="flex flex-col w-full">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap gap-2 mb-2 items-center">
+                      <span className="text-2xl font-dm-serif text-[var(--r-black)] mr-2">
+                        {job.title}
+                      </span>
+                      {/* JobStatus Badge with custom color */}
+                      <Badge
+                        variant="secondary"
+                        className={cn(
+                          job.status === "URGENTLY_HIRING"
+                            ? "bg-red-100 text-red-800"
+                            : job.status === "HIRING"
+                            ? "bg-green-100 text-green-800"
+                            : job.status === "CLOSED"
+                            ? "bg-slate-200 text-slate-600"
+                            : job.status === "CLOSED_BY_ADMIN"
+                            ? "bg-zinc-300 text-zinc-700"
+                            : "",
+                          "p-2"
+                        )}
+                      >
+                        {job.status
+                          .toLowerCase()
+                          .split("_")
+                          .map(
+                            (word: string) =>
+                              word.charAt(0).toUpperCase() + word.slice(1)
+                          )
+                          .join(" ")}
+                      </Badge>
+                      {/* WorkType Badge with custom color */}
+                      <Badge
+                        variant="secondary"
+                        className={cn(
+                          job.workType === "ONSITE"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : job.workType === "REMOTE"
+                            ? "bg-blue-100 text-blue-800"
+                            : job.workType === "HYBRID"
+                            ? "bg-purple-100 text-purple-800"
+                            : "",
+                          "p-2"
+                        )}
+                      >
+                        {job.workType.charAt(0) +
+                          job.workType.slice(1).toLowerCase()}
+                      </Badge>
+                    </div>
+                    <div className="text-[var(--r-boldgray)] mb-4 text-lg truncate max-w-full">
+                      {job.company.name}
+                    </div>
+                    <div className="text-black mb-4 text-lg truncate max-w-full">
+                      {truncate(job.description, DESCRIPTION_PREVIEW_LENGTH)}
+                    </div>
+                    <div className="flex flex-wrap gap-12 items-center text-[var(--r-boldgray)] text-lg mb-4">
+                      <span className="flex items-center gap-1">
+                        <FiMapPin className="mr-1" /> {job.location}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <IoCashOutline className="mr-1" />
+                        {job.salaryMin && job.salaryMax
+                          ? `RM${job.salaryMin.toLocaleString()} - RM${job.salaryMax.toLocaleString()}`
+                          : "-"}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <FaRegEye className="mr-1" /> {job.views} views
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <FaRegClock className="mr-1" />
+                        {(() => {
+                          const days = Math.floor(
+                            (Date.now() - new Date(job.createdAt).getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          );
+                          return days === 0
+                            ? "Today"
+                            : `${days} day${days > 1 ? "s" : ""} ago`;
+                        })()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col min-h-[160px] items-center justify-end">
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();

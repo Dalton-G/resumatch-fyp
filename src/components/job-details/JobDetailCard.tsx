@@ -71,7 +71,7 @@ export function JobDetailCard({ job, company }: JobDetailCardProps) {
                 .join("")}
             </div>
           )}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 ml-2">
             <div className="flex flex-wrap justify-between gap-2 items-center">
               <span className="text-3xl font-dm-serif text-[var(--r-black)] truncate max-w-[80ch]">
                 {job.title}
@@ -100,7 +100,7 @@ export function JobDetailCard({ job, company }: JobDetailCardProps) {
           </div>
         </div>
         <div className="flex gap-24 items-center text-black text-lg mb-4">
-          <span className="flex items-center gap-1 ml-24">
+          <span className="flex items-center gap-1 ml-26">
             <FiMapPin className="mr-1" /> {job.location}
           </span>
           <span className="flex items-center gap-1">

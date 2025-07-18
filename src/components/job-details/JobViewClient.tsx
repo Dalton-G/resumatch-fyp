@@ -18,7 +18,7 @@ interface JobViewClientProps {
   userId: string | null;
 }
 
-export function JobViewClient({ jobId, userRole, userId }: JobViewClientProps) {
+export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
   const router = useRouter();
   const { data, isLoading, isError } = useQuery({
     queryKey: [cacheKeys.jobView, jobId],
