@@ -1,7 +1,7 @@
 import { openai } from "@ai-sdk/openai";
 import {
-  EmbeddedResumeChunkMetadata,
-  ResumeChunkMetadata,
+  EmbeddedResumeMetadata,
+  ResumeMetadata,
 } from "../model/chunk-metadata";
 import { env } from "@/config/env";
 import { embed } from "ai";
@@ -21,103 +21,65 @@ export async function generateEmbedding(text: string): Promise<number[]> {
   }
 }
 
-export async function generateEmbeddings(
-  chunks: ResumeChunkMetadata[]
-): Promise<EmbeddedResumeChunkMetadata[]> {
-  const embeddedChunks: EmbeddedResumeChunkMetadata[] = [];
-  console.log(`Generating embeddings for ${chunks.length} chunks...`);
-  for (let i = 0; i < chunks.length; i++) {
-    const chunk = chunks[i];
-    console.log(`Processing chunk ${i + 1}/${chunks.length}`);
-    try {
-      const embedding = await generateEmbedding(chunk.content);
-      embeddedChunks.push({
-        ...chunk,
-        id: `${chunk.metadata.jobSeekerId}-${chunk.metadata.resumeId}-${chunk.metadata.chunkIndex}`,
-        embedding,
-      });
-    } catch (error) {
-      console.error(`Error generating embedding for chunk ${i + 1}:`, error);
-      throw error;
-    }
+export async function generateResumeEmbedding(
+  resumeMetadata: ResumeMetadata
+): Promise<EmbeddedResumeMetadata> {
+  console.log(`Generating embedding for resume...`);
+  try {
+    const embedding = await generateEmbedding(resumeMetadata.content);
+    const embeddedResume: EmbeddedResumeMetadata = {
+      ...resumeMetadata,
+      id: resumeMetadata.metadata.resumeId,
+      embedding,
+    };
+    console.log(
+      `Generated embedding for resume ${resumeMetadata.metadata.resumeId}`
+    );
+    return embeddedResume;
+  } catch (error) {
+    console.error(`Error generating embedding for resume:`, error);
+    throw error;
   }
-  console.log(`Generated embeddings for ${embeddedChunks.length} chunks`);
-  return embeddedChunks;
 }
 
-export async function storeResumeEmbeddingsInPinecone(
-  embeddedChunks: EmbeddedResumeChunkMetadata[]
+export async function storeResumeEmbeddingInPinecone(
+  embeddedResume: EmbeddedResumeMetadata
 ): Promise<void> {
   try {
     const index = pc.index(env.PINECONE_INDEX_NAME);
-    const vectors = embeddedChunks.map((chunk) => ({
-      id: chunk.id,
-      values: chunk.embedding,
+    const vector = {
+      id: embeddedResume.id,
+      values: embeddedResume.embedding,
       metadata: {
-        content: chunk.content,
-        jobSeekerId: chunk.metadata.jobSeekerId,
-        resumeId: chunk.metadata.resumeId,
-        chunkIndex: chunk.metadata.chunkIndex,
-        totalChunks: chunk.metadata.totalChunks,
-        source: chunk.metadata.source,
-        appliedJobIds: chunk.metadata.appliedJobIds,
+        content: embeddedResume.content,
+        jobSeekerId: embeddedResume.metadata.jobSeekerId,
+        resumeId: embeddedResume.metadata.resumeId,
+        source: embeddedResume.metadata.source,
+        appliedJobIds: embeddedResume.metadata.appliedJobIds,
       },
-    }));
-    const batchSize = 100;
-    for (let i = 0; i < vectors.length; i += batchSize) {
-      const batch = vectors.slice(i, i + batchSize);
-      await index.namespace(env.PINECONE_RESUME_NAMESPACE).upsert(batch);
-    }
-    console.log(`Successfully stored ${vectors.length} embeddings in Pinecone`);
+    };
+
+    await index.namespace(env.PINECONE_RESUME_NAMESPACE).upsert([vector]);
+    console.log(`Successfully stored resume embedding in Pinecone`);
   } catch (error) {
-    console.error("Error storing embeddings:", error);
-    throw new Error(`Failed to store embeddings: ${error}`);
+    console.error("Error storing embedding:", error);
+    throw new Error(`Failed to store embedding: ${error}`);
   }
 }
 
-export async function deleteResumeEmbeddingsFromPinecone(
-  chunkIds: string[]
+export async function deleteResumeEmbeddingFromPinecone(
+  resumeId: string
 ): Promise<void> {
   try {
-    if (chunkIds.length === 0) {
-      console.log("No chunks to delete from Pinecone");
-      return;
-    }
-
     const index = pc.index(env.PINECONE_INDEX_NAME);
     const namespace = index.namespace(env.PINECONE_RESUME_NAMESPACE);
 
-    // Delete in batches to avoid API limits
-    const batchSize = 100;
-    for (let i = 0; i < chunkIds.length; i += batchSize) {
-      const batch = chunkIds.slice(i, i + batchSize);
-      await namespace.deleteMany(batch);
-      console.log(
-        `Deleted batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(
-          chunkIds.length / batchSize
-        )} from Pinecone`
-      );
-    }
-
+    await namespace.deleteOne(resumeId);
     console.log(
-      `Successfully deleted ${chunkIds.length} embeddings from Pinecone`
+      `Successfully deleted resume embedding from Pinecone: ${resumeId}`
     );
   } catch (error) {
-    console.error("Error deleting embeddings from Pinecone:", error);
-    throw new Error(`Failed to delete embeddings from Pinecone: ${error}`);
+    console.error("Error deleting embedding from Pinecone:", error);
+    throw new Error(`Failed to delete embedding from Pinecone: ${error}`);
   }
-}
-
-export async function generateResumeChunkIds(
-  jobSeekerId: string,
-  resumeId: string,
-  totalChunks: number
-): Promise<string[]> {
-  const chunkIds: string[] = [];
-  for (let i = 0; i < totalChunks; i++) {
-    const chunkId = `${jobSeekerId}-${resumeId}-${i}`;
-    console.log(`Generated chunk ID: ${chunkId}`);
-    chunkIds.push(chunkId);
-  }
-  return chunkIds;
 }

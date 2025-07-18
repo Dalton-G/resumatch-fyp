@@ -3,10 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { deleteFile as s3DeleteFile } from "@/lib/utils/s3-utils";
 import { FILE_CATEGORY_CONFIG } from "@/config/file-category-config";
-import {
-  deleteResumeEmbeddingsFromPinecone,
-  generateResumeChunkIds,
-} from "@/lib/rag/embedding-service";
+import { deleteResumeEmbeddingFromPinecone } from "@/lib/rag/embedding-service";
 
 // GET: List all resumes for the current job seeker
 export async function GET(request: NextRequest) {
@@ -81,7 +78,6 @@ export async function DELETE(request: NextRequest) {
     // Find the resume and check ownership
     const resume = await prisma.resume.findUnique({
       where: { id: resumeId },
-      include: { chunks: true }, // Include chunks to get total count
     });
     if (!resume) {
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
@@ -98,32 +94,20 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    console.log(
-      `Starting deletion process for resume ${resumeId} with ${resume.chunks.length} chunks`
-    );
+    console.log(`Starting deletion process for resume ${resumeId}`);
 
-    // Step 1: Delete chunks from Pinecone (if any exist)
-    if (resume.chunks.length > 0) {
-      const chunkIds = await generateResumeChunkIds(
-        userId,
-        resumeId,
-        resume.chunks.length
-      );
-      console.log(`Deleting ${chunkIds.length} chunks from Pinecone...`);
-      await deleteResumeEmbeddingsFromPinecone(chunkIds);
-    }
+    // Step 1: Delete embedding from Pinecone
+    console.log(`Deleting resume embedding from Pinecone...`);
+    await deleteResumeEmbeddingFromPinecone(resumeId);
 
-    // Step 2: Delete chunks from Supabase (ResumeChunk table)
-    // This will be handled by cascade delete when we delete the resume
-
-    // Step 3: Delete from S3
+    // Step 2: Delete from S3
     await s3DeleteFile(resume.fileName, FILE_CATEGORY_CONFIG["resume"].folder);
 
-    // Step 4: Delete from DB (cascades to ResumeChunk due to foreign key constraint)
+    // Step 3: Delete from DB (cascades to ResumeEmbedding due to foreign key constraint)
     await prisma.resume.delete({ where: { id: resumeId } });
 
     console.log(
-      `Successfully deleted resume ${resumeId} and all associated chunks`
+      `Successfully deleted resume ${resumeId} and all associated data`
     );
     return NextResponse.json(
       { message: "Resume and all associated data deleted successfully" },

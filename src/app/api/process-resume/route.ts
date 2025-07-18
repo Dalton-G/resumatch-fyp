@@ -1,13 +1,13 @@
 import { auth } from "@/lib/auth";
 import {
-  EmbeddedResumeChunkMetadata,
-  ResumeChunkMetadata,
+  EmbeddedResumeMetadata,
+  ResumeMetadata,
 } from "@/lib/model/chunk-metadata";
 import { prisma } from "@/lib/prisma";
-import { chunkText, prepareResumeMetadata } from "@/lib/rag/document-processor";
+import { prepareResumeMetadata } from "@/lib/rag/document-processor";
 import {
-  generateEmbeddings,
-  storeResumeEmbeddingsInPinecone,
+  generateResumeEmbedding,
+  storeResumeEmbeddingInPinecone,
 } from "@/lib/rag/embedding-service";
 import { extractTextFromS3Url } from "@/lib/utils/extract-text-from-s3url";
 import { NextRequest, NextResponse } from "next/server";
@@ -33,45 +33,38 @@ export async function POST(req: NextRequest) {
     // 1. Extract Text from the s3Url
     const extractedText: string = await extractTextFromS3Url(s3Url);
 
-    // 2. Chunk the extracted text
-    const chunks: string[] = chunkText(extractedText);
-
-    // 3. Prepare metadata for each chunk
-    const chunkMetadata: ResumeChunkMetadata[] = prepareResumeMetadata(
-      chunks,
+    // 2. Prepare metadata for the full resume content
+    const resumeMetadata: ResumeMetadata = prepareResumeMetadata(
+      extractedText,
       jobSeekerId,
       resumeId,
       s3Url
     );
 
-    // 4. Generate Embeddings for each chunks
-    const embeddedChunks: EmbeddedResumeChunkMetadata[] =
-      await generateEmbeddings(chunkMetadata);
+    // 3. Generate Embedding for the full resume
+    const embeddedResume: EmbeddedResumeMetadata =
+      await generateResumeEmbedding(resumeMetadata);
 
-    // 5. Store in Pinecone
-    await storeResumeEmbeddingsInPinecone(embeddedChunks);
+    // 4. Store in Pinecone
+    await storeResumeEmbeddingInPinecone(embeddedResume);
 
-    // 6. Store in Supabase
-    // 6. Store in Supabase (PostgreSQL via Prisma)
-    await prisma.resumeChunk.createMany({
-      data: embeddedChunks.map((chunk) => ({
-        id: chunk.id,
-        jobSeekerId: chunk.metadata.jobSeekerId,
-        resumeId: chunk.metadata.resumeId,
-        chunkIndex: chunk.metadata.chunkIndex,
-        totalChunks: chunk.metadata.totalChunks,
-        content: chunk.content,
-        embedding: chunk.embedding,
+    // 5. Store in PostgreSQL via Prisma
+    await prisma.resumeEmbedding.create({
+      data: {
+        id: embeddedResume.id,
+        jobSeekerId: embeddedResume.metadata.jobSeekerId,
+        resumeId: embeddedResume.metadata.resumeId,
+        content: embeddedResume.content,
+        embedding: embeddedResume.embedding,
         appliedJobIds: [],
-        source: chunk.metadata.source,
-      })),
-      skipDuplicates: true, // in case the job is retried or uploaded twice
+        source: embeddedResume.metadata.source,
+      },
     });
 
     return NextResponse.json(
       {
         message: "Resume processed successfully",
-        chunks: embeddedChunks.length,
+        resumeId: embeddedResume.metadata.resumeId,
       },
       { status: 200 }
     );

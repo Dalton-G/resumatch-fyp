@@ -87,7 +87,7 @@ export default function ResumeUploader() {
       });
       toast.message("Resume uploaded, processing embeddings in the background");
 
-      // 4. Chunk, embed, index, and upsert the resume into Pinecone + Supabase (non-blocking)
+      // 4. Embed, index, and upsert the resume into Pinecone + PostgreSQL (non-blocking)
       processResumeInBackground(fileUrl, resume.data.resume.id);
 
       queryClient.invalidateQueries({ queryKey: [cacheKeys.myResumeList] });
