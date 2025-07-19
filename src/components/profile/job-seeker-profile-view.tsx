@@ -14,7 +14,7 @@ interface JobSeekerProfileViewProps {
   name: string;
   image: string | null;
   profession: string | null;
-  location: string | null;
+  country: string | null;
   views: number;
   bio: string;
   skills: string[];
@@ -29,7 +29,7 @@ export default function JobSeekerProfileView({
   name,
   image,
   profession,
-  location,
+  country,
   views,
   bio,
   skills,
@@ -68,7 +68,7 @@ export default function JobSeekerProfileView({
             {profession || "N/A"}
           </div>
           <div className="text-xl text-black mb-4 font-libertinus -mt-2">
-            {location || "N/A"}
+            {country || "N/A"}
           </div>
           <div className="flex items-center gap-2 mb-6 -mt-2">
             <span className="inline-flex items-center px-3 font-libertinus bg-[var(--r-gray)] rounded-full text-base font-medium text-[var(--color-primary)]">

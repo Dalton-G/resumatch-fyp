@@ -89,7 +89,7 @@ model JobSeekerProfile {
   firstName      String?
   lastName       String?
   phone          String?
-  location       String?
+  country        String?
   bio            String?
   linkedinUrl    String?
   githubUrl      String?
@@ -103,9 +103,8 @@ model JobSeekerProfile {
   applications   JobApplication[]
   user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   resumes        Resume[]
-  isLocal        Boolean          @default(true)
 
-  @@index([location])
+  @@index([country])
   @@index([userId])
 }
 
@@ -214,7 +213,7 @@ model ResumeEmbedding {
   embedding     Float[]
   appliedJobIds String[]
   source        String?
-  isLocal       Boolean  @default(true)
+  country       String?  @default("Malaysia")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -234,7 +233,7 @@ model JobPostingEmbedding {
   salaryMin Int?
   salaryMax Int?
   workType  WorkType   @default(ONSITE)
-  country   String     @default("MY")
+  country   String     @default("Malaysia")
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 

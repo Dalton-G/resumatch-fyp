@@ -17,12 +17,20 @@ import { api, pages } from "@/config/directory";
 import { useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "@/config/cache-keys";
 import Link from "next/link";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { countryOptions } from "@/config/country-options";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   profession: z.string().optional(),
-  location: z.string().optional(),
+  country: z.string().optional(),
   bio: z.string().optional(),
   profilePicture: z.string().min(1, "Profile picture is required"),
   skills: z.string().array().optional(),
@@ -59,7 +67,7 @@ export default function JobSeekerEditProfile({
     firstName: jobSeekerProfile.firstName || "",
     lastName: jobSeekerProfile.lastName || "",
     profession: jobSeekerProfile.profession || "",
-    location: jobSeekerProfile.location || "",
+    country: jobSeekerProfile.country || "",
     bio: jobSeekerProfile.bio || "",
     profilePicture: jobSeekerProfile.profilePicture || "",
     skills: jobSeekerProfile.skills || [],
@@ -134,7 +142,6 @@ export default function JobSeekerEditProfile({
         if (res.data?.jobSeekerProfile?.profilePicture) {
           setProfilePicture(res.data.jobSeekerProfile.profilePicture);
         }
-        queryClient.invalidateQueries({ queryKey: [cacheKeys.profile] });
       } else {
         toast.error(res.data?.error || "Failed to update profile");
       }
@@ -142,6 +149,7 @@ export default function JobSeekerEditProfile({
       toast.error(e.response?.data?.error || "Failed to update profile");
     } finally {
       setIsSubmitting(false);
+      queryClient.invalidateQueries({ queryKey: [cacheKeys.profile] });
     }
   };
 
@@ -254,22 +262,37 @@ export default function JobSeekerEditProfile({
                     </div>
                     <div>
                       <label
-                        htmlFor="location"
+                        htmlFor="country"
                         className="block font-medium mb-1"
                       >
-                        Location
+                        Country
                       </label>
                       <Controller
-                        name="location"
+                        name="country"
                         control={control}
                         render={({ field }) => (
-                          <Input
-                            id="location"
-                            placeholder="Location"
-                            {...field}
-                          />
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select a country" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {countryOptions.map((country) => (
+                                <SelectItem key={country} value={country}>
+                                  {country}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         )}
                       />
+                      {errors.country && (
+                        <span className="text-red-500 text-xs">
+                          {errors.country.message}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div>
