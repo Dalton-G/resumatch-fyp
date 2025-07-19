@@ -39,4 +39,5 @@ export const api = {
   processJobPosting: "/api/process-job-posting",
   deleteJob: (id: string) => `/api/jobs/delete/${id}`,
   listJobs: "/api/jobs/list",
+  listJobsByCompany: "/api/jobs/list-by-company",
 };

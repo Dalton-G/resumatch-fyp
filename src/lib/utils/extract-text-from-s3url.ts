@@ -1,5 +1,5 @@
 import pdfParse from "pdf-parse";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { cleanText } from "../rag/document-processor";
 
 /**

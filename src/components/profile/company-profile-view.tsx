@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { FaBuilding, FaEye, FaEnvelope, FaGlobe } from "react-icons/fa";
+import { CompanyJobList } from "@/components/jobs/company-job-list";
 
 interface CompanyProfileViewProps {
   name: string;
@@ -11,7 +12,7 @@ interface CompanyProfileViewProps {
   website: string | null;
   email: string | null;
   description: string | null;
-  // jobPostings: Array<{ id: string; title: string; location: string; status: string }>; // Placeholder for future
+  userId: string; // Added companyId prop
 }
 
 export default function CompanyProfileView({
@@ -24,6 +25,7 @@ export default function CompanyProfileView({
   website,
   email,
   description,
+  userId, // Destructure companyId
 }: CompanyProfileViewProps) {
   return (
     <div className="flex flex-col gap-8 w-full px-8 mt-8">
@@ -96,15 +98,7 @@ export default function CompanyProfileView({
         <div className="text-[var(--r-blue)] font-dm-serif text-2xl mb-2">
           Active Job Postings
         </div>
-        {/* Placeholder for jobs grid */}
-        <div className="grid grid-cols-3 gap-6">
-          {/* Placeholder: No jobs */}
-          <Card className="col-span-3 p-8 flex items-center justify-center bg-[var(--color-card)]">
-            <span className="text-lg text-muted-foreground font-libertinus">
-              No active job postings by this company.
-            </span>
-          </Card>
-        </div>
+        <CompanyJobList userId={userId} />
       </Card>
     </div>
   );

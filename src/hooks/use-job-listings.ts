@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { api } from "@/config/directory";
 import { cacheKeys } from "@/config/cache-keys";
 

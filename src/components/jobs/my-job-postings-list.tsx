@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { WorkType, JobStatus } from "@prisma/client";
 import { useRouter } from "next/navigation";

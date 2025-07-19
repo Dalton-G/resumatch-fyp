@@ -76,6 +76,7 @@ export default function ViewProfilePage({ params }: ViewProfilePageProps) {
           website={profile.website}
           email={profile.email}
           description={profile.description}
+          userId={profile.id}
         />
       );
     case "ADMIN":
