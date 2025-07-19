@@ -30,6 +30,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Get the job seeker profile
+    const jobSeekerProfile = await prisma.jobSeekerProfile.findUnique({
+      where: { userId: jobSeekerId },
+    });
+
+    if (!jobSeekerProfile?.country || !jobSeekerProfile?.profession) {
+      return NextResponse.json(
+        {
+          error:
+            "Job seeker profile not found or country/profession is missing",
+        },
+        { status: 404 }
+      );
+    }
+
     // 1. Extract Text from the s3Url
     const extractedText: string = await extractTextFromS3Url(s3Url);
 
@@ -38,7 +53,9 @@ export async function POST(req: NextRequest) {
       extractedText,
       jobSeekerId,
       resumeId,
-      s3Url
+      s3Url,
+      jobSeekerProfile.country,
+      jobSeekerProfile.profession
     );
 
     // 3. Generate Embedding for the full resume
@@ -58,6 +75,8 @@ export async function POST(req: NextRequest) {
         embedding: embeddedResume.embedding,
         appliedJobIds: [],
         source: embeddedResume.metadata.source,
+        country: embeddedResume.metadata.country,
+        profession: embeddedResume.metadata.profession,
       },
     });
 

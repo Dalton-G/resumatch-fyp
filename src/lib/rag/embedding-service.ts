@@ -8,6 +8,7 @@ import {
 import { env } from "@/config/env";
 import { embed } from "ai";
 import pc from "../pinecone";
+import { count } from "console";
 
 export async function generateEmbedding(text: string): Promise<number[]> {
   try {
@@ -79,6 +80,8 @@ export async function storeResumeEmbeddingInPinecone(
         resumeId: embeddedResume.metadata.resumeId,
         source: embeddedResume.metadata.source,
         appliedJobIds: embeddedResume.metadata.appliedJobIds,
+        country: embeddedResume.metadata.country,
+        profession: embeddedResume.metadata.profession,
       },
     };
 

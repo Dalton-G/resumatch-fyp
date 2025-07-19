@@ -213,7 +213,8 @@ model ResumeEmbedding {
   embedding     Float[]
   appliedJobIds String[]
   source        String?
-  country       String?  @default("Malaysia")
+  country       String?
+  profession    String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
