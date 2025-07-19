@@ -27,6 +27,7 @@ import { cacheKeys } from "@/config/cache-keys";
 import { useState } from "react";
 import { countryOptions } from "@/config/country-options";
 import axios from "@/lib/axios";
+import { invalidateJobPostingQueries } from "@/lib/utils/invalidate-job-cache";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),
@@ -117,12 +118,7 @@ export default function EditJobForm({ job }: EditJobFormProps) {
           toast.success("Job posting updated successfully!");
         }
 
-        queryClient.invalidateQueries({
-          queryKey: [cacheKeys.jobPostings],
-        });
-        queryClient.invalidateQueries({
-          queryKey: [cacheKeys.myJobPostings],
-        });
+        await invalidateJobPostingQueries(queryClient);
         router.push(pages.myJobPostings);
       }
     } catch (error: any) {

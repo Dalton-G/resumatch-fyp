@@ -27,6 +27,7 @@ import { cacheKeys } from "@/config/cache-keys";
 import { JobPosting } from "@prisma/client";
 import { countryOptions } from "@/config/country-options";
 import axios from "@/lib/axios";
+import { invalidateJobPostingQueries } from "@/lib/utils/invalidate-job-cache";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),
@@ -90,12 +91,7 @@ export default function CreateJobForm() {
         toast.message(
           "Job posting created successfully! Processing embedding in the background."
         );
-        queryClient.invalidateQueries({
-          queryKey: [cacheKeys.jobPostings],
-        });
-        queryClient.invalidateQueries({
-          queryKey: [cacheKeys.myJobPostings],
-        });
+        await invalidateJobPostingQueries(queryClient);
       }
       processJobPostingInBackground(response.data);
       router.push(pages.myJobPostings);

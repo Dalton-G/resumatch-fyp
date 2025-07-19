@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { FaBuilding, FaEye, FaEnvelope, FaGlobe } from "react-icons/fa";
 import { CompanyJobList } from "@/components/jobs/company-job-list";
+import { Separator } from "../ui/separator";
 
 interface CompanyProfileViewProps {
   name: string;
@@ -95,11 +96,12 @@ export default function CompanyProfileView({
 
       {/* Active Jobs Section in a Card */}
       <Card className="p-8 rounded-2xl shadow bg-[var(--color-card)]">
-        <div className="text-[var(--r-blue)] font-dm-serif text-2xl mb-2">
+        <div className="text-[var(--r-blue)] font-dm-serif text-2xl">
           Active Job Postings
         </div>
         <CompanyJobList userId={userId} />
       </Card>
+      <Separator className="bg-transparent" />
     </div>
   );
 }

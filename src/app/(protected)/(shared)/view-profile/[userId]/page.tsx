@@ -66,18 +66,20 @@ export default function ViewProfilePage({ params }: ViewProfilePageProps) {
       );
     case "COMPANY":
       return (
-        <CompanyProfileView
-          name={profile.name}
-          profilePicture={profile.profilePicture}
-          industry={profile.industry}
-          size={profile.size}
-          address={profile.address}
-          views={profile.views}
-          website={profile.website}
-          email={profile.email}
-          description={profile.description}
-          userId={profile.id}
-        />
+        <div className="flex flex-1 overflow-y-auto max-h-svh">
+          <CompanyProfileView
+            name={profile.name}
+            profilePicture={profile.profilePicture}
+            industry={profile.industry}
+            size={profile.size}
+            address={profile.address}
+            views={profile.views}
+            website={profile.website}
+            email={profile.email}
+            description={profile.description}
+            userId={profile.id}
+          />
+        </div>
       );
     case "ADMIN":
       return (

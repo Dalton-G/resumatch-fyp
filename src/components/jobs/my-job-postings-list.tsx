@@ -26,6 +26,7 @@ import { WorkType, JobStatus } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { api, pages } from "@/config/directory";
 import { cacheKeys } from "@/config/cache-keys";
+import { invalidateJobPostingQueries } from "@/lib/utils/invalidate-job-cache";
 
 // Editable: max chars for description preview
 const DESCRIPTION_PREVIEW_LENGTH = 120;
@@ -66,12 +67,7 @@ export default function MyJobPostingsList() {
     try {
       const response = await axios.delete(api.deleteJob(jobId));
       if (response.status === 200) toast.success("Job deleted successfully.");
-      queryClient.invalidateQueries({
-        queryKey: [cacheKeys.jobPostings],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [cacheKeys.myJobPostings],
-      });
+      await invalidateJobPostingQueries(queryClient);
     } catch (error: any) {
       toast.error(error?.response?.data?.error || "Failed to delete job.");
     } finally {
