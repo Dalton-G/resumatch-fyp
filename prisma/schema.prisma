@@ -103,6 +103,7 @@ model JobSeekerProfile {
   applications   JobApplication[]
   user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   resumes        Resume[]
+  isLocal        Boolean          @default(true)
 
   @@index([location])
   @@index([userId])
@@ -162,7 +163,7 @@ model JobPosting {
   id           String               @id @default(cuid())
   title        String
   description  String
-  location     String
+  country      String
   salaryMin    Int?
   salaryMax    Int?
   status       JobStatus            @default(HIRING)
@@ -177,7 +178,7 @@ model JobPosting {
 
   @@index([status])
   @@index([companyId])
-  @@index([location])
+  @@index([country])
   @@index([createdAt])
 }
 
@@ -211,6 +212,7 @@ model ResumeEmbedding {
   embedding     Float[]
   appliedJobIds String[]
   source        String?
+  isLocal       Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -227,6 +229,10 @@ model JobPostingEmbedding {
   embedding Float[]
   active    Boolean    @default(true)
   source    String?
+  salaryMin Int?
+  salaryMax Int?
+  workType  WorkType   @default(ONSITE)
+  country   String     @default("MY")
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -251,6 +257,7 @@ enum JobStatus {
 enum ApplicationStatus {
   APPLIED
   REVIEWING
+  SHORTLISTED
   REJECTED
   SUCCESS
 }
