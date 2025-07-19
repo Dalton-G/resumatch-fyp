@@ -117,7 +117,10 @@ export default function EditJobForm({ job }: EditJobFormProps) {
         }
 
         queryClient.invalidateQueries({
-          queryKey: [cacheKeys.jobPostings, cacheKeys.myJobPostings],
+          queryKey: [cacheKeys.jobPostings],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [cacheKeys.myJobPostings],
         });
         router.push(pages.myJobPostings);
       }

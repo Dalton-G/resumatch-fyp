@@ -1,5 +1,3 @@
-import { all } from "axios";
-
 export const cacheKeys = {
   profile: "profile",
   myResumeList: "my-resume-list",

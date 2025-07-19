@@ -43,9 +43,7 @@ export default function CompanyProfileView({
         )}
         {/* Info */}
         <div className="flex flex-col gap-2 flex-1 min-w-0">
-          <div className="text-4xl font-bold font-dm-serif truncate">
-            {name || "N/A"}
-          </div>
+          <div className="text-4xl font-dm-serif truncate">{name || "N/A"}</div>
           <div className="text-2xl text-[var(--r-blue)] font-dm-serif">
             {industry || "N/A"}
           </div>

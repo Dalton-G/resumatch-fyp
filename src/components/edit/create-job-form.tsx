@@ -90,7 +90,10 @@ export default function CreateJobForm() {
           "Job posting created successfully! Processing embedding in the background."
         );
         queryClient.invalidateQueries({
-          queryKey: [cacheKeys.jobPostings, cacheKeys.myJobPostings],
+          queryKey: [cacheKeys.jobPostings],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [cacheKeys.myJobPostings],
         });
       }
       processJobPostingInBackground(response.data);

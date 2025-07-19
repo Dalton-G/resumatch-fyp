@@ -67,7 +67,10 @@ export default function MyJobPostingsList() {
       const response = await axios.delete(api.deleteJob(jobId));
       if (response.status === 200) toast.success("Job deleted successfully.");
       queryClient.invalidateQueries({
-        queryKey: [cacheKeys.jobPostings, cacheKeys.myJobPostings],
+        queryKey: [cacheKeys.jobPostings],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [cacheKeys.myJobPostings],
       });
     } catch (error: any) {
       toast.error(error?.response?.data?.error || "Failed to delete job.");
