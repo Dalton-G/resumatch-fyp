@@ -37,7 +37,7 @@ export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
   const { job, company, applicationCount } = data;
 
   return (
-    <div className="flex flex-row gap-8 px-12 py-8 font-libertinus max-h-[calc(100vh-1rem)] overflow-y-auto">
+    <div className="flex flex-row gap-8 px-12 py-8 font-libertinus max-h-[calc(100vh-1rem)] overflow-y-auto justify-center">
       {/* Main Content */}
       <div className="flex-1 flex flex-col gap-6 max-w-5xl">
         <JobDetailCard
@@ -62,7 +62,7 @@ export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
           posted={job.createdAt}
           updated={job.updatedAt}
         />
-        {userRole !== "COMPANY" && (
+        {userRole !== "COMPANY" && userRole !== "ADMIN" && (
           <ReadyToApplyCard
             companyName={company.name}
             applicationCount={applicationCount}

@@ -1,5 +1,5 @@
 import { env } from "@/config/env";
-import { cleanText } from "@/lib/utils/clean-resume-text";
+import { cleanText } from "@/lib/rag/document-processor";
 import { comparisonSchema } from "@/schema/comparison-schema";
 import { openai } from "@ai-sdk/openai";
 import { generateObject } from "ai";

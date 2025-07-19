@@ -1,6 +1,6 @@
 import pdfParse from "pdf-parse";
 import axios from "axios";
-import { cleanText } from "./clean-resume-text";
+import { cleanText } from "../rag/document-processor";
 
 /**
  * Downloads a PDF file from a public S3 URL and extracts its plain text content.
