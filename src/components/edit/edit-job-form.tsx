@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { pages, api } from "@/config/directory";
-import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,6 +25,8 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "@/config/cache-keys";
 import { useState } from "react";
+import { countryOptions } from "@/config/country-options";
+import axios from "@/lib/axios";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),
@@ -188,7 +189,18 @@ export default function EditJobForm({ job }: EditJobFormProps) {
                   name="country"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter country" />
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countryOptions.map((country) => (
+                          <SelectItem key={country} value={country}>
+                            {country}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   )}
                 />
                 {errors.country && (
