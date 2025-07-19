@@ -62,7 +62,7 @@ export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
           posted={job.createdAt}
           updated={job.updatedAt}
         />
-        {userRole !== "COMPANY" && (
+        {userRole !== "COMPANY" && userRole !== "ADMIN" && (
           <ReadyToApplyCard
             companyName={company.name}
             applicationCount={applicationCount}

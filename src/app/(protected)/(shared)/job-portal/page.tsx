@@ -6,7 +6,7 @@ export default async function JobPortalPage() {
   const session = await ensureAuth();
   return (
     <div className="flex flex-col min-h-screen bg-[var(--r-gray)]">
-      <JobPortalHeading />
+      <JobPortalHeading userRole={session.user.role} />
       <JobPortalList userRole={session.user.role} />
     </div>
   );
