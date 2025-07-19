@@ -28,12 +28,12 @@ export function prepareResumeMetadata(
 }
 
 export function prepareJobPostingContent(jobPosting: JobPosting): string {
-  const { title, description, location, salaryMin, salaryMax, workType } =
+  const { title, description, country, salaryMin, salaryMax, workType } =
     jobPosting;
   return `
   Title: ${title}.
   Description: ${description}.
-  Location: ${location}.
+  Country: ${country}.
   Salary: ${salaryMin} - ${salaryMax}.
   Work Type: ${workType}.
   `;

@@ -4,7 +4,7 @@ import z from "zod";
 export const jobPostingSchema = z.object({
   title: z.string().min(1, "Job title is required"),
   description: z.string().min(1, "Job description is required"),
-  location: z.string().min(1, "Location is required"),
+  country: z.string().min(1, "Country is required"),
   workType: z.nativeEnum(WorkType, {
     errorMap: () => ({ message: "Invalid work type" }),
   }),

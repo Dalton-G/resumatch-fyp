@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
         id: true,
         title: true,
         description: true,
-        location: true,
+        country: true,
         salaryMin: true,
         salaryMax: true,
         status: true,

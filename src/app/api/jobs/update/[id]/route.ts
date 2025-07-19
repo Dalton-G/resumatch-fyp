@@ -25,7 +25,7 @@ function hasContentChanged(oldJob: any, newData: any): boolean {
   const contentFields = [
     "title",
     "description",
-    "location",
+    "country",
     "salaryMin",
     "salaryMax",
     "workType",
@@ -90,7 +90,7 @@ export async function PATCH(
       data: {
         title: body.title,
         description: body.description,
-        location: body.location,
+        country: body.country,
         workType: body.workType,
         status: body.status,
         salaryMin: body.salaryMin,

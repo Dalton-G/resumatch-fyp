@@ -13,7 +13,7 @@ interface JobDetailCardProps {
   job: {
     title: string;
     description: string;
-    location: string;
+    country: string;
     salaryMin?: number | null;
     salaryMax?: number | null;
     status: string;
@@ -101,7 +101,7 @@ export function JobDetailCard({ job, company }: JobDetailCardProps) {
         </div>
         <div className="flex gap-24 items-center text-black text-lg mb-4">
           <span className="flex items-center gap-1 ml-26">
-            <FiMapPin className="mr-1" /> {job.location}
+            <FiMapPin className="mr-1" /> {job.country}
           </span>
           <span className="flex items-center gap-1">
             <IoCashOutline className="mr-1" />

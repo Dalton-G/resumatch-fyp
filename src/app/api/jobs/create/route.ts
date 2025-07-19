@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
   const {
     title,
     description,
-    location,
+    country,
     workType,
     status,
     salaryMin,
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         description,
-        location,
+        country,
         workType,
         status,
         salaryMin,

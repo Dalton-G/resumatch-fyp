@@ -67,7 +67,7 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
       jobs = jobs.filter(
         (j) =>
           j.title.toLowerCase().includes(s) ||
-          j.location.toLowerCase().includes(s)
+          j.country.toLowerCase().includes(s)
       );
     }
     if (workType) jobs = jobs.filter((j) => j.workType === workType);
@@ -89,7 +89,7 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
       <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
         <Input
           className="w-full bg-white !text-lg h-12"
-          placeholder="Search jobs by title or location"
+          placeholder="Search jobs by title or country"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -219,7 +219,7 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
                     </div>
                     <div className="flex flex-wrap gap-12 items-center text-[var(--r-boldgray)] text-lg mb-4">
                       <span className="flex items-center gap-1">
-                        <FiMapPin className="mr-1" /> {job.location}
+                        <FiMapPin className="mr-1" /> {job.country}
                       </span>
                       <span className="flex items-center gap-1">
                         <IoCashOutline className="mr-1" />
