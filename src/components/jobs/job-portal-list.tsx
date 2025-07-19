@@ -252,7 +252,7 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
                       toast.message(`clicked applied on job: ${job.id}`);
                     }}
                     className="bg-[var(--r-blue)] text-white w-40 text-md hover:bg-[var(--r-blue)]/80"
-                    disabled={userRole === "COMPANY" || userRole === "ADMIN"}
+                    hidden={userRole === "COMPANY" || userRole === "ADMIN"}
                   >
                     Apply Now
                   </Button>

@@ -1,4 +1,3 @@
-import { metadata } from "./../../../../layout";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { jobPostingSchema } from "@/schema/job-posting-schema";
@@ -7,6 +6,7 @@ import {
   prepareJobPostingContent,
   prepareJobPostingMetadata,
   constructJobPostingUrl,
+  cleanText,
 } from "@/lib/rag/document-processor";
 import {
   generateJobPostingEmbedding,
@@ -169,7 +169,7 @@ export async function PATCH(
       await index.namespace(env.PINECONE_JOB_NAMESPACE).update({
         id: jobId,
         metadata: {
-          content: currentJob.embedding.content,
+          content: cleanText(currentJob.embedding.content),
           companyId: currentJob.embedding.companyId,
           jobId: currentJob.embedding.jobId,
           source: currentJob.embedding.source || constructJobPostingUrl(jobId),

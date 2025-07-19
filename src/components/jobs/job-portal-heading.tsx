@@ -17,7 +17,7 @@ export default function JobPortalHeading({ userRole }: JobPortalHeadingProps) {
       <Button
         className="bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80 text-md"
         onClick={() => router.push(pages.jobMatcher)}
-        disabled={userRole === "COMPANY" || userRole === "ADMIN"}
+        hidden={userRole === "COMPANY" || userRole === "ADMIN"}
       >
         <HiMiniSparkles />
         AI Job Matching

@@ -4,6 +4,11 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const jobPostings = await prisma.jobPosting.findMany({
+      where: {
+        NOT: {
+          status: { in: ["CLOSED", "CLOSED_BY_ADMIN"] },
+        },
+      },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
