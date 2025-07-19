@@ -22,6 +22,7 @@ import { FiMapPin } from "react-icons/fi";
 import { IoCashOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
 import { cn } from "@/lib/utils";
+import { countryOptions } from "@/config/country-options";
 
 const DESCRIPTION_PREVIEW_LENGTH = 120;
 
@@ -57,6 +58,9 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
   const [search, setSearch] = useState("");
   const [workType, setWorkType] = useState("");
   const [status, setStatus] = useState("");
+  const [country, setCountry] = useState("");
+  const [salaryMin, setSalaryMin] = useState("");
+  const [salaryMax, setSalaryMax] = useState("");
   const router = useRouter();
 
   const filtered = useMemo(() => {
@@ -72,8 +76,13 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
     }
     if (workType) jobs = jobs.filter((j) => j.workType === workType);
     if (status) jobs = jobs.filter((j) => j.status === status);
+    if (country) jobs = jobs.filter((j) => j.country === country);
+    if (salaryMin)
+      jobs = jobs.filter((j) => j.salaryMin >= parseInt(salaryMin));
+    if (salaryMax)
+      jobs = jobs.filter((j) => j.salaryMax <= parseInt(salaryMax));
     return jobs;
-  }, [data, search, workType, status]);
+  }, [data, search, workType, status, country, salaryMin, salaryMax]);
 
   if (isLoading) return <div className="p-8 text-center">Loading...</div>;
   if (isError)
@@ -92,6 +101,20 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
           placeholder="Search jobs by title or country"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+        />
+        <Input
+          className="w-full md:w-1/6 bg-white !text-lg h-12"
+          placeholder="Min Salary"
+          value={salaryMin}
+          onChange={(e) => setSalaryMin(e.target.value)}
+          type="number"
+        />
+        <Input
+          className="w-full md:w-1/6 bg-white !text-lg h-12"
+          placeholder="Max Salary"
+          value={salaryMax}
+          onChange={(e) => setSalaryMax(e.target.value)}
+          type="number"
         />
         <Select value={status} onValueChange={setStatus}>
           <SelectTrigger className="w-full md:w-1/8 bg-white !text-lg min-h-12">
@@ -117,6 +140,18 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
             ))}
           </SelectContent>
         </Select>
+        <Select value={country} onValueChange={setCountry}>
+          <SelectTrigger className="w-full md:w-1/8 bg-white !text-lg min-h-12">
+            <SelectValue placeholder="Country" />
+          </SelectTrigger>
+          <SelectContent>
+            {countryOptions.map((opt) => (
+              <SelectItem key={opt} value={opt}>
+                {opt}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Button
           variant="outline"
           className="h-12 px-6 mt-2 md:mt-0 !text-lg !text-[var(--r-boldgray)]"
@@ -124,6 +159,9 @@ export default function JobPortalList({ userRole }: JobPortalListProps) {
             setSearch("");
             setWorkType("");
             setStatus("");
+            setCountry("");
+            setSalaryMin("");
+            setSalaryMax("");
           }}
         >
           <MdFilterAltOff className="text-lg" />
