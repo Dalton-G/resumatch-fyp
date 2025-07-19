@@ -194,6 +194,8 @@ model JobApplication {
   job         JobPosting        @relation(fields: [jobId], references: [id], onDelete: Cascade)
   jobSeeker   JobSeekerProfile  @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
   resume      Resume            @relation("ResumeToJobApplication", fields: [resumeId], references: [id], onDelete: Cascade)
+  feedback    String?
+  notes       String?
 
   @@unique([jobId, jobSeekerId])
   @@index([jobSeekerId])
