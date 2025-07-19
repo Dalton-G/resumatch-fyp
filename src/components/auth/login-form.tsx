@@ -21,6 +21,8 @@ import { pages } from "@/config/directory";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 export type LoginFormType = z.infer<typeof signInSchema>;
 
@@ -29,6 +31,13 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // clear any previous user's session or caches
+    queryClient.invalidateQueries();
+  }, [queryClient]);
+
   const form = useForm<LoginFormType>({
     resolver: zodResolver(signInSchema),
     defaultValues: {

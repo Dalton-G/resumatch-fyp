@@ -13,7 +13,6 @@ export default function SignOutOfAllProvidersButton() {
       <Button
         type="submit"
         onClick={() => {
-          queryClient.invalidateQueries();
           toast.success("Signed out successfully");
         }}
         className="bg-[var(--r-gray)] font-dm-serif hover:bg-red-400 hover:text-white text-[var(--r-black)] shrink-0 cursor-pointer"
