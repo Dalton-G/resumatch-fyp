@@ -89,7 +89,7 @@ model JobSeekerProfile {
   firstName      String?
   lastName       String?
   phone          String?
-  location       String?
+  country        String?
   bio            String?
   linkedinUrl    String?
   githubUrl      String?
@@ -104,7 +104,7 @@ model JobSeekerProfile {
   user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   resumes        Resume[]
 
-  @@index([location])
+  @@index([country])
   @@index([userId])
 }
 
@@ -162,7 +162,7 @@ model JobPosting {
   id           String               @id @default(cuid())
   title        String
   description  String
-  location     String
+  country      String
   salaryMin    Int?
   salaryMax    Int?
   status       JobStatus            @default(HIRING)
@@ -177,7 +177,7 @@ model JobPosting {
 
   @@index([status])
   @@index([companyId])
-  @@index([location])
+  @@index([country])
   @@index([createdAt])
 }
 
@@ -193,6 +193,8 @@ model JobApplication {
   job         JobPosting        @relation(fields: [jobId], references: [id], onDelete: Cascade)
   jobSeeker   JobSeekerProfile  @relation(fields: [jobSeekerId], references: [id], onDelete: Cascade)
   resume      Resume            @relation("ResumeToJobApplication", fields: [resumeId], references: [id], onDelete: Cascade)
+  feedback    String?
+  notes       String?
 
   @@unique([jobId, jobSeekerId])
   @@index([jobSeekerId])
@@ -211,6 +213,8 @@ model ResumeEmbedding {
   embedding     Float[]
   appliedJobIds String[]
   source        String?
+  country       String?
+  profession    String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -227,6 +231,11 @@ model JobPostingEmbedding {
   embedding Float[]
   active    Boolean    @default(true)
   source    String?
+  position  String?
+  salaryMin Int?
+  salaryMax Int?
+  workType  WorkType   @default(ONSITE)
+  country   String     @default("Malaysia")
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -251,6 +260,7 @@ enum JobStatus {
 enum ApplicationStatus {
   APPLIED
   REVIEWING
+  SHORTLISTED
   REJECTED
   SUCCESS
 }

@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { pages, api } from "@/config/directory";
-import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,11 +25,13 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "@/config/cache-keys";
 import { JobPosting } from "@prisma/client";
+import { countryOptions } from "@/config/country-options";
+import axios from "@/lib/axios";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),
   description: z.string().min(1, "Job description is required"),
-  location: z.string().min(1, "Location is required"),
+  country: z.string().min(1, "Country is required"),
   workType: z.string().min(1, "Work type is required"),
   status: z.string().min(1, "Status is required"),
   salaryMin: z.preprocess(
@@ -46,7 +47,7 @@ const jobFormSchema = z.object({
 export type JobFormType = {
   title: string;
   description: string;
-  location: string;
+  country: string;
   workType: string;
   status: string;
   salaryMin: string | number;
@@ -65,7 +66,7 @@ export default function CreateJobForm() {
     defaultValues: {
       title: "",
       description: "",
-      location: "",
+      country: "",
       workType: "",
       status: "",
       salaryMin: "",
@@ -166,17 +167,28 @@ export default function CreateJobForm() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
               <div>
-                <label className="block font-medium mb-2">Location:</label>
+                <label className="block font-medium mb-2">Country:</label>
                 <Controller
-                  name="location"
+                  name="country"
                   control={control}
                   render={({ field }) => (
-                    <Input {...field} placeholder="Enter location" />
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countryOptions.map((country) => (
+                          <SelectItem key={country} value={country}>
+                            {country}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   )}
                 />
-                {errors.location && (
+                {errors.country && (
                   <span className="text-red-500 text-sm">
-                    {errors.location.message}
+                    {errors.country.message}
                   </span>
                 )}
               </div>

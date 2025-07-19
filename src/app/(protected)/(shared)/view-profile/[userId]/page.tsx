@@ -53,7 +53,7 @@ export default function ViewProfilePage({ params }: ViewProfilePageProps) {
           name={profile.name}
           image={profile.image}
           profession={profile.profession}
-          location={profile.location}
+          country={profile.country}
           views={profile.views}
           bio={profile.bio}
           skills={profile.skills}

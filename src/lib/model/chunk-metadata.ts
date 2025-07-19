@@ -5,6 +5,8 @@ export interface ResumeMetadata {
     resumeId: string;
     source: string;
     appliedJobIds: string[];
+    country: string;
+    profession: string;
   };
 }
 
@@ -15,6 +17,11 @@ export interface JobPostingMetadata {
     jobId: string;
     source: string;
     active: boolean;
+    position: string;
+    salaryMin: number;
+    salaryMax: number;
+    workType: string;
+    country: string;
   };
 }
 

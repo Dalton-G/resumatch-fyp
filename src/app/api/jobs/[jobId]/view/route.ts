@@ -41,7 +41,7 @@ export async function GET(
       id: job.id,
       title: job.title,
       description: job.description,
-      location: job.location,
+      country: job.country,
       salaryMin: job.salaryMin,
       salaryMax: job.salaryMax,
       status: job.status,

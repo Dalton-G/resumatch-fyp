@@ -1,3 +1,4 @@
+import { metadata } from "./../../../../layout";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { jobPostingSchema } from "@/schema/job-posting-schema";
@@ -22,14 +23,7 @@ function isActiveStatus(status: JobStatus): boolean {
 
 // Helper function to check if content fields changed
 function hasContentChanged(oldJob: any, newData: any): boolean {
-  const contentFields = [
-    "title",
-    "description",
-    "location",
-    "salaryMin",
-    "salaryMax",
-    "workType",
-  ];
+  const contentFields = ["title", "description"];
   return contentFields.some((field) => oldJob[field] !== newData[field]);
 }
 
@@ -75,13 +69,16 @@ export async function PATCH(
 
     // Analyze what changed
     const contentChanged = hasContentChanged(currentJob, body);
-    const statusChanged = currentJob.status !== body.status;
+    const metadataChanged =
+      currentJob.status !== body.status ||
+      currentJob.country !== body.country ||
+      currentJob.workType !== body.workType ||
+      currentJob.salaryMin !== body.salaryMin ||
+      currentJob.salaryMax !== body.salaryMax;
 
     console.log(`Job ${jobId} update analysis:`, {
       contentChanged,
-      statusChanged,
-      oldStatus: currentJob.status,
-      newStatus: body.status,
+      metadataChanged,
     });
 
     // 1. Update the job posting in database
@@ -90,7 +87,7 @@ export async function PATCH(
       data: {
         title: body.title,
         description: body.description,
-        location: body.location,
+        country: body.country,
         workType: body.workType,
         status: body.status,
         salaryMin: body.salaryMin,
@@ -112,6 +109,11 @@ export async function PATCH(
         company.id,
         jobId,
         jobPostingUrl,
+        updatedJob.title,
+        updatedJob.salaryMin!,
+        updatedJob.salaryMax!,
+        updatedJob.workType!,
+        updatedJob.country!,
         newActive
       );
 
@@ -130,6 +132,11 @@ export async function PATCH(
           embedding: embeddedJobPosting.embedding,
           active: newActive,
           source: jobPostingUrl,
+          position: updatedJob.title,
+          salaryMin: updatedJob.salaryMin,
+          salaryMax: updatedJob.salaryMax,
+          workType: updatedJob.workType,
+          country: updatedJob.country,
           updatedAt: new Date(),
         },
         create: {
@@ -140,13 +147,18 @@ export async function PATCH(
           embedding: embeddedJobPosting.embedding,
           active: newActive,
           source: jobPostingUrl,
+          position: updatedJob.title,
+          salaryMin: updatedJob.salaryMin,
+          salaryMax: updatedJob.salaryMax,
+          workType: updatedJob.workType,
+          country: updatedJob.country,
         },
       });
 
       console.log(`Successfully regenerated embedding for job ${jobId}`);
-    } else if (statusChanged && currentJob.embedding) {
+    } else if (metadataChanged && currentJob.embedding) {
       console.log(
-        `Only status changed - updating active metadata for job ${jobId}`
+        `Only metadata changed - updating active metadata for job ${jobId}`
       );
 
       // Only update the active status in metadata (cost-efficient!)
@@ -161,7 +173,12 @@ export async function PATCH(
           companyId: currentJob.embedding.companyId,
           jobId: currentJob.embedding.jobId,
           source: currentJob.embedding.source || constructJobPostingUrl(jobId),
-          active: newActive, // Only this changes
+          active: newActive,
+          position: updatedJob.title,
+          salaryMin: updatedJob.salaryMin!,
+          salaryMax: updatedJob.salaryMax!,
+          workType: updatedJob.workType,
+          country: updatedJob.country,
         },
       });
 
@@ -184,10 +201,10 @@ export async function PATCH(
         ...updatedJob,
         _analysis: {
           contentChanged,
-          statusChanged,
+          metadataChanged,
           embeddingAction: contentChanged
             ? "regenerated"
-            : statusChanged
+            : metadataChanged
             ? "metadata_updated"
             : "no_change",
         },

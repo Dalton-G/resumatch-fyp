@@ -40,7 +40,12 @@ export async function POST(req: NextRequest) {
       jobPostingContent,
       jobPosting.companyId,
       jobPosting.id,
-      jobPostingUrl
+      jobPostingUrl,
+      jobPosting.title,
+      jobPosting.salaryMin!,
+      jobPosting.salaryMax!,
+      jobPosting.workType!,
+      jobPosting.country!
     );
 
     // 4. Generate the embedding for the full job posting
@@ -61,6 +66,11 @@ export async function POST(req: NextRequest) {
         embedding: jobPostingEmbedding.embedding,
         active: true,
         source: jobPostingUrl,
+        position: jobPosting.title,
+        salaryMin: jobPosting.salaryMin!,
+        salaryMax: jobPosting.salaryMax!,
+        workType: jobPosting.workType!,
+        country: jobPosting.country!,
       },
     });
 

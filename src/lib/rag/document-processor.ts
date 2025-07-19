@@ -14,7 +14,9 @@ export function prepareResumeMetadata(
   content: string,
   jobSeekerId: string,
   resumeId: string,
-  source: string
+  source: string,
+  country: string,
+  profession: string
 ): ResumeMetadata {
   return {
     content: cleanText(content),
@@ -23,19 +25,17 @@ export function prepareResumeMetadata(
       resumeId,
       source,
       appliedJobIds: [],
+      country,
+      profession,
     },
   };
 }
 
 export function prepareJobPostingContent(jobPosting: JobPosting): string {
-  const { title, description, location, salaryMin, salaryMax, workType } =
-    jobPosting;
+  const { title, description } = jobPosting;
   return `
   Title: ${title}.
   Description: ${description}.
-  Location: ${location}.
-  Salary: ${salaryMin} - ${salaryMax}.
-  Work Type: ${workType}.
   `;
 }
 
@@ -48,6 +48,11 @@ export function prepareJobPostingMetadata(
   companyId: string,
   jobId: string,
   source: string,
+  position: string,
+  salaryMin: number,
+  salaryMax: number,
+  workType: string,
+  country: string,
   active: boolean = true
 ): JobPostingMetadata {
   return {
@@ -57,6 +62,11 @@ export function prepareJobPostingMetadata(
       jobId,
       source,
       active,
+      position,
+      salaryMin,
+      salaryMax,
+      workType,
+      country,
     },
   };
 }
