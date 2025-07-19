@@ -111,7 +111,7 @@ export default function EditJobForm({ job }: EditJobFormProps) {
           );
         } else if (analysis?.embeddingAction === "metadata_updated") {
           toast.success(
-            "Job posting updated successfully! Status updated in search index."
+            "Job posting updated successfully! Metadata updated in search index."
           );
         } else {
           toast.success("Job posting updated successfully!");

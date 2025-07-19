@@ -107,6 +107,11 @@ export async function storeJobPostingEmbeddingInPinecone(
         jobId: embeddedJobPosting.metadata.jobId,
         source: embeddedJobPosting.metadata.source,
         active: embeddedJobPosting.metadata.active,
+        position: embeddedJobPosting.metadata.position,
+        salaryMin: embeddedJobPosting.metadata.salaryMin,
+        salaryMax: embeddedJobPosting.metadata.salaryMax,
+        workType: embeddedJobPosting.metadata.workType,
+        country: embeddedJobPosting.metadata.country,
       },
     };
 
