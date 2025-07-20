@@ -1,7 +1,7 @@
 "use client";
 
 import { cacheKeys } from "@/config/cache-keys";
-import { api } from "@/config/directory";
+import { api, pages } from "@/config/directory";
 import { useMyJobApplications } from "@/hooks/use-my-job-applications";
 import axiosInstance from "@/lib/axios";
 import { JobViewResponse } from "@/lib/types/job-view-response";
@@ -169,7 +169,9 @@ export default function MyJobApplicationsList() {
                 <Card
                   key={application.id}
                   className="p-0 cursor-pointer border-2 transition hover:border-[var(--r-blue)] hover:border-2 shadow-none hover:shadow-none"
-                  onClick={() => router.push(`/jobs/${job.id}`)}
+                  onClick={() =>
+                    router.push(pages.viewMyApplication(application.id))
+                  }
                 >
                   <CardContent className="p-8 flex md:flex-row md:items-center gap-4 relative">
                     {/* Company Profile Picture or Initials */}

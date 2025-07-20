@@ -19,6 +19,7 @@ export const pages = {
   viewJob: (id: string) => `/jobs/${id}`,
   redirect: "/redirect",
   applyForJob: (jobId: string) => `/apply-for-job/${jobId}`,
+  viewMyApplication: (id: string) => `/my-applications/view/${id}`,
 };
 
 export const api = {
@@ -45,4 +46,5 @@ export const api = {
   generateCoverLetter: "/api/generate-cover-letter",
   createJobApplication: "/api/job-application/create",
   getMyJobApplications: "/api/job-application/read/mine",
+  readJobApplication: (id: string) => `/api/job-application/read/${id}`,
 };

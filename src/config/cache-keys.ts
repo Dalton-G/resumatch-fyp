@@ -9,4 +9,5 @@ export const cacheKeys = {
   companyJobPostings: "company-job-postings",
   myJobApplications: "my-job-applications",
   appliedJobDetails: "applied-job-details",
+  jobApplication: "job-application",
 };
