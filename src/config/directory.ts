@@ -41,4 +41,5 @@ export const api = {
   deleteJob: (id: string) => `/api/jobs/delete/${id}`,
   listJobs: "/api/jobs/list",
   listJobsByCompany: "/api/jobs/list-by-company",
+  generateCoverLetter: "/api/generate-cover-letter",
 };

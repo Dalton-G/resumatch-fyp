@@ -2,6 +2,7 @@
 
 import { useJobDetails } from "@/hooks/use-job-details";
 import { useMyResume } from "@/hooks/use-my-resume";
+import { useGenerateCoverLetter } from "@/hooks/use-generate-cover-letter";
 import { JobViewResponse } from "@/lib/types/job-view-response";
 import { cleanFilename, formatEnumString } from "@/lib/utils/clean-filename";
 import { Resume } from "@prisma/client";
@@ -25,6 +26,7 @@ import { pages } from "@/config/directory";
 import { cn } from "@/lib/utils";
 import { FiMapPin } from "react-icons/fi";
 import { IoCashOutline } from "react-icons/io5";
+import { Loader2, Sparkles } from "lucide-react";
 
 interface ApplyForJobFormProps {
   jobId: string;
@@ -39,6 +41,7 @@ type ApplicationFormType = z.infer<typeof applicationFormSchema>;
 
 export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
   const router = useRouter();
+
   // Fetch the user's resume list
   const {
     data: resumeList,
@@ -53,6 +56,9 @@ export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
     isError: isErrorJobDetails,
   } = useJobDetails(jobId);
 
+  // Hook for generating cover letter
+  const { generateCoverLetter, isGenerating } = useGenerateCoverLetter();
+
   const resumes = resumeList as Resume[] | undefined;
   const jobDetail = jobDetails as JobViewResponse | undefined;
 
@@ -62,6 +68,7 @@ export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
     formState: { errors },
     watch,
     reset,
+    setValue,
   } = useForm<ApplicationFormType>({
     resolver: zodResolver(applicationFormSchema),
     defaultValues: {
@@ -72,6 +79,22 @@ export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
 
   const selectedResumeId = watch("resumeId");
   const coverLetter = watch("coverLetter");
+
+  const handleGenerateCoverLetter = async () => {
+    if (!selectedResumeId) {
+      toast.error("Please select a resume first");
+      return;
+    }
+
+    const generatedCoverLetter = await generateCoverLetter({
+      jobId,
+      resumeId: selectedResumeId,
+    });
+
+    if (generatedCoverLetter) {
+      setValue("coverLetter", generatedCoverLetter);
+    }
+  };
 
   const onSubmit = (data: ApplicationFormType) => {
     const payload = { ...data, jobId };
@@ -230,11 +253,21 @@ export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
                 <Button
                   type="button"
                   variant="outline"
-                  className="bg-[var(--r-blue)] text-white"
-                  disabled
+                  className="bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/80"
+                  onClick={handleGenerateCoverLetter}
+                  disabled={isGenerating || !selectedResumeId}
                 >
-                  {/* Placeholder for AI generation */}
-                  <span className="mr-2">✦</span> Generate with AI
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Generate with AI
+                    </>
+                  )}
                 </Button>
               </div>
               <div className="text-[var(--r-boldgray)] mb-4">
@@ -246,9 +279,10 @@ export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
                 render={({ field }) => (
                   <Textarea
                     {...field}
-                    placeholder="Write your cover letter here"
-                    rows={5}
-                    className="resize-none h-32"
+                    placeholder="Write your cover letter here or click 'Generate with AI' to create one automatically"
+                    rows={8}
+                    className="h-40"
+                    disabled={isGenerating}
                   />
                 )}
               />
@@ -308,6 +342,7 @@ export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
                 <Button
                   type="submit"
                   className="font-dm-serif px-8 py-2 bg-[var(--r-blue)] text-white w-[180px] hover:bg-[var(--r-blue)]/80"
+                  disabled={isGenerating}
                 >
                   Submit Now
                 </Button>
