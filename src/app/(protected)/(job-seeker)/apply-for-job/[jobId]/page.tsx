@@ -8,11 +8,16 @@ export default async function ApplyForJobPage({
   params: Promise<{ jobId: string }>;
 }) {
   const { jobId } = await params;
+  const session = await ensureAuth();
 
   return (
     <div>
       <Heading title="Apply for Position" />
-      <ApplyForJobForm jobId={jobId} />
+      <ApplyForJobForm
+        jobId={jobId}
+        userId={session.user.id}
+        role={session.user.role}
+      />
     </div>
   );
 }

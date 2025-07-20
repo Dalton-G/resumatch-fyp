@@ -5,7 +5,7 @@ import { useMyResume } from "@/hooks/use-my-resume";
 import { useGenerateCoverLetter } from "@/hooks/use-generate-cover-letter";
 import { JobViewResponse } from "@/lib/types/job-view-response";
 import { cleanFilename, formatEnumString } from "@/lib/utils/clean-filename";
-import { Resume } from "@prisma/client";
+import { JobSeekerProfile, Resume } from "@prisma/client";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
@@ -27,9 +27,12 @@ import { cn } from "@/lib/utils";
 import { FiMapPin } from "react-icons/fi";
 import { IoCashOutline } from "react-icons/io5";
 import { Loader2, Sparkles } from "lucide-react";
+import { useCurrentUserProfile } from "@/hooks/use-profile";
 
 interface ApplyForJobFormProps {
   jobId: string;
+  userId: string;
+  role: string;
 }
 
 const applicationFormSchema = z.object({
@@ -39,7 +42,11 @@ const applicationFormSchema = z.object({
 
 type ApplicationFormType = z.infer<typeof applicationFormSchema>;
 
-export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
+export default function ApplyForJobForm({
+  jobId,
+  userId,
+  role,
+}: ApplyForJobFormProps) {
   const router = useRouter();
 
   // Fetch the user's resume list
@@ -56,11 +63,18 @@ export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
     isError: isErrorJobDetails,
   } = useJobDetails(jobId);
 
+  const {
+    data: currentUserProfile,
+    isLoading: isLoadingProfile,
+    isError: isErrorProfile,
+  } = useCurrentUserProfile(userId, role);
+
   // Hook for generating cover letter
   const { generateCoverLetter, isGenerating } = useGenerateCoverLetter();
 
   const resumes = resumeList as Resume[] | undefined;
   const jobDetail = jobDetails as JobViewResponse | undefined;
+  const userProfile = currentUserProfile as JobSeekerProfile | undefined;
 
   const {
     control,
@@ -97,7 +111,7 @@ export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
   };
 
   const onSubmit = (data: ApplicationFormType) => {
-    const payload = { ...data, jobId };
+    const payload = { ...data, jobId, jobSeekerId: userProfile?.id };
     console.log("Submitting application for job:", payload);
   };
 
