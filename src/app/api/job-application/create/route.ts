@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { updateResumeAppliedJobs } from "@/lib/utils/pinecone-operation";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -11,6 +12,13 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const { jobId, resumeId, coverLetter, jobSeekerId } = body;
+
+    if (!jobId || !resumeId || !jobSeekerId) {
+      return NextResponse.json(
+        { error: "Missing required fields: jobId, resumeId, jobSeekerId" },
+        { status: 400 }
+      );
+    }
 
     // 1. Get the profile of the submitter
     const jobSeeker = await prisma.jobSeekerProfile.findUnique({
@@ -53,7 +61,20 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ success: true, application });
+    // 5. Add the job id into the job seeker resume's appliedJobIds array
+    await updateResumeAppliedJobs(resumeId, jobId);
+
+    // 6. Save into prisma
+    await prisma.resumeEmbedding.update({
+      where: { resumeId },
+      data: {
+        appliedJobIds: {
+          push: jobId,
+        },
+      },
+    });
+
+    return NextResponse.json({ success: true, application }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to create application." },
