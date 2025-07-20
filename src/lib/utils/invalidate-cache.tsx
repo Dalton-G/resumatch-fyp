@@ -17,5 +17,8 @@ export async function invalidateJobApplicationQueries(
     queryClient.invalidateQueries({ queryKey: [cacheKeys.myJobApplications] }),
     queryClient.invalidateQueries({ queryKey: [cacheKeys.jobApplication] }),
     queryClient.invalidateQueries({ queryKey: [cacheKeys.appliedJobDetails] }),
+    queryClient.invalidateQueries({
+      queryKey: [cacheKeys.jobApplicationStatus],
+    }),
   ]);
 }

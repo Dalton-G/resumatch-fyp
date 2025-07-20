@@ -94,7 +94,10 @@ export default function MyJobApplicationContent({
     <div className="flex flex-col md:flex-row gap-8 px-8 py-12 justify-center font-libertinus bg-[var(--r-gray)] max-h-[calc(100vh-7rem)] overflow-y-auto">
       {/* Left: Job Card & Actions */}
       <div className="w-full md:w-1/4 flex flex-col items-center gap-6">
-        <Card className="w-full rounded-xl shadow-md">
+        <Card
+          className="w-full rounded-xl shadow-md cursor-pointer"
+          onClick={() => router.push(pages.viewJob(job.id))}
+        >
           <CardContent className="px-8 py-4 flex flex-col items-center">
             {/* Company Logo */}
             <div className="w-16 h-16 rounded-full bg-[var(--r-darkgray)] flex items-center justify-center mb-4 overflow-hidden">
@@ -290,7 +293,7 @@ export default function MyJobApplicationContent({
               <div className="text-2xl font-dm-serif text-[var(--r-boldgray)] mb-4 mt-8">
                 Cover Letter Submitted
               </div>
-              <div className="border-1 border-[var(--r-darkgray)] rounded-lg p-4 text-[var(--r-black)] min-h-[80px] whitespace-pre-line">
+              <div className="border-1 border-[var(--r-darkgray)] rounded-lg p-4 text-[var(--r-black)] min-h-[80px] whitespace-pre-line bg-gray-100">
                 {app.coverLetter ? (
                   app.coverLetter
                 ) : (
@@ -305,7 +308,7 @@ export default function MyJobApplicationContent({
               <div className="text-2xl font-dm-serif text-[var(--r-boldgray)] mb-4 mt-8">
                 Message from Recruiter
               </div>
-              <div className="border-1 border-[var(--r-darkgray)] rounded-lg p-4 text-[var(--r-black)] min-h-[80px] whitespace-pre-line">
+              <div className="border-1 border-[var(--r-darkgray)] rounded-lg p-4 text-[var(--r-black)] min-h-[80px] whitespace-pre-line bg-gray-100">
                 {app.feedback ? (
                   app.feedback
                 ) : (

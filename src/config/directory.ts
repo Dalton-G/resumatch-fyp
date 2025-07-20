@@ -48,4 +48,6 @@ export const api = {
   getMyJobApplications: "/api/job-application/read/mine",
   readJobApplication: (id: string) => `/api/job-application/read/${id}`,
   deleteJobApplication: (id: string) => `/api/job-application/delete/${id}`,
+  hasAppliedForJob: (jobId: string) =>
+    `/api/job-application/read/has-applied/${jobId}`,
 };

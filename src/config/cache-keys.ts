@@ -10,4 +10,5 @@ export const cacheKeys = {
   myJobApplications: "my-job-applications",
   appliedJobDetails: "applied-job-details",
   jobApplication: "job-application",
+  jobApplicationStatus: "job-application-status",
 };

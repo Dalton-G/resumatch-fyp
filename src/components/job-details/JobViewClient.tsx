@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useJobDetails } from "@/hooks/use-job-details";
+import { useJobApplicationStatus } from "@/hooks/use-job-application-status";
 
 interface JobViewClientProps {
   jobId: string;
@@ -22,11 +23,11 @@ interface JobViewClientProps {
 export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
   const router = useRouter();
   const { data, isLoading, isError } = useJobDetails(jobId);
+  const { data: hasApplied, isLoading: isLoadingHasApplied } =
+    useJobApplicationStatus(jobId);
 
-  // Simulate hasApplied (should be replaced with real logic if needed)
-  const hasApplied = false;
-
-  if (isLoading) return <div className="p-8 text-center">Loading...</div>;
+  if (isLoading || isLoadingHasApplied)
+    return <div className="p-8 text-center">Loading...</div>;
   if (isError || !data || !data.job || !data.company) return <NotFoundJob />;
 
   const { job, company, applicationCount } = data;
@@ -57,14 +58,20 @@ export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
           posted={job.createdAt}
           updated={job.updatedAt}
         />
-        {userRole !== "COMPANY" && userRole !== "ADMIN" && (
-          <ReadyToApplyCard
-            companyName={company.name}
-            applicationCount={applicationCount}
-            hasApplied={hasApplied}
-            onApply={() => router.push(pages.applyForJob(job.id))}
-          />
-        )}
+        {userRole !== "COMPANY" &&
+          userRole !== "ADMIN" &&
+          (isLoadingHasApplied ? (
+            <div className="p-4 text-center">
+              Checking application status...
+            </div>
+          ) : (
+            <ReadyToApplyCard
+              companyName={company.name}
+              applicationCount={applicationCount}
+              hasApplied={!!hasApplied}
+              onApply={() => router.push(pages.applyForJob(job.id))}
+            />
+          ))}
       </div>
     </div>
   );
