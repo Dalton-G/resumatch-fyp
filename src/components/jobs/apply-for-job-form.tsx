@@ -29,6 +29,10 @@ import { FiMapPin } from "react-icons/fi";
 import { IoCashOutline } from "react-icons/io5";
 import { Loader2, Sparkles } from "lucide-react";
 import { useCurrentUserProfile } from "@/hooks/use-profile";
+import { useJobApplicationStatus } from "@/hooks/use-job-application-status";
+import { useQueryClient } from "@tanstack/react-query";
+import { invalidateJobApplicationQueries } from "@/lib/utils/invalidate-cache";
+import { LuFileCheck } from "react-icons/lu";
 
 interface ApplyForJobFormProps {
   jobId: string;
@@ -49,6 +53,7 @@ export default function ApplyForJobForm({
   role,
 }: ApplyForJobFormProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // Fetch the user's resume list
   const {
@@ -69,6 +74,10 @@ export default function ApplyForJobForm({
     isLoading: isLoadingProfile,
     isError: isErrorProfile,
   } = useCurrentUserProfile(userId, role);
+
+  // Check if the user has already applied for this job
+  const { data: hasApplied, isLoading: isLoadingHasApplied } =
+    useJobApplicationStatus(jobId);
 
   // Hook for generating cover letter
   const { generateCoverLetter, isGenerating } = useGenerateCoverLetter();
@@ -125,6 +134,8 @@ export default function ApplyForJobForm({
       toast.error(
         error?.response?.data?.error || "Failed to submit application."
       );
+    } finally {
+      await invalidateJobApplicationQueries(queryClient);
     }
   };
 
@@ -141,6 +152,27 @@ export default function ApplyForJobForm({
   }
   if (!jobDetail) {
     return <div className="p-8 text-center">Job not found.</div>;
+  }
+
+  if (isLoadingHasApplied) {
+    return (
+      <div className="p-8 text-center">Checking application status...</div>
+    );
+  }
+
+  if (hasApplied) {
+    return (
+      <div className="flex flex-col gap-6 min-h-[calc(100vh-6rem)] items-center justify-center text-center font-libertinus">
+        <LuFileCheck className="text-7xl text-[var(--r-blue)] mb-4" />
+        <p className="text-2xl">You have already applied for this job!</p>
+        <Button
+          className="bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80 text-lg"
+          onClick={() => router.push(pages.myApplications)}
+        >
+          Go to My Applications
+        </Button>
+      </div>
+    );
   }
 
   return (
