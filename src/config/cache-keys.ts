@@ -7,4 +7,5 @@ export const cacheKeys = {
   jobView: "job-view",
   myJobPostings: "my-job-postings",
   companyJobPostings: "company-job-postings",
+  myJobApplications: "my-job-applications",
 };
