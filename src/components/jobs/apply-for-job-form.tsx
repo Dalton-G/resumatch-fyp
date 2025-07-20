@@ -18,11 +18,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { pages } from "@/config/directory";
+import { pages, api } from "@/config/directory";
 import { cn } from "@/lib/utils";
 import { FiMapPin } from "react-icons/fi";
 import { IoCashOutline } from "react-icons/io5";
@@ -110,9 +111,21 @@ export default function ApplyForJobForm({
     }
   };
 
-  const onSubmit = (data: ApplicationFormType) => {
+  const onSubmit = async (data: ApplicationFormType) => {
     const payload = { ...data, jobId, jobSeekerId: userProfile?.id };
-    console.log("Submitting application for job:", payload);
+    try {
+      const response = await axios.post(api.createJobApplication, payload);
+      if (response.data.success) {
+        toast.success("Application submitted successfully!");
+        router.push(pages.myApplications);
+      } else {
+        toast.error(response.data.error || "Failed to submit application.");
+      }
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.error || "Failed to submit application."
+      );
+    }
   };
 
   // Loading/Error states

@@ -42,4 +42,5 @@ export const api = {
   listJobs: "/api/jobs/list",
   listJobsByCompany: "/api/jobs/list-by-company",
   generateCoverLetter: "/api/generate-cover-letter",
+  createJobApplication: "/api/job-application/create",
 };
