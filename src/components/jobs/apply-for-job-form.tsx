@@ -74,11 +74,8 @@ export default function ApplyForJobForm({ jobId }: ApplyForJobFormProps) {
   const coverLetter = watch("coverLetter");
 
   const onSubmit = (data: ApplicationFormType) => {
-    // Placeholder: log jobId, resumeId, coverLetter
-    toast.message("Application submitted!", {
-      description: `Job ID: ${jobId}\nResume ID: ${data.resumeId}\nCover Letter: ${data.coverLetter}`,
-    });
-    // You can reset or navigate after submit if desired
+    const payload = { ...data, jobId };
+    console.log("Submitting application for job:", payload);
   };
 
   // Loading/Error states
