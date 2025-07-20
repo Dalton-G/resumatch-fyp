@@ -23,6 +23,7 @@ export async function GET(
             lastName: true,
             profession: true,
             profilePicture: true,
+            userId: true,
           },
         },
         job: {

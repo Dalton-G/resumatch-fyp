@@ -9,6 +9,8 @@ import { IoCashOutline } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { cleanFilename } from "@/lib/utils/clean-filename";
 import { Separator } from "../ui/separator";
+import { useRouter } from "next/navigation";
+import { pages } from "@/config/directory";
 
 interface MyJobApplicationContentProps {
   applicationId: string;
@@ -18,6 +20,7 @@ export default function MyJobApplicationContent({
   applicationId,
 }: MyJobApplicationContentProps) {
   const { data, isLoading, error } = useJobApplication(applicationId);
+  const router = useRouter();
 
   if (isLoading)
     return (
@@ -220,7 +223,13 @@ export default function MyJobApplicationContent({
                     </div>
                   </div>
                 </div>
-                <Button variant="outline" className="ml-4">
+                <Button
+                  variant="outline"
+                  className="ml-4"
+                  onClick={() =>
+                    router.push(`${pages.viewProfile}/${jobSeeker.userId}`)
+                  }
+                >
                   View Profile
                 </Button>
               </div>
@@ -234,7 +243,12 @@ export default function MyJobApplicationContent({
                 <span className="text-[var(--r-black)] text-lg">
                   {cleanFilename(resume.fileName)}
                 </span>
-                <Button variant="outline">View Resume</Button>
+                <Button
+                  variant="outline"
+                  onClick={() => window.open(resume.s3Url, "_blank")}
+                >
+                  View Resume
+                </Button>
               </div>
             </div>
             {/* Cover Letter Submitted */}
