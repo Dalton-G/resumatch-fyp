@@ -7,10 +7,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FiMapPin } from "react-icons/fi";
 import { IoCashOutline } from "react-icons/io5";
 import { cn } from "@/lib/utils";
+import { api, pages } from "@/config/directory";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import React, { useState } from "react";
 import { cleanFilename } from "@/lib/utils/clean-filename";
 import { Separator } from "../ui/separator";
-import { useRouter } from "next/navigation";
-import { pages } from "@/config/directory";
+import { useQueryClient } from "@tanstack/react-query";
+import { invalidateJobApplicationQueries } from "@/lib/utils/invalidate-cache";
 
 interface MyJobApplicationContentProps {
   applicationId: string;
@@ -21,6 +26,8 @@ export default function MyJobApplicationContent({
 }: MyJobApplicationContentProps) {
   const { data, isLoading, error } = useJobApplication(applicationId);
   const router = useRouter();
+  const [withdrawing, setWithdrawing] = useState(false);
+  const queryClient = useQueryClient();
 
   if (isLoading)
     return (
@@ -163,8 +170,35 @@ export default function MyJobApplicationContent({
         <Button className="w-full h-12 text-lg  bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/80 mt-4">
           Practice Interview Questions
         </Button>
-        <Button className="w-full h-12 text-lg  bg-[var(--r-darkgray)] text-black hover:bg-red-400 hover:text-white">
-          Withdraw Application
+        <Button
+          className="w-full h-12 text-lg bg-[var(--r-darkgray)] text-black hover:bg-red-600 hover:text-white"
+          disabled={withdrawing}
+          onClick={async () => {
+            setWithdrawing(true);
+            try {
+              const response = await axios.delete(
+                api.deleteJobApplication(applicationId)
+              );
+              if (response.status === 200) {
+                toast.success("Application withdrawn successfully!");
+                router.push(pages.myApplications);
+              } else {
+                toast.error(
+                  response.data?.error || "Failed to withdraw application."
+                );
+              }
+            } catch (error: any) {
+              toast.error(
+                error?.response?.data?.error ||
+                  "Failed to withdraw application."
+              );
+            } finally {
+              await invalidateJobApplicationQueries(queryClient);
+              setWithdrawing(false);
+            }
+          }}
+        >
+          {withdrawing ? "Withdrawing..." : "Withdraw Application"}
         </Button>
       </div>
 

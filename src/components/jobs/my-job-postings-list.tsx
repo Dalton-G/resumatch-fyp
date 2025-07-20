@@ -25,8 +25,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { WorkType, JobStatus } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { api, pages } from "@/config/directory";
-import { cacheKeys } from "@/config/cache-keys";
-import { invalidateJobPostingQueries } from "@/lib/utils/invalidate-job-cache";
+import { invalidateJobPostingQueries } from "@/lib/utils/invalidate-cache";
 
 // Editable: max chars for description preview
 const DESCRIPTION_PREVIEW_LENGTH = 120;

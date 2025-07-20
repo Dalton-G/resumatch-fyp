@@ -23,11 +23,10 @@ import {
 import { Separator } from "../ui/separator";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { cacheKeys } from "@/config/cache-keys";
 import { useState } from "react";
 import { countryOptions } from "@/config/country-options";
 import axios from "@/lib/axios";
-import { invalidateJobPostingQueries } from "@/lib/utils/invalidate-job-cache";
+import { invalidateJobPostingQueries } from "@/lib/utils/invalidate-cache";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),

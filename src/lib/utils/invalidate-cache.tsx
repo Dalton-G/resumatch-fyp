@@ -9,3 +9,13 @@ export async function invalidateJobPostingQueries(queryClient: QueryClient) {
     queryClient.invalidateQueries({ queryKey: [cacheKeys.companyJobPostings] }),
   ]);
 }
+
+export async function invalidateJobApplicationQueries(
+  queryClient: QueryClient
+) {
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: [cacheKeys.myJobApplications] }),
+    queryClient.invalidateQueries({ queryKey: [cacheKeys.jobApplication] }),
+    queryClient.invalidateQueries({ queryKey: [cacheKeys.appliedJobDetails] }),
+  ]);
+}

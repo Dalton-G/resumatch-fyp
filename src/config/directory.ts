@@ -47,4 +47,5 @@ export const api = {
   createJobApplication: "/api/job-application/create",
   getMyJobApplications: "/api/job-application/read/mine",
   readJobApplication: (id: string) => `/api/job-application/read/${id}`,
+  deleteJobApplication: (id: string) => `/api/job-application/delete/${id}`,
 };
