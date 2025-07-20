@@ -18,6 +18,7 @@ export type JobApplicationViewResponse = {
       firstName: string | null;
       lastName: string | null;
       profession: string | null;
+      profilePicture: string | null;
     };
 
     job: {
