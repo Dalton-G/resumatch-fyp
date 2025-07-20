@@ -16,7 +16,6 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { FiMapPin } from "react-icons/fi";
 import { IoCashOutline } from "react-icons/io5";

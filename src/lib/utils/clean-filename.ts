@@ -11,3 +11,11 @@ export function cleanFilename(filename: string): string {
   // Fallback: just remove up to the first hyphen
   return filename.slice(firstHyphen + 1);
 }
+
+export function formatEnumString(str: string): string {
+  return str
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
