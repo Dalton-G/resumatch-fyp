@@ -37,6 +37,7 @@ export const api = {
   getMyJobPostings: "/api/jobs/by-user",
   updateJob: (id: string) => `/api/jobs/update/${id}`,
   viewJob: (id: string) => `/api/jobs/${id}/view`,
+  viewJobWithoutInc: (id: string) => `/api/jobs/${id}/view-without-inc`,
   processJobPosting: "/api/process-job-posting",
   deleteJob: (id: string) => `/api/jobs/delete/${id}`,
   listJobs: "/api/jobs/list",
