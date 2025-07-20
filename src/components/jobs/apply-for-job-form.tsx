@@ -33,6 +33,7 @@ import { useJobApplicationStatus } from "@/hooks/use-job-application-status";
 import { useQueryClient } from "@tanstack/react-query";
 import { invalidateJobApplicationQueries } from "@/lib/utils/invalidate-cache";
 import { LuFileCheck } from "react-icons/lu";
+import { useState } from "react";
 
 interface ApplyForJobFormProps {
   jobId: string;
@@ -54,6 +55,7 @@ export default function ApplyForJobForm({
 }: ApplyForJobFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch the user's resume list
   const {
@@ -123,6 +125,7 @@ export default function ApplyForJobForm({
   const onSubmit = async (data: ApplicationFormType) => {
     const payload = { ...data, jobId, jobSeekerId: userProfile?.id };
     try {
+      setIsSubmitting(true);
       const response = await axios.post(api.createJobApplication, payload);
       if (response.data.success) {
         toast.success("Application submitted successfully!");
@@ -136,6 +139,7 @@ export default function ApplyForJobForm({
       );
     } finally {
       await invalidateJobApplicationQueries(queryClient);
+      setIsSubmitting(false);
     }
   };
 
@@ -401,9 +405,9 @@ export default function ApplyForJobForm({
                 <Button
                   type="submit"
                   className="font-dm-serif px-8 py-2 bg-[var(--r-blue)] text-white w-[180px] hover:bg-[var(--r-blue)]/80"
-                  disabled={isGenerating}
+                  disabled={isGenerating || isSubmitting}
                 >
-                  Submit Now
+                  {isSubmitting ? "Submitting..." : "Submit Now"}
                 </Button>
               </div>
             </CardContent>

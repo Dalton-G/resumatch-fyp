@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     // 5. Add the job id into the job seeker resume's appliedJobIds array
     await updateResumeAppliedJobs(resumeId, jobId);
 
-    // 6. Save into prisma
+    // 6. Save into Supabase
     await prisma.resumeEmbedding.update({
       where: { resumeId },
       data: {
