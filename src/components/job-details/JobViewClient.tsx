@@ -11,6 +11,7 @@ import axios from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useJobDetails } from "@/hooks/use-job-details";
 
 interface JobViewClientProps {
   jobId: string;
@@ -20,13 +21,7 @@ interface JobViewClientProps {
 
 export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
   const router = useRouter();
-  const { data, isLoading, isError } = useQuery({
-    queryKey: [cacheKeys.jobView, jobId],
-    queryFn: async () => {
-      const res = await axios.get(api.viewJob(jobId));
-      return res.data;
-    },
-  });
+  const { data, isLoading, isError } = useJobDetails(jobId);
 
   // Simulate hasApplied (should be replaced with real logic if needed)
   const hasApplied = false;
@@ -67,7 +62,7 @@ export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
             companyName={company.name}
             applicationCount={applicationCount}
             hasApplied={hasApplied}
-            onApply={() => {}}
+            onApply={() => router.push(pages.applyForJob(job.id))}
           />
         )}
       </div>

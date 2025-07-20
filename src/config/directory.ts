@@ -18,6 +18,7 @@ export const pages = {
   editJob: (id: string) => `/edit-job/${id}`,
   viewJob: (id: string) => `/jobs/${id}`,
   redirect: "/redirect",
+  applyForJob: (jobId: string) => `/apply-for-job/${jobId}`,
 };
 
 export const api = {
