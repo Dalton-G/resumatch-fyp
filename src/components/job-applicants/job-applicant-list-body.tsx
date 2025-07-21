@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useMemo } from "react";
 import { JobApplicantsResponse } from "@/lib/types/job-applicants-view-response";
 import { Input } from "@/components/ui/input";
@@ -12,11 +14,12 @@ import {
 } from "@/components/ui/select";
 import { HiOutlineDocumentText } from "react-icons/hi2";
 import { MdOutlineAccessTime, MdFilterAltOff } from "react-icons/md";
-import { toast } from "sonner";
 import { cleanFilename } from "@/lib/utils/clean-filename";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { ApplicationStatus } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { pages } from "@/config/directory";
 
 // Status options (formatted)
 const statusOptions = [
@@ -53,6 +56,7 @@ export default function JobApplicantListBody({
 }: JobApplicantListBodyProps) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
+  const router = useRouter();
 
   const filtered = useMemo(() => {
     let apps = [...jobApplicants.applications];
@@ -195,7 +199,7 @@ export default function JobApplicantListBody({
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
-                      toast.success(`clicked view applicant on id: ${app.id}`);
+                      router.push(pages.viewApplication(app.id));
                     }}
                     className="bg-[var(--r-blue)] text-white w-40 text-md hover:bg-[var(--r-blue)]/80"
                   >

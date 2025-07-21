@@ -22,6 +22,7 @@ export const pages = {
   viewApplicants: (jobId: string, jobTitle: string) =>
     `/view-applicants/${jobId}/${encodeURIComponent(jobTitle)}`,
   rankApplicants: "/rank-applicants",
+  viewApplication: (id: string) => `/view-application/${id}`,
 };
 
 export const api = {
@@ -55,4 +56,5 @@ export const api = {
   getJobApplicants: (jobId: string) =>
     `/api/job-applicants/view-by-job-id/${jobId}`,
   checkJobOwnership: "/api/job-applicants/check-authorized",
+  updateJobApplication: (id: string) => `/api/job-application/update/${id}`,
 };
