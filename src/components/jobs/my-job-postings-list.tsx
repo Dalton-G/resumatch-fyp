@@ -280,7 +280,7 @@ export default function MyJobPostingsList() {
                     onClick={() =>
                       toast.message(`clicked view applicants on ${job.id}`)
                     }
-                    className="bg-[var(--r-blue)] text-white w-40 text-md"
+                    className="bg-[var(--r-blue)] text-white w-40 text-md hover:bg-[var(--r-blue)]/80"
                   >
                     View Applicants
                   </Button>
