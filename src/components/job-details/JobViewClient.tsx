@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useJobDetails } from "@/hooks/use-job-details";
 import { useJobApplicationStatus } from "@/hooks/use-job-application-status";
+import { UserRole } from "@prisma/client";
 
 interface JobViewClientProps {
   jobId: string;
@@ -24,7 +25,9 @@ export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
   const router = useRouter();
   const { data, isLoading, isError } = useJobDetails(jobId);
   const { data: hasApplied, isLoading: isLoadingHasApplied } =
-    useJobApplicationStatus(jobId);
+    useJobApplicationStatus(jobId, userRole === UserRole.JOB_SEEKER);
+
+  const showApplyCard = userRole === UserRole.JOB_SEEKER;
 
   if (isLoading || isLoadingHasApplied)
     return <div className="p-8 text-center">Loading...</div>;
@@ -58,8 +61,7 @@ export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
           posted={job.createdAt}
           updated={job.updatedAt}
         />
-        {userRole !== "COMPANY" &&
-          userRole !== "ADMIN" &&
+        {showApplyCard &&
           (isLoadingHasApplied ? (
             <div className="p-4 text-center">
               Checking application status...

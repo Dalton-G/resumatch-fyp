@@ -3,7 +3,7 @@ import { api } from "@/config/directory";
 import axios from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 
-export function useJobApplicationStatus(jobId: string) {
+export function useJobApplicationStatus(jobId: string, isJobSeeker: boolean) {
   return useQuery({
     queryKey: [cacheKeys.jobApplicationStatus, jobId],
     queryFn: async () => {
@@ -12,6 +12,6 @@ export function useJobApplicationStatus(jobId: string) {
       );
       return response.data.hasApplied;
     },
-    enabled: !!jobId, // only run if jobId is defined
+    enabled: !!jobId && isJobSeeker, // only run if jobId is defined and user is a job seeker
   });
 }
