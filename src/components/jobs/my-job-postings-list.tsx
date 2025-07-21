@@ -278,7 +278,7 @@ export default function MyJobPostingsList() {
                   </div>
                   <Button
                     onClick={() => {
-                      router.push(pages.viewApplicants(job.id));
+                      router.push(pages.viewApplicants(job.id, job.title));
                     }}
                     className="bg-[var(--r-blue)] text-white w-40 text-md hover:bg-[var(--r-blue)]/80"
                   >

@@ -2,13 +2,17 @@
 
 import { useCheckJobOwnership } from "@/hooks/use-check-job-ownership";
 import { useJobApplicants } from "@/hooks/use-job-applicants";
+import JobApplicantListHeading from "./job-applicant-list-heading";
+import JobApplicantListBody from "./job-applicant-list-body";
 
 interface JobApplicantViewClientProps {
   jobId: string;
+  jobTitle: string;
 }
 
 export default function JobApplicantViewClient({
   jobId,
+  jobTitle,
 }: JobApplicantViewClientProps) {
   const {
     data: ownsJobPosting,
@@ -66,8 +70,8 @@ export default function JobApplicantViewClient({
 
   return (
     <div>
-      You are authorized to view applicants and you have {jobApplicants.length}{" "}
-      applicants.
+      <JobApplicantListHeading jobTitle={jobTitle} />
+      <JobApplicantListBody jobApplicants={jobApplicants} />
     </div>
   );
 }

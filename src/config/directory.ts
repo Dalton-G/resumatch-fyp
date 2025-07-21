@@ -1,5 +1,3 @@
-import { useCheckJobOwnership } from "@/hooks/use-check-job-ownership";
-
 export const pages = {
   login: "/",
   register: "/register",
@@ -21,7 +19,8 @@ export const pages = {
   redirect: "/redirect",
   applyForJob: (jobId: string) => `/apply-for-job/${jobId}`,
   viewMyApplication: (id: string) => `/my-applications/view/${id}`,
-  viewApplicants: (jobId: string) => `/view-applicants/${jobId}`,
+  viewApplicants: (jobId: string, jobTitle: string) =>
+    `/view-applicants/${jobId}/${encodeURIComponent(jobTitle)}`,
   rankApplicants: "/rank-applicants",
 };
 
