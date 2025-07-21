@@ -46,7 +46,7 @@ export const companySidebar: SidebarConfig = {
     {
       label: "Applicants",
       icon: LuInbox,
-      children: [{ label: "View Applicants", href: pages.viewApplicants }],
+      children: [{ label: "Rank Applicants", href: pages.viewApplicants }],
     },
   ],
 };
