@@ -99,9 +99,10 @@ export const InterviewPracticePanel = ({
     );
 
     // Calculate answers in current session
-    const currentSessionAnswers = sessionStarters.length > 0 
-      ? actualAnswers.length - ((sessionStarters.length - 1) * 3)
-      : 0;
+    const currentSessionAnswers =
+      sessionStarters.length > 0
+        ? actualAnswers.length - (sessionStarters.length - 1) * 3
+        : 0;
 
     const actualAnswerCount = Math.max(0, currentSessionAnswers);
     const aiQuestionCount = aiMessages.length;
@@ -114,7 +115,11 @@ export const InterviewPracticePanel = ({
         sessionComplete: true,
         isSessionActive: false,
       }));
-    } else if (userMessages.length > 0 && actualAnswerCount < 3 && actualAnswerCount >= 0) {
+    } else if (
+      userMessages.length > 0 &&
+      actualAnswerCount < 3 &&
+      actualAnswerCount >= 0
+    ) {
       // Session is active when we have started but haven't completed 3 answers in current session
       setInterviewState((prev) => ({
         ...prev,
