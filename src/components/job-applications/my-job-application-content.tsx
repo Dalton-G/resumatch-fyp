@@ -16,6 +16,7 @@ import { cleanFilename } from "@/lib/utils/clean-filename";
 import { Separator } from "../ui/separator";
 import { useQueryClient } from "@tanstack/react-query";
 import { invalidateJobApplicationQueries } from "@/lib/utils/invalidate-cache";
+import { InterviewPracticeDialog } from "../chat/interview-practice-dialog";
 
 interface MyJobApplicationContentProps {
   applicationId: string;
@@ -170,9 +171,11 @@ export default function MyJobApplicationContent({
             </div>
           </CardContent>
         </Card>
-        <Button className="w-full h-12 text-lg  bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/80 mt-4">
-          Practice Interview Questions
-        </Button>
+        <InterviewPracticeDialog
+          resumeS3Url={resume.s3Url}
+          jobDescription={job.description || ""}
+          candidateName={`${jobSeeker.firstName} ${jobSeeker.lastName}`}
+        />
         <Button
           className="w-full h-12 text-lg bg-[var(--r-darkgray)] text-black hover:bg-red-600 hover:text-white"
           disabled={withdrawing}
