@@ -81,23 +81,32 @@ export const InterviewPracticePanel = ({
 
   // Track interview state based on messages
   useEffect(() => {
-    const userMessages = messages.filter((m) => m.role === "user").length;
-    const aiMessages = messages.filter((m) => m.role === "assistant").length;
+    const userMessages = messages.filter((m) => m.role === "user");
+    const aiMessages = messages.filter((m) => m.role === "assistant");
 
-    if (
-      userMessages > 0 &&
-      userMessages % 3 === 0 &&
-      aiMessages > userMessages
-    ) {
+    // Filter out starter prompts to get actual answers
+    const actualAnswers = userMessages.filter(
+      (msg) =>
+        !msg.content.includes("Hello! I'm ready to start practicing") &&
+        !msg.content.includes("I'm ready for another practice session")
+    );
+
+    const actualAnswerCount = actualAnswers.length;
+    const aiQuestionCount = aiMessages.length;
+
+    // Session is complete when we have 3 answers and AI has provided feedback
+    if (actualAnswerCount >= 3 && aiQuestionCount > actualAnswerCount) {
       setInterviewState((prev) => ({
         ...prev,
+        questionsAsked: 3,
         sessionComplete: true,
         isSessionActive: false,
       }));
-    } else if (userMessages > 0 && userMessages < 3) {
+    } else if (userMessages.length > 0 && actualAnswerCount < 3) {
+      // Session is active when we have started but haven't completed 3 answers
       setInterviewState((prev) => ({
         ...prev,
-        questionsAsked: userMessages,
+        questionsAsked: actualAnswerCount,
         isSessionActive: true,
         sessionComplete: false,
       }));
@@ -151,6 +160,11 @@ export const InterviewPracticePanel = ({
     ? 100
     : 0;
 
+  // Calculate current question number for display
+  const currentQuestionNumber = interviewState.isSessionActive
+    ? Math.min(interviewState.questionsAsked + 1, 3)
+    : 1;
+
   return (
     <div className="flex flex-col h-full max-h-[80vh] w-full">
       {/* Interview Header & Progress */}
@@ -181,7 +195,7 @@ export const InterviewPracticePanel = ({
             <Badge variant="outline" className="text-xs">
               {interviewState.sessionComplete
                 ? "Session Complete"
-                : `Question ${interviewState.questionsAsked + 1}/3`}
+                : `Question ${currentQuestionNumber}/3`}
             </Badge>
           )}
         </div>
