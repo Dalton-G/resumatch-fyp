@@ -124,7 +124,7 @@ export default function RecruiterJobApplicationContent({
 
   return (
     <div className="flex flex-col md:flex-row gap-8 px-8 py-12 justify-center font-libertinus bg-[var(--r-gray)] max-h-[calc(100vh-7rem)] overflow-y-auto">
-      {/* Left: Job Card */}
+      {/* Left: Job Card & Actions */}
       <div className="w-full md:w-1/4 flex flex-col items-center gap-6">
         <Card
           className="w-full rounded-xl shadow-md cursor-pointer"
@@ -201,6 +201,12 @@ export default function RecruiterJobApplicationContent({
             </div>
           </CardContent>
         </Card>
+        <Button
+          className="w-full h-12 text-lg bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/80 mt-2"
+          onClick={() => toast.info("Chat with Application coming soon!")}
+        >
+          Chat with Application
+        </Button>
       </div>
 
       {/* Right: Application Details & Recruiter Controls */}
