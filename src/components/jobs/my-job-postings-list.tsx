@@ -277,9 +277,9 @@ export default function MyJobPostingsList() {
                     </Button>
                   </div>
                   <Button
-                    onClick={() =>
-                      toast.message(`clicked view applicants on ${job.id}`)
-                    }
+                    onClick={() => {
+                      router.push(pages.viewApplicants(job.id));
+                    }}
                     className="bg-[var(--r-blue)] text-white w-40 text-md hover:bg-[var(--r-blue)]/80"
                   >
                     View Applicants

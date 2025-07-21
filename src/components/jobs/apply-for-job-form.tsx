@@ -5,7 +5,7 @@ import { useMyResume } from "@/hooks/use-my-resume";
 import { useGenerateCoverLetter } from "@/hooks/use-generate-cover-letter";
 import { JobViewResponse } from "@/lib/types/job-view-response";
 import { cleanFilename, formatEnumString } from "@/lib/utils/clean-filename";
-import { JobSeekerProfile, Resume } from "@prisma/client";
+import { JobSeekerProfile, Resume, UserRole } from "@prisma/client";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
@@ -79,7 +79,7 @@ export default function ApplyForJobForm({
 
   // Check if the user has already applied for this job
   const { data: hasApplied, isLoading: isLoadingHasApplied } =
-    useJobApplicationStatus(jobId);
+    useJobApplicationStatus(jobId, role === UserRole.JOB_SEEKER);
 
   // Hook for generating cover letter
   const { generateCoverLetter, isGenerating } = useGenerateCoverLetter();

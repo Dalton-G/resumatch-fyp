@@ -1,3 +1,5 @@
+import { useCheckJobOwnership } from "@/hooks/use-check-job-ownership";
+
 export const pages = {
   login: "/",
   register: "/register",
@@ -7,7 +9,6 @@ export const pages = {
   manageJobs: "/manage-jobs",
   manageUsers: "/manage-users",
   myJobPostings: "/my-job-postings",
-  viewApplicants: "/view-applicants",
   myApplications: "/my-applications",
   myResume: "/my-resume",
   resumeOptimizer: "/resume-optimizer",
@@ -20,6 +21,8 @@ export const pages = {
   redirect: "/redirect",
   applyForJob: (jobId: string) => `/apply-for-job/${jobId}`,
   viewMyApplication: (id: string) => `/my-applications/view/${id}`,
+  viewApplicants: (jobId: string) => `/view-applicants/${jobId}`,
+  rankApplicants: "/rank-applicants",
 };
 
 export const api = {
@@ -50,4 +53,7 @@ export const api = {
   deleteJobApplication: (id: string) => `/api/job-application/delete/${id}`,
   hasAppliedForJob: (jobId: string) =>
     `/api/job-application/read/has-applied/${jobId}`,
+  getJobApplicants: (jobId: string) =>
+    `/api/job-applicants/view-by-job-id/${jobId}`,
+  checkJobOwnership: "/api/job-applicants/check-authorized",
 };
