@@ -34,6 +34,7 @@ export const api = {
   jobSeekerResume: "/api/job-seeker/upload-resume",
   extractResumeText: "/api/utils/extract-resume-text",
   chatWithResume: "/api/chat/with-resume",
+  chatWithApplication: "/api/chat/with-application",
   compareResume: "/api/compare-resume",
   s3: "/api/s3",
   processResume: "/api/process-resume",

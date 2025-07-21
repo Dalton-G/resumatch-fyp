@@ -11,7 +11,7 @@ import { api, pages } from "@/config/directory";
 import axiosInstance from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { cleanFilename } from "@/lib/utils/clean-filename";
 import { Separator } from "../ui/separator";
 import { ApplicationStatus } from "@prisma/client";
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { useQueryClient } from "@tanstack/react-query";
 import { invalidateJobApplicationQueries } from "@/lib/utils/invalidate-cache";
+import { RecruiterApplicationChatDialog } from "../chat/recruiter-application-chat-dialog";
 
 interface RecruiterJobApplicationContentProps {
   applicationId: string;
@@ -48,7 +49,7 @@ export default function RecruiterJobApplicationContent({
   const [saving, setSaving] = useState(false);
   const queryClient = useQueryClient();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (data) {
       setStatus(data.application.status);
       setFeedback(data.application.feedback || "");
@@ -201,12 +202,11 @@ export default function RecruiterJobApplicationContent({
             </div>
           </CardContent>
         </Card>
-        <Button
-          className="w-full h-12 text-lg bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/80 mt-2"
-          onClick={() => toast.info("Chat with Application coming soon!")}
-        >
-          Chat with Application
-        </Button>
+        <RecruiterApplicationChatDialog
+          resumeS3Url={resume.s3Url}
+          jobDescription={job.description || ""}
+          candidateName={`${jobSeeker.firstName} ${jobSeeker.lastName}`}
+        />
       </div>
 
       {/* Right: Application Details & Recruiter Controls */}
