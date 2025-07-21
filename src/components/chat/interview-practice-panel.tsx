@@ -91,19 +91,31 @@ export const InterviewPracticePanel = ({
         !msg.content.includes("I'm ready for another practice session")
     );
 
-    const actualAnswerCount = actualAnswers.length;
+    // Count session starter prompts to determine current session answers
+    const sessionStarters = userMessages.filter(
+      (msg) =>
+        msg.content.includes("Hello! I'm ready to start practicing") ||
+        msg.content.includes("I'm ready for another practice session")
+    );
+
+    // Calculate answers in current session
+    const currentSessionAnswers = sessionStarters.length > 0 
+      ? actualAnswers.length - ((sessionStarters.length - 1) * 3)
+      : 0;
+
+    const actualAnswerCount = Math.max(0, currentSessionAnswers);
     const aiQuestionCount = aiMessages.length;
 
-    // Session is complete when we have 3 answers and AI has provided feedback
-    if (actualAnswerCount >= 3 && aiQuestionCount > actualAnswerCount) {
+    // Session is complete when we have 3 answers in current session and AI has provided feedback
+    if (actualAnswerCount >= 3 && aiQuestionCount > userMessages.length - 1) {
       setInterviewState((prev) => ({
         ...prev,
         questionsAsked: 3,
         sessionComplete: true,
         isSessionActive: false,
       }));
-    } else if (userMessages.length > 0 && actualAnswerCount < 3) {
-      // Session is active when we have started but haven't completed 3 answers
+    } else if (userMessages.length > 0 && actualAnswerCount < 3 && actualAnswerCount >= 0) {
+      // Session is active when we have started but haven't completed 3 answers in current session
       setInterviewState((prev) => ({
         ...prev,
         questionsAsked: actualAnswerCount,
@@ -114,10 +126,10 @@ export const InterviewPracticePanel = ({
   }, [messages]);
 
   const startNewSession = () => {
-    const sessionStartPrompt =
-      interviewState.currentSession === 1
-        ? `Hello! I'm ready to start practicing for my interview. Please ask me the first question.`
-        : `I'm ready for another practice session. Please ask me 3 new questions.`;
+    const isNewSession = interviewState.sessionComplete;
+    const sessionStartPrompt = isNewSession
+      ? `I'm ready for another practice session. Please ask me 3 new questions.`
+      : `Hello! I'm ready to start practicing for my interview. Please ask me the first question.`;
 
     const fakeEvent = {
       preventDefault: () => {},
@@ -136,7 +148,7 @@ export const InterviewPracticePanel = ({
         questionsAsked: 0,
         isSessionActive: true,
         sessionComplete: false,
-        currentSession: prev.currentSession + (prev.sessionComplete ? 1 : 0),
+        currentSession: prev.currentSession + (isNewSession ? 1 : 0),
       }));
     }, 50);
   };
