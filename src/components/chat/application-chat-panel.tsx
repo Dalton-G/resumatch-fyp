@@ -72,7 +72,14 @@ export const ApplicationChatPanel = ({
 }: ApplicationChatPanelProps) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, status, setMessages } = useChat({
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    status,
+    setMessages,
+  } = useChat({
     api: api.chatWithApplication,
     initialMessages: persistentMessages,
     body: {
@@ -105,9 +112,9 @@ export const ApplicationChatPanel = ({
     const inputChangeEvent = {
       target: { value: action.prompt },
     } as React.ChangeEvent<HTMLInputElement>;
-    
+
     handleInputChange(inputChangeEvent);
-    
+
     // Submit the form with the action prompt
     setTimeout(() => {
       handleSubmit(fakeEvent);
