@@ -16,7 +16,14 @@ import { countryOptions } from "@/config/country-options";
 import { workTypeOptions } from "@/config/job-posting-options";
 import { cleanFilename } from "@/lib/utils/clean-filename";
 import { HiMiniSparkles } from "react-icons/hi2";
-import { Loader2, Target, CheckCircle2, AlertCircle, Star } from "lucide-react";
+import {
+  Loader2,
+  Target,
+  CheckCircle2,
+  AlertCircle,
+  Star,
+  ArrowUpDown,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
@@ -41,6 +48,8 @@ interface JobMatchFormData {
   amount: number;
 }
 
+type SortOption = "aiScore" | "embeddingScore";
+
 export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
   const router = useRouter();
   const { data: resumes = [], isLoading: isLoadingResumes } = useMyResume();
@@ -56,6 +65,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
   });
 
   const [shouldMatch, setShouldMatch] = useState(false);
+  const [sortBy, setSortBy] = useState<SortOption>("aiScore");
 
   const { data: matchingResults, isLoading: isMatching } = useJobMatching({
     resumeId: formData.resumeId,
@@ -103,6 +113,21 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
 
   const handleViewJob = (jobId: string) => {
     router.push(pages.viewJob(jobId));
+  };
+
+  // Sort recommendations based on selected option
+  const getSortedRecommendations = (recommendations: any[]) => {
+    if (!recommendations) return [];
+
+    const sorted = [...recommendations].sort((a, b) => {
+      if (sortBy === "aiScore") {
+        return b.matchScore - a.matchScore; // Highest AI score first
+      } else {
+        return b.embeddingSimilarity - a.embeddingSimilarity; // Highest embedding similarity first
+      }
+    });
+
+    return sorted;
   };
 
   return (
@@ -325,12 +350,44 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
         ) : matchingResults ? (
           <ScrollArea className="h-[calc(100vh-6.5rem)] px-8 py-6">
             <div className="space-y-6">
-              <div className="flex items-center gap-2 mb-6">
-                <Target className="h-6 w-6 text-[var(--r-blue)]" />
-                <h2 className="text-2xl font-dm-serif text-[var(--r-boldgray)]">
-                  Job Recommendations (
-                  {matchingResults.recommendations?.length || 0})
-                </h2>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <Target className="h-6 w-6 text-[var(--r-blue)]" />
+                  <h2 className="text-2xl font-dm-serif text-[var(--r-boldgray)]">
+                    Job Recommendations (
+                    {matchingResults.recommendations?.length || 0})
+                  </h2>
+                </div>
+
+                {/* Sort Options */}
+                {matchingResults.recommendations &&
+                  matchingResults.recommendations.length > 0 && (
+                    <div className="flex items-center gap-2">
+                      <ArrowUpDown className="h-4 w-4 text-gray-600" />
+                      <Select
+                        value={sortBy}
+                        onValueChange={(value: SortOption) => setSortBy(value)}
+                      >
+                        <SelectTrigger className="w-[180px] bg-white text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="aiScore">
+                            <div className="flex items-center gap-2">
+                              <Star className="h-3 w-3" />
+                              AI Match Score
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="embeddingScore">
+                            <div className="flex items-center gap-2">
+                              <TbVectorSpline className="h-3 w-3" />
+                              Embedding Score
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
               </div>
 
               {/* Search Summary */}
@@ -353,7 +410,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                   </p>
                 </div>
               ) : (
-                matchingResults.recommendations?.map(
+                getSortedRecommendations(matchingResults.recommendations)?.map(
                   (job: any, index: number) => (
                     <Card
                       key={job.jobId}
@@ -369,18 +426,25 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                               <div className="flex items-center gap-2">
                                 <Badge
                                   variant="secondary"
-                                  className="bg-[var(--r-blue)]/10 text-[var(--r-blue)] text-md"
+                                  className={`text-md ${
+                                    sortBy === "aiScore"
+                                      ? "bg-[var(--r-blue)]/20 text-[var(--r-blue)] ring-2 ring-[var(--r-blue)]/30"
+                                      : "bg-[var(--r-blue)]/10 text-[var(--r-blue)]"
+                                  }`}
                                 >
                                   <Star className="h-3 w-3 mr-1" />
                                   AI Match: {job.matchScore}%
                                 </Badge>
                                 <Badge
                                   variant="outline"
-                                  className="bg-gray-50 text-gray-600 border-gray-300 text-md"
+                                  className={`text-md ${
+                                    sortBy === "embeddingScore"
+                                      ? "bg-gray-100 text-gray-700 border-gray-400 ring-2 ring-gray-300"
+                                      : "bg-gray-50 text-gray-600 border-gray-300"
+                                  }`}
                                 >
                                   <TbVectorSpline className="h-3 w-3 mr-1" />
-                                  Embedding Similarity:{" "}
-                                  {job.embeddingSimilarity}%
+                                  Embedding: {job.embeddingSimilarity}%
                                 </Badge>
                               </div>
                             </div>
