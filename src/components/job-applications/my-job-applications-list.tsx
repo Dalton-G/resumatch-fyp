@@ -251,11 +251,11 @@ export default function MyJobApplicationsList() {
                       <Button
                         onClick={(e) => {
                           e.stopPropagation();
-                          // Placeholder action
+                          router.push(pages.viewMyApplication(application.id));
                         }}
                         className="bg-[var(--r-blue)] text-white w-40 text-md hover:bg-[var(--r-blue)]/80"
                       >
-                        Start Mock Interview
+                        View Details
                       </Button>
                     </div>
                   </CardContent>

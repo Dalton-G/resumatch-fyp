@@ -369,14 +369,14 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                               <div className="flex items-center gap-2">
                                 <Badge
                                   variant="secondary"
-                                  className="bg-[var(--r-blue)]/10 text-[var(--r-blue)]"
+                                  className="bg-[var(--r-blue)]/10 text-[var(--r-blue)] text-md"
                                 >
                                   <Star className="h-3 w-3 mr-1" />
                                   AI Match: {job.matchScore}%
                                 </Badge>
                                 <Badge
                                   variant="outline"
-                                  className="bg-gray-50 text-gray-600 border-gray-300"
+                                  className="bg-gray-50 text-gray-600 border-gray-300 text-md"
                                 >
                                   <TbVectorSpline className="h-3 w-3 mr-1" />
                                   Embedding Similarity:{" "}
@@ -427,7 +427,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                                   <Badge
                                     key={idx}
                                     variant="outline"
-                                    className="bg-green-50 text-green-700 border-green-200"
+                                    className="bg-green-50 text-green-700 border-green-200 text-sm"
                                   >
                                     {strength}
                                   </Badge>
@@ -449,7 +449,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                                     <Badge
                                       key={idx}
                                       variant="outline"
-                                      className="bg-yellow-50 text-yellow-700 border-yellow-200"
+                                      className="bg-yellow-50 text-yellow-700 border-yellow-200 text-sm"
                                     >
                                       {challenge}
                                     </Badge>
