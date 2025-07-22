@@ -141,6 +141,7 @@ export async function POST(request: NextRequest) {
       - Focus on actionable insights for the job seeker
       - Be honest about both strengths and potential gaps
       - Consider career progression and growth opportunities
+      - Use second-person ("you") when explaining why a job matches or listing strengths, e.g., "You have experience with React" instead of "The candidate has experience with React"
     `;
 
     const userPrompt = `
