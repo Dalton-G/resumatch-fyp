@@ -9,9 +9,7 @@ export default async function RankApplicantsPage() {
   return (
     <>
       <Heading title="AI Candidate Ranking" />
-      <div className="container mx-auto py-8">
-        <RankApplicantsPageContent />
-      </div>
+      <RankApplicantsPageContent />
     </>
   );
 }

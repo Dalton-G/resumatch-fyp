@@ -27,6 +27,7 @@ interface RankApplicantsFiltersProps {
   onSearch: () => void;
   isLoading?: boolean;
   canSearch: boolean;
+  showButton?: boolean;
 }
 
 export function RankApplicantsFilters({
@@ -35,6 +36,7 @@ export function RankApplicantsFilters({
   onSearch,
   isLoading = false,
   canSearch,
+  showButton = true,
 }: RankApplicantsFiltersProps) {
   const [amount, setAmount] = useState(filters.amount);
   const [localOnly, setLocalOnly] = useState(filters.localOnly || false);
@@ -72,10 +74,10 @@ export function RankApplicantsFilters({
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Number of Top Candidates */}
         <div className="space-y-2">
-          <Label className="font-dm-serif">Number of Top Candidates</Label>
+          <Label className="font-dm-serif">Number of Candidates</Label>
           <Select
             value={amount.toString()}
             onValueChange={handleAmountChange}
@@ -99,7 +101,7 @@ export function RankApplicantsFilters({
           <Label htmlFor="local-only" className="font-dm-serif">
             Local Candidates Only
           </Label>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 mt-4">
             <Switch
               id="local-only"
               checked={localOnly}
@@ -139,41 +141,43 @@ export function RankApplicantsFilters({
       </div>
 
       {/* Search and Reset Actions */}
-      <div className="flex justify-between items-center pt-4 border-t">
-        <div className="text-sm text-muted-foreground">
-          {localOnly || profession ? (
-            <span>
-              Active filters:{" "}
-              {[
-                localOnly && "Local only",
-                profession && `Profession: ${profession}`,
-              ]
-                .filter(Boolean)
-                .join(", ")}
-            </span>
-          ) : (
-            <span>Showing top {amount} candidates</span>
-          )}
-        </div>
+      {showButton && (
+        <div className="flex justify-between items-center pt-4 border-t">
+          <div className="text-sm text-muted-foreground">
+            {localOnly || profession ? (
+              <span>
+                Active filters:{" "}
+                {[
+                  localOnly && "Local only",
+                  profession && `Profession: ${profession}`,
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
+              </span>
+            ) : (
+              <span>Showing top {amount} candidates</span>
+            )}
+          </div>
 
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={resetFilters}
-            disabled={isLoading}
-          >
-            Reset Filters
-          </Button>
-          <Button
-            onClick={onSearch}
-            disabled={isLoading || !canSearch}
-            className="min-w-[120px]"
-          >
-            {isLoading ? "Analyzing..." : "Analyze Candidates"}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={resetFilters}
+              disabled={isLoading}
+            >
+              Reset Filters
+            </Button>
+            <Button
+              onClick={onSearch}
+              disabled={isLoading || !canSearch}
+              className="min-w-[120px]"
+            >
+              {isLoading ? "Analyzing..." : "Analyze Candidates"}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

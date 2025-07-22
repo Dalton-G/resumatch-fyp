@@ -24,10 +24,7 @@ export function JobSelectionForm({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <label
-          htmlFor="job-select"
-          className="text-sm font-dm-serif font-medium"
-        >
+        <label htmlFor="job-select" className="text-sm font-dm-serif">
           Job Posting
         </label>
         <Select
@@ -48,7 +45,7 @@ export function JobSelectionForm({
             {jobsWithApplicants.map((job) => (
               <SelectItem key={job.id} value={job.id}>
                 <div className="flex justify-between items-center w-full">
-                  <span className="font-dm-serif font-medium">{job.title}</span>
+                  <span className="font-dm-serif">{job.title}</span>
                   <span className="text-sm text-muted-foreground ml-2">
                     {job.applicantCount} applicant
                     {job.applicantCount !== 1 ? "s" : ""}
