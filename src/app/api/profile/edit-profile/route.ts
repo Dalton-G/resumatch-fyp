@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { updateResumeEmbeddingsCountry } from "@/lib/utils/resume-metadata-updater";
 
 export async function PUT(request: NextRequest) {
   try {
@@ -34,6 +35,13 @@ export async function PUT(request: NextRequest) {
           { status: 400 }
         );
       }
+
+      // Get current profile to check for country/profession changes
+      const currentProfile = await prisma.jobSeekerProfile.findUnique({
+        where: { userId },
+        select: { country: true, profession: true },
+      });
+
       // Update User
       const user = await prisma.user.update({
         where: { id: userId },
@@ -42,6 +50,7 @@ export async function PUT(request: NextRequest) {
           image: profilePicture,
         },
       });
+
       // Update JobSeekerProfile
       const jobSeekerProfile = await prisma.jobSeekerProfile.update({
         where: { userId },
@@ -52,6 +61,39 @@ export async function PUT(request: NextRequest) {
           ...profileFields,
         },
       });
+
+      // Check if country or profession changed and update resume embeddings accordingly
+      const countryChanged = currentProfile?.country !== profileFields.country;
+      const professionChanged =
+        currentProfile?.profession !== profileFields.profession;
+
+      if (countryChanged || professionChanged) {
+        try {
+          console.log(
+            `Profile metadata changed for user ${userId}. Country: ${currentProfile?.country} -> ${profileFields.country}, Profession: ${currentProfile?.profession} -> ${profileFields.profession}`
+          );
+
+          // Update resume embeddings in background (don't block the response)
+          updateResumeEmbeddingsCountry(
+            userId,
+            profileFields.country || currentProfile?.country || "",
+            profileFields.profession || currentProfile?.profession || undefined
+          ).catch((error) => {
+            console.error(
+              "Failed to update resume embeddings metadata:",
+              error
+            );
+            // Log the error but don't fail the profile update
+          });
+
+          console.log(
+            "Resume embeddings metadata update initiated in background"
+          );
+        } catch (error) {
+          console.error("Error initiating resume embeddings update:", error);
+          // Don't fail the profile update, just log the error
+        }
+      }
 
       return NextResponse.json({ user, jobSeekerProfile }, { status: 200 });
     }
