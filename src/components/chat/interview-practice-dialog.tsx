@@ -50,14 +50,14 @@ export const InterviewPracticeDialog = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children || defaultTrigger}</DialogTrigger>
       <DialogContent
-        className="max-w-[80vw] min-w-[50vw] max-h-[85vh] w-full h-full p-0 flex flex-col"
+        className="max-w-[80vw] min-w-[50vw] max-h-[85vh] w-full h-full p-0 flex flex-col font-libertinus"
         showCloseButton={true}
       >
         <DialogHeader className="p-6 pb-4 border-b">
-          <DialogTitle className="text-2xl font-dm-serif text-[var(--r-black)] flex items-center gap-3">
+          <DialogTitle className="text-2xl font-dm-serif font-normal text-[var(--r-black)] flex items-center gap-3">
             <Target className="w-6 h-6 text-[var(--r-blue)]" />
             Interview Practice
-            <div className="text-lg text-[var(--r-boldgray)] font-normal">
+            <div className="text-lg text-[var(--r-boldgray)]">
               • {candidateName}
             </div>
           </DialogTitle>

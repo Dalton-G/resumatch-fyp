@@ -183,14 +183,14 @@ export const InterviewPracticePanel = ({
     : 1;
 
   return (
-    <div className="flex flex-col h-full max-h-[80vh] w-full">
+    <div className="flex flex-col h-full max-h-[80vh] w-full font-libertinus">
       {/* Interview Header & Progress */}
       <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <Trophy className="w-5 h-5 text-[var(--r-blue)]" />
-              <div className="text-sm font-medium text-[var(--r-boldgray)]">
+              <div className="text-md font-medium text-[var(--r-boldgray)]">
                 Interview Practice Session {interviewState.currentSession}
               </div>
             </div>
@@ -259,14 +259,12 @@ export const InterviewPracticePanel = ({
           {messages.length === 0 && (
             <div className="text-center text-black py-8">
               <Target className="mx-auto h-12 w-12 mb-4 opacity-50 text-[var(--r-blue)]" />
-              <div className="text-lg font-medium mb-2">
-                Interview Practice Assistant
-              </div>
-              <div className="text-sm text-[var(--r-boldgray)] mb-4">
+              <div className="text-xl mb-2">Interview Practice Assistant</div>
+              <div className="text-md text-[var(--r-boldgray)] mb-4">
                 Practice mock interviews for the{" "}
                 {candidateName.split(" ")[0] || "position"} role
               </div>
-              <div className="text-xs text-gray-500 max-w-md mx-auto">
+              <div className="text-md text-gray-500 max-w-md mx-auto">
                 I'll ask you 3 questions per session, then provide detailed
                 feedback. You can practice as many sessions as you'd like!
               </div>
@@ -304,7 +302,7 @@ export const InterviewPracticePanel = ({
                       : "bg-muted"
                   }`}
                 >
-                  <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                  <div className="whitespace-pre-wrap text-md leading-relaxed">
                     {message.content}
                   </div>
                 </div>
@@ -358,7 +356,7 @@ export const InterviewPracticePanel = ({
                 : "Type your answer here..."
             }
             disabled={status === "submitted" || status === "streaming"}
-            className="flex-1"
+            className="flex-1 !text-md"
           />
           <Button
             type="submit"

@@ -133,7 +133,7 @@ export const ApplicationChatPanel = ({
       {/* Quick Actions */}
       <div className="p-4 border-b bg-gray-50">
         <div className="flex items-center justify-between mb-3">
-          <div className="text-sm font-medium text-[var(--r-boldgray)]">
+          <div className="text-md font-medium text-[var(--r-boldgray)]">
             Quick Actions
           </div>
           {messages.length > 0 && (
@@ -156,7 +156,7 @@ export const ApplicationChatPanel = ({
               size="sm"
               onClick={() => handleQuickAction(action)}
               disabled={status === "submitted" || status === "streaming"}
-              className="flex items-center gap-2 justify-start text-sm h-10"
+              className="flex items-center gap-2 justify-start text-md h-10"
             >
               {action.icon}
               {action.label}
@@ -215,7 +215,7 @@ export const ApplicationChatPanel = ({
                       : "bg-muted"
                   }`}
                 >
-                  <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                  <div className="whitespace-pre-wrap text-md leading-relaxed">
                     {message.content}
                   </div>
                 </div>
@@ -265,7 +265,7 @@ export const ApplicationChatPanel = ({
             onChange={handleInputChange}
             placeholder="Ask about this candidate..."
             disabled={status === "submitted" || status === "streaming"}
-            className="flex-1"
+            className="flex-1 text-md"
           />
           <Button
             type="submit"

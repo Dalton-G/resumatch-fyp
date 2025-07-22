@@ -284,7 +284,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
             <Button
               onClick={handleSubmit}
               disabled={isMatching || !formData.resumeId}
-              className="flex-1 bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80 text-white font-semibold h-12"
+              className="flex-1 bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80 text-white font-dm-serif h-12"
             >
               {isMatching ? (
                 <>
@@ -310,7 +310,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
       </div>
 
       {/* Right Panel - Results */}
-      <div className="flex-1 flex flex-col bg-white">
+      <div className="flex-1 flex flex-col bg-white font-libertinus">
         {isMatching ? (
           <div className="flex flex-col justify-center items-center h-full text-center">
             <Loader2 className="h-12 w-12 animate-spin text-[var(--r-blue)] mb-4" />
@@ -363,7 +363,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <h3 className="text-xl font-semibold text-[var(--r-boldgray)]">
+                              <h3 className="text-2xl font-dm-serif text-[var(--r-boldgray)]">
                                 {job.title}
                               </h3>
                               <div className="flex items-center gap-2">
@@ -387,10 +387,12 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                             <p className="text-lg text-gray-700 mb-2">
                               {job.company}
                             </p>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                            <div className="flex items-center gap-4 text-md text-gray-600">
                               <span>{job.location}</span>
                               <span>•</span>
-                              <span>{job.workType}</span>
+                              <span className="capitalize">
+                                {job.workType.toLowerCase()}
+                              </span>
                               <span>•</span>
                               <span>
                                 RM {job.salaryMin?.toLocaleString()} - RM{" "}
@@ -411,7 +413,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                             <CheckCircle2 className="h-4 w-4 text-green-500" />
                             Why this job matches you
                           </h4>
-                          <p className="text-gray-700 leading-relaxed">
+                          <p className="text-gray-700 leading-relaxed text-lg">
                             {job.explanation}
                           </p>
                         </div>
@@ -427,7 +429,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                                   <Badge
                                     key={idx}
                                     variant="outline"
-                                    className="bg-green-50 text-green-700 border-green-200 text-sm"
+                                    className="bg-green-50 text-green-700 border-green-200 text-md"
                                   >
                                     {strength}
                                   </Badge>
@@ -449,7 +451,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                                     <Badge
                                       key={idx}
                                       variant="outline"
-                                      className="bg-yellow-50 text-yellow-700 border-yellow-200 text-sm"
+                                      className="bg-yellow-50 text-yellow-700 border-yellow-200 text-md"
                                     >
                                       {challenge}
                                     </Badge>

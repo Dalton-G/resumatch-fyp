@@ -50,11 +50,11 @@ export const RecruiterApplicationChatDialog = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children || defaultTrigger}</DialogTrigger>
       <DialogContent
-        className="min-w-[50vw] max-w-[50vw] max-h-[85vh] w-full h-full p-0 flex flex-col"
+        className="min-w-[50vw] max-w-[50vw] max-h-[85vh] w-full h-full p-0 flex flex-col font-libertinus"
         showCloseButton={true}
       >
         <DialogHeader className="p-6 pb-4 border-b">
-          <DialogTitle className="text-2xl font-dm-serif text-[var(--r-black)] flex items-center gap-3">
+          <DialogTitle className="text-2xl font-dm-serif text-[var(--r-black)] flex items-center gap-3 font-normal">
             <MessageCircle className="w-6 h-6 text-[var(--r-blue)]" />
             Chat with Application
             <div className="text-lg text-[var(--r-boldgray)] font-normal">
