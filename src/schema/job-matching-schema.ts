@@ -9,6 +9,7 @@ export const jobRecommendationSchema = z.object({
   salaryMin: z.number(),
   salaryMax: z.number(),
   matchScore: z.number().min(0).max(100),
+  embeddingSimilarity: z.number().min(0).max(100),
   explanation: z.string(),
   keyStrengths: z.array(z.string()),
   potentialChallenges: z.array(z.string()),

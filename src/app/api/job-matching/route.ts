@@ -131,9 +131,12 @@ export async function POST(request: NextRequest) {
       
       For each job posting, provide:
       1. A match score (0-100) based on how well the candidate's skills and experience align with the job requirements
-      2. A clear explanation of why this job is a good match
-      3. Key strengths the candidate has for this role (3-5 specific skills or experiences)
-      4. Potential challenges or areas to highlight in applications (2-3 areas)
+      2. The embedding similarity score (provided for reference, do not modify this value)
+      3. A clear explanation of why this job is a good match
+      4. Key strengths the candidate has for this role (3-5 specific skills or experiences)
+      5. Potential challenges or areas to highlight in applications (2-3 areas)
+      
+      IMPORTANT: For embeddingSimilarity, use the exact percentage value provided for each job.
       
       GUIDELINES:
       - Base match scores on actual skill alignment, experience level, and job requirements
@@ -160,13 +163,14 @@ export async function POST(request: NextRequest) {
         Work Type: ${job.workType}
         Salary: $${job.salaryMin} - $${job.salaryMax}
         Description: ${job.jobDescription}
-        Similarity Score: ${(job.similarityScore * 100).toFixed(1)}%
+        Embedding Similarity: ${(job.similarityScore * 100).toFixed(1)}%
         ---
       `
         )
         .join("\n")}
       
       Please analyze each job and provide detailed recommendations based on the resume content.
+      Remember to use the exact embedding similarity values provided above.
     `;
 
     const result = await generateObject({
@@ -178,7 +182,15 @@ export async function POST(request: NextRequest) {
       maxTokens: 2000,
     });
 
-    return NextResponse.json(result.object);
+    // 8. Sort recommendations by AI match score (highest first) for better UX
+    const sortedRecommendations = result.object.recommendations.sort(
+      (a, b) => b.matchScore - a.matchScore
+    );
+
+    return NextResponse.json({
+      ...result.object,
+      recommendations: sortedRecommendations,
+    });
   } catch (error) {
     console.error("Error in job matching API:", error);
     return NextResponse.json(

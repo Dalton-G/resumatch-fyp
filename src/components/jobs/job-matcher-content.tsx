@@ -24,6 +24,8 @@ import { pages } from "@/config/directory";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { useJobMatching } from "@/hooks/use-job-matching";
+import { MdAutoGraph } from "react-icons/md";
+import { TbVectorSpline } from "react-icons/tb";
 
 interface JobMatcherContentProps {
   userId: string;
@@ -364,13 +366,23 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                               <h3 className="text-xl font-semibold text-[var(--r-boldgray)]">
                                 {job.title}
                               </h3>
-                              <Badge
-                                variant="secondary"
-                                className="bg-[var(--r-blue)]/10 text-[var(--r-blue)]"
-                              >
-                                <Star className="h-3 w-3 mr-1" />
-                                {job.matchScore}% Match
-                              </Badge>
+                              <div className="flex items-center gap-2">
+                                <Badge
+                                  variant="secondary"
+                                  className="bg-[var(--r-blue)]/10 text-[var(--r-blue)]"
+                                >
+                                  <Star className="h-3 w-3 mr-1" />
+                                  AI Match: {job.matchScore}%
+                                </Badge>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-gray-50 text-gray-600 border-gray-300"
+                                >
+                                  <TbVectorSpline className="h-3 w-3 mr-1" />
+                                  Embedding Similarity:{" "}
+                                  {job.embeddingSimilarity}%
+                                </Badge>
+                              </div>
                             </div>
                             <p className="text-lg text-gray-700 mb-2">
                               {job.company}
