@@ -59,4 +59,5 @@ export const api = {
     `/api/job-applicants/view-by-job-id/${jobId}`,
   checkJobOwnership: "/api/job-applicants/check-authorized",
   updateJobApplication: (id: string) => `/api/job-application/update/${id}`,
+  jobMatching: "/api/job-matching",
 };
