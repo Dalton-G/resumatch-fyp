@@ -106,7 +106,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
   return (
     <div className="flex flex-row">
       {/* Left Panel - Form */}
-      <div className="w-1/3 bg-white p-8 border-r-1 border-[var(--r-darkgray)] min-h-[calc(100vh-7rem)]">
+      <div className="w-1/3 bg-white p-8 border-r-1 border-[var(--r-darkgray)] max-h-[calc(100vh-6.5rem)] min-h-[calc(100vh-6.5rem)] overflow-y-auto">
         <div className="flex flex-col gap-6 font-libertinus">
           <div className="text-xl font-dm-serif text-[var(--r-boldgray)] mb-2">
             Find Your Perfect Job Match
@@ -321,7 +321,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
             </p>
           </div>
         ) : matchingResults ? (
-          <ScrollArea className="h-[calc(100vh-7rem)] px-8 py-6">
+          <ScrollArea className="h-[calc(100vh-6.5rem)] px-8 py-6">
             <div className="space-y-6">
               <div className="flex items-center gap-2 mb-6">
                 <Target className="h-6 w-6 text-[var(--r-blue)]" />
@@ -381,7 +381,7 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                               <span>{job.workType}</span>
                               <span>•</span>
                               <span>
-                                ${job.salaryMin?.toLocaleString()} - $
+                                RM {job.salaryMin?.toLocaleString()} - RM{" "}
                                 {job.salaryMax?.toLocaleString()}
                               </span>
                             </div>
