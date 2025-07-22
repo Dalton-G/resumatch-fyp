@@ -60,4 +60,7 @@ export const api = {
   checkJobOwnership: "/api/job-applicants/check-authorized",
   updateJobApplication: (id: string) => `/api/job-application/update/${id}`,
   jobMatching: "/api/job-matching",
+  rankApplicants: "/api/rank-applicants",
+  jobsWithApplicants: "/api/company/jobs-with-applicants",
+  professions: "/api/professions",
 };
