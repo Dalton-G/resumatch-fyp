@@ -1,4 +1,5 @@
 import { env } from "@/config/env";
+import { prisma } from "@/lib/prisma";
 import pc from "../pinecone";
 
 export async function updateResumeAppliedJobs(
@@ -143,5 +144,60 @@ export async function removeResumeAppliedJob(
       error
     );
     throw new Error(`Failed to remove job from resume applied jobs: ${error}`);
+  }
+}
+
+/**
+ * Clean up orphaned appliedJobIds from ALL resume embeddings in Pinecone
+ * when a job posting is deleted. This prevents accumulation of stale job IDs.
+ */
+export async function cleanupOrphanedAppliedJobIds(
+  deletedJobId: string
+): Promise<void> {
+  try {
+    console.log(
+      `Starting cleanup of orphaned job ID ${deletedJobId} from all resume embeddings...`
+    );
+
+    // Since Pinecone doesn't support direct metadata-based queries easily,
+    // we'll get all resumes that have this job in their appliedJobIds
+    // through database lookup first for efficiency
+    const affectedResumes = await prisma.jobApplication.findMany({
+      where: { jobId: deletedJobId },
+      select: { resumeId: true },
+      distinct: ["resumeId"],
+    });
+
+    if (!affectedResumes || affectedResumes.length === 0) {
+      console.log(`No resume embeddings found with job ID ${deletedJobId}`);
+      return;
+    }
+
+    console.log(
+      `Found ${affectedResumes.length} resume embeddings potentially containing job ID ${deletedJobId}`
+    );
+
+    // Process each affected resume
+    for (const { resumeId } of affectedResumes) {
+      try {
+        await removeResumeAppliedJob(resumeId, deletedJobId);
+      } catch (error) {
+        console.warn(
+          `Failed to clean job ID ${deletedJobId} from resume ${resumeId}:`,
+          error
+        );
+        // Continue with other resumes even if one fails
+      }
+    }
+
+    console.log(
+      `Completed cleanup of orphaned job ID ${deletedJobId} from resume embeddings`
+    );
+  } catch (error) {
+    console.error(
+      `Error during orphaned appliedJobIds cleanup for job ${deletedJobId}:`,
+      error
+    );
+    // Don't throw - this is cleanup, shouldn't block job deletion
   }
 }

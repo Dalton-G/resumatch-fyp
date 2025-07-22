@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { deleteJobPostingEmbeddingFromPinecone } from "@/lib/rag/embedding-service";
+import { cleanupOrphanedAppliedJobIds } from "@/lib/utils/pinecone-operation";
 
 // DELETE /api/jobs/delete/[id]
 export async function DELETE(
@@ -34,7 +35,11 @@ export async function DELETE(
     console.log(`Deleting job posting embedding from Pinecone...`);
     await deleteJobPostingEmbeddingFromPinecone(jobId);
 
-    // 2. Delete from Supabase using Prisma (associated embeddings will cascade delete)
+    // 2. Clean up orphaned appliedJobIds from all resume embeddings in Pinecone
+    console.log(`Cleaning up orphaned appliedJobIds from resume embeddings...`);
+    await cleanupOrphanedAppliedJobIds(jobId);
+
+    // 3. Delete from Supabase using Prisma (associated embeddings will cascade delete)
     await prisma.jobPosting.delete({ where: { id: jobId } });
     return NextResponse.json(
       {

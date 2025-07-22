@@ -5,6 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { MdFilterAltOff } from "react-icons/md";
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { FiMapPin } from "react-icons/fi";
@@ -60,17 +68,40 @@ export default function MyJobPostingsList() {
   const [status, setStatus] = useState("");
   const [sort, setSort] = useState("latest");
   const [deletingJobId, setDeletingJobId] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [jobToDelete, setJobToDelete] = useState<{
+    id: string;
+    title: string;
+    applicantCount: number;
+  } | null>(null);
 
-  const handleDelete = async (jobId: string) => {
-    setDeletingJobId(jobId);
+  const openDeleteDialog = (
+    jobId: string,
+    title: string,
+    applicantCount: number
+  ) => {
+    setJobToDelete({ id: jobId, title, applicantCount });
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!jobToDelete) return;
+
+    setDeletingJobId(jobToDelete.id);
     try {
-      const response = await axios.delete(api.deleteJob(jobId));
-      if (response.status === 200) toast.success("Job deleted successfully.");
+      const response = await axios.delete(api.deleteJob(jobToDelete.id));
+      if (response.status === 200) {
+        toast.success(
+          "Job posting and all associated data deleted successfully."
+        );
+      }
       await invalidateJobPostingQueries(queryClient);
     } catch (error: any) {
       toast.error(error?.response?.data?.error || "Failed to delete job.");
     } finally {
       setDeletingJobId(null);
+      setDeleteDialogOpen(false);
+      setJobToDelete(null);
     }
   };
 
@@ -270,7 +301,10 @@ export default function MyJobPostingsList() {
                     <Button
                       size="icon"
                       variant="destructive"
-                      onClick={() => handleDelete(job.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openDeleteDialog(job.id, job.title, job.applicantCount);
+                      }}
                       disabled={deletingJobId === job.id}
                     >
                       <FaRegTrashAlt />
@@ -290,6 +324,82 @@ export default function MyJobPostingsList() {
           ))
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-red-600">
+              Delete Job Posting
+            </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-black">
+                "{jobToDelete?.title}"
+              </span>
+              ?
+            </DialogDescription>
+          </DialogHeader>
+          
+          {/* Warning content moved outside DialogDescription to avoid HTML nesting issues */}
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 my-4">
+            <p className="text-yellow-800 text-sm font-medium mb-2">
+              ⚠️ This action cannot be undone and will permanently:
+            </p>
+            <ul className="text-yellow-700 text-sm space-y-1 ml-4">
+              <li>
+                • Delete all {jobToDelete?.applicantCount || 0} job
+                applications
+              </li>
+              <li>• Remove job embedding from search index</li>
+              <li>• Clean up associated data from all systems</li>
+            </ul>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={deletingJobId === jobToDelete?.id}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={deletingJobId === jobToDelete?.id}
+              className="min-w-[100px]"
+            >
+              {deletingJobId === jobToDelete?.id ? (
+                <span className="flex items-center gap-2">
+                  <svg
+                    className="animate-spin h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Deleting...
+                </span>
+              ) : (
+                "Delete Forever"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
