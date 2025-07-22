@@ -340,7 +340,7 @@ export default function MyJobPostingsList() {
               ?
             </DialogDescription>
           </DialogHeader>
-          
+
           {/* Warning content moved outside DialogDescription to avoid HTML nesting issues */}
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 my-4">
             <p className="text-yellow-800 text-sm font-medium mb-2">
@@ -348,8 +348,7 @@ export default function MyJobPostingsList() {
             </p>
             <ul className="text-yellow-700 text-sm space-y-1 ml-4">
               <li>
-                • Delete all {jobToDelete?.applicantCount || 0} job
-                applications
+                • Delete all {jobToDelete?.applicantCount || 0} job applications
               </li>
               <li>• Remove job embedding from search index</li>
               <li>• Clean up associated data from all systems</li>
