@@ -88,9 +88,6 @@ export function RankApplicantsPageContent() {
 
           {/* Job Selection */}
           <div>
-            <label className="block font-medium mb-2 text-[var(--r-boldgray)]">
-              Select Job Posting *
-            </label>
             <JobSelectionForm
               selectedJobId={selectedJobId}
               onJobSelect={handleJobSelect}

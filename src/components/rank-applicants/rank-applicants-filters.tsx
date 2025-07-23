@@ -77,13 +77,15 @@ export function RankApplicantsFilters({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Number of Top Candidates */}
         <div className="space-y-2">
-          <Label className="font-dm-serif">Number of Candidates</Label>
+          <Label className="font-libertinus text-sm text-[var(--r-boldgray)]">
+            Number of Candidates
+          </Label>
           <Select
             value={amount.toString()}
             onValueChange={handleAmountChange}
             disabled={isLoading}
           >
-            <SelectTrigger>
+            <SelectTrigger className="text-md">
               <SelectValue placeholder="Select number of candidates" />
             </SelectTrigger>
             <SelectContent>
@@ -98,7 +100,10 @@ export function RankApplicantsFilters({
 
         {/* Local Candidates Only */}
         <div className="space-y-2">
-          <Label htmlFor="local-only" className="font-dm-serif">
+          <Label
+            htmlFor="local-only"
+            className="font-libertinus text-sm text-[var(--r-boldgray)]"
+          >
             Local Candidates Only
           </Label>
           <div className="flex items-center space-x-2 mt-4">
@@ -107,6 +112,7 @@ export function RankApplicantsFilters({
               checked={localOnly}
               onCheckedChange={handleLocalOnlyChange}
               disabled={isLoading}
+              className="data-[state=checked]:bg-[var(--r-blue)] data-[state=unchecked]:bg-gray-200"
             />
             <Label
               htmlFor="local-only"
@@ -119,13 +125,15 @@ export function RankApplicantsFilters({
 
         {/* Profession Filter */}
         <div className="space-y-2">
-          <Label className="font-dm-serif">Filter by Profession</Label>
+          <Label className="font-libertinus text-sm text-[var(--r-boldgray)]">
+            Filter by Profession
+          </Label>
           <Select
             value={profession || "all"}
             onValueChange={handleProfessionChange}
             disabled={isLoading}
           >
-            <SelectTrigger>
+            <SelectTrigger className="text-md">
               <SelectValue placeholder="All professions" />
             </SelectTrigger>
             <SelectContent>
