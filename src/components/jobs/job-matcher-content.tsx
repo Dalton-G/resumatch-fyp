@@ -26,6 +26,15 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { pages } from "@/config/directory";
 import { Separator } from "@/components/ui/separator";
@@ -33,6 +42,7 @@ import { toast } from "sonner";
 import { useJobMatching } from "@/hooks/use-job-matching";
 import { MdAutoGraph } from "react-icons/md";
 import { TbVectorSpline } from "react-icons/tb";
+import { FaInfoCircle } from "react-icons/fa";
 
 interface JobMatcherContentProps {
   userId: string;
@@ -48,7 +58,7 @@ interface JobMatchFormData {
   amount: number;
 }
 
-type SortOption = "aiScore" | "embeddingScore";
+type SortOption = "aiScore" | "embeddingScore" | "average";
 
 export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
   const router = useRouter();
@@ -122,9 +132,15 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
     const sorted = [...recommendations].sort((a, b) => {
       if (sortBy === "aiScore") {
         return b.matchScore - a.matchScore; // Highest AI score first
-      } else {
+      } else if (sortBy === "embeddingScore") {
         return b.embeddingSimilarity - a.embeddingSimilarity; // Highest embedding similarity first
+      } else if (sortBy === "average") {
+        // Calculate average of AI score and embedding similarity
+        const aAverage = (a.matchScore + a.embeddingSimilarity) / 2;
+        const bAverage = (b.matchScore + b.embeddingSimilarity) / 2;
+        return bAverage - aAverage; // Highest average first
       }
+      return 0;
     });
 
     return sorted;
@@ -384,8 +400,103 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                               Embedding Score
                             </div>
                           </SelectItem>
+                          <SelectItem value="average">
+                            <div className="flex items-center gap-2">
+                              <MdAutoGraph className="h-3 w-3" />
+                              Average Score
+                            </div>
+                          </SelectItem>
                         </SelectContent>
                       </Select>
+
+                      {/* Info Dialog Button */}
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 hover:bg-gray-100"
+                          >
+                            <FaInfoCircle className="h-4 w-4 text-gray-500" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="min-w-3xl font-libertinus">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="text-xl font-normal font-dm-serif mb-4">
+                              Scoring System Explained
+                            </AlertDialogTitle>
+                            <AlertDialogDescription asChild>
+                              <div className="space-y-4 text-base">
+                                <div className="border rounded-lg p-4 bg-blue-50">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <Star className="h-4 w-4 text-blue-600" />
+                                    <h3 className="font-dm-serif text-blue-900">
+                                      AI Match Score
+                                    </h3>
+                                  </div>
+                                  <p className="text-blue-800">
+                                    An AI-generated compatibility rating
+                                    (0-100%) that analyzes the alignment between
+                                    your skills, experience, and the job
+                                    requirements. This score considers factors
+                                    like relevant technologies, years of
+                                    experience, education background, and role
+                                    responsibilities.
+                                  </p>
+                                </div>
+
+                                <div className="border rounded-lg p-4 bg-gray-50">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <TbVectorSpline className="h-4 w-4 text-gray-600" />
+                                    <h3 className="font-dm-serif text-gray-900">
+                                      Embedding Score
+                                    </h3>
+                                  </div>
+                                  <p className="text-gray-800">
+                                    A mathematical similarity score (0-100%)
+                                    calculated using vector embeddings. This
+                                    measures how closely your resume content
+                                    matches the job description text using
+                                    advanced natural language processing
+                                    techniques.
+                                  </p>
+                                </div>
+
+                                <div className="border rounded-lg p-4 bg-green-50">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <MdAutoGraph className="h-4 w-4 text-green-600" />
+                                    <h3 className="font-dm-serif text-green-900">
+                                      Average Score
+                                    </h3>
+                                  </div>
+                                  <p className="text-green-800">
+                                    A balanced combination of both AI Match and
+                                    Embedding scores, calculated as their
+                                    arithmetic mean. This provides a holistic
+                                    view that combines AI analysis with semantic
+                                    similarity.
+                                  </p>
+                                </div>
+
+                                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                  <p className="text-sm text-yellow-800">
+                                    <strong className="font-dm-serif font-normal">
+                                      Tip:
+                                    </strong>{" "}
+                                    Higher scores indicate better matches, but
+                                    consider reviewing jobs with various score
+                                    distributions to discover unexpected
+                                    opportunities.
+                                  </p>
+                                </div>
+                              </div>
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <div className="mt-4 flex justify-end">
+                            <AlertDialogCancel>Close</AlertDialogCancel>
+                          </div>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   )}
               </div>
@@ -446,6 +557,21 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                                   <TbVectorSpline className="h-3 w-3 mr-1" />
                                   Embedding: {job.embeddingSimilarity}%
                                 </Badge>
+                                {sortBy === "average" && (
+                                  <Badge
+                                    variant="secondary"
+                                    className="text-md bg-green-100 text-green-700 border-green-300 ring-2 ring-green-200"
+                                  >
+                                    <MdAutoGraph className="h-3 w-3 mr-1" />
+                                    Average:{" "}
+                                    {Math.round(
+                                      (job.matchScore +
+                                        job.embeddingSimilarity) /
+                                        2
+                                    )}
+                                    %
+                                  </Badge>
+                                )}
                               </div>
                             </div>
                             <p className="text-lg text-gray-700 mb-2">
