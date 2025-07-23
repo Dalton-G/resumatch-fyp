@@ -7,6 +7,7 @@ import { api } from "@/config/directory";
 import JobSeekerProfileView from "@/components/profile/job-seeker-profile-view";
 import CompanyProfileView from "@/components/profile/company-profile-view";
 import AdminProfileView from "@/components/profile/admin-profile-view";
+import { UserRole } from "@prisma/client";
 
 interface ViewProfilePageProps {
   params: Promise<{ userId: string }>;
@@ -47,7 +48,7 @@ export default function ViewProfilePage({ params }: ViewProfilePageProps) {
   if (!profile) return <div>Profile not found</div>;
 
   switch (profile.role) {
-    case "JOB_SEEKER":
+    case UserRole.JOB_SEEKER:
       return (
         <JobSeekerProfileView
           name={profile.name}
@@ -64,7 +65,7 @@ export default function ViewProfilePage({ params }: ViewProfilePageProps) {
           portfolioUrl={profile.portfolioUrl}
         />
       );
-    case "COMPANY":
+    case UserRole.COMPANY:
       return (
         <div className="flex flex-1 overflow-y-auto max-h-svh">
           <CompanyProfileView
@@ -81,7 +82,7 @@ export default function ViewProfilePage({ params }: ViewProfilePageProps) {
           />
         </div>
       );
-    case "ADMIN":
+    case UserRole.ADMIN:
       return (
         <AdminProfileView
           firstName={profile.firstName}
