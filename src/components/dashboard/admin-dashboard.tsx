@@ -1,3 +1,4 @@
+import Heading from "../custom/heading";
 import AdminDashboardContent from "./admin-dashboard-content";
 
 interface AdminDashboardProps {
@@ -5,5 +6,10 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboard({ userId }: AdminDashboardProps) {
-  return <AdminDashboardContent userId={userId} />;
+  return (
+    <div>
+      <Heading title="Admin Dashboard" />
+      <AdminDashboardContent userId={userId} />
+    </div>
+  );
 }

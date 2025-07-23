@@ -70,7 +70,7 @@ interface AdminDashboardContentProps {
 export default function AdminDashboardContent({
   userId,
 }: AdminDashboardContentProps) {
-  const [timeRange, setTimeRange] = useState("30");
+  const [timeRange, setTimeRange] = useState("7");
   const { data, isLoading, error } = useAdminAnalytics(timeRange);
   const router = useRouter();
 
@@ -146,12 +146,12 @@ export default function AdminDashboardContent({
   };
 
   return (
-    <div className="space-y-6 px-4 md:px-8 py-6 bg-[var(--r-gray)] min-h-[calc(100vh-8rem)] font-libertinus">
+    <div className="space-y-6 px-4 md:px-8 py-6 bg-[var(--r-gray)] min-h-[calc(100vh-8rem)] max-h-[calc(100vh-6.5rem)] overflow-y-auto font-libertinus">
       {/* Header with Time Filter */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-dm-serif text-[var(--r-black)]">
-            Admin Dashboard - {analytics.adminName}
+            Welcome Back, {analytics.adminName}
           </h2>
           <p className="text-[var(--r-boldgray)] mt-1">
             Monitor platform metrics and oversee system performance

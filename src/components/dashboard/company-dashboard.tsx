@@ -1,3 +1,4 @@
+import Heading from "../custom/heading";
 import CompanyDashboardContent from "./company-dashboard-content";
 
 interface CompanyDashboardProps {
@@ -5,5 +6,10 @@ interface CompanyDashboardProps {
 }
 
 export default function CompanyDashboard({ userId }: CompanyDashboardProps) {
-  return <CompanyDashboardContent userId={userId} />;
+  return (
+    <div>
+      <Heading title="Dashboard" />
+      <CompanyDashboardContent userId={userId} />
+    </div>
+  );
 }

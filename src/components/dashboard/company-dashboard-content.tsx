@@ -182,7 +182,7 @@ export default function CompanyDashboardContent({
   };
 
   return (
-    <div className="space-y-6 px-4 md:px-8 py-6 bg-[var(--r-gray)] min-h-[calc(100vh-8rem)] font-libertinus">
+    <div className="space-y-6 px-4 md:px-8 py-6 bg-[var(--r-gray)] min-h-[calc(100vh-8rem)] max-h-[calc(100vh-6.5rem)] overflow-y-auto font-libertinus">
       {/* Header with Time Filter and Quick Action */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
