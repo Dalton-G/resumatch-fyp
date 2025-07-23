@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
     const now = new Date();
     const daysAgo = parseInt(timeRange);
     const startDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+    const endDate = new Date(now.getTime()); // Current time
 
     // Get admin profile (for consistency)
     const admin = await prisma.adminProfile.findUnique({
@@ -121,52 +122,57 @@ export async function GET(req: NextRequest) {
       },
     ];
 
-    // User growth timeline
+    // User growth timeline (cumulative)
     const userGrowthTimeline: Array<{
       date: string;
       users: number;
       dateFormatted: string;
     }> = [];
-    const userDateMap = new Map();
 
-    // Initialize all days in range with 0 (including today)
-    for (let i = 0; i <= daysAgo; i++) {
-      const date = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
-      const dateKey = date.toISOString().split("T")[0];
-      userDateMap.set(dateKey, 0);
-    }
-
-    // Get user registrations in time range
-    const usersInRange = await prisma.user.findMany({
+    // Get the total count for the final day first (optimization)
+    const totalUsersAtEnd = await prisma.user.count({
       where: {
         createdAt: {
-          gte: startDate,
+          lte: endDate,
+        },
+      },
+    });
+
+    // Get all user creation dates within and before our range
+    const allUserDates = await prisma.user.findMany({
+      where: {
+        createdAt: {
+          lte: endDate,
         },
       },
       select: {
         createdAt: true,
       },
+      orderBy: {
+        createdAt: "asc",
+      },
     });
 
-    // Count users by day
-    usersInRange.forEach((user) => {
-      const dateKey = user.createdAt.toISOString().split("T")[0];
-      if (userDateMap.has(dateKey)) {
-        userDateMap.set(dateKey, userDateMap.get(dateKey) + 1);
-      }
-    });
+    // Build cumulative timeline for the requested range
+    for (let i = 0; i <= daysAgo; i++) {
+      const date = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+      const dateKey = date.toISOString().split("T")[0];
+      const endOfDay = new Date(dateKey + "T23:59:59.999Z");
 
-    // Convert to array format for charts
-    userDateMap.forEach((count, date) => {
+      // Count users created up to this date
+      const usersUpToDate = allUserDates.filter(
+        (user) => user.createdAt <= endOfDay
+      ).length;
+
       userGrowthTimeline.push({
-        date,
-        users: count,
-        dateFormatted: new Date(date).toLocaleDateString("en-US", {
+        date: dateKey,
+        users: usersUpToDate,
+        dateFormatted: date.toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
         }),
       });
-    });
+    }
 
     // 3. JOB MARKET ANALYTICS
 

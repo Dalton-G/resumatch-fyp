@@ -23,6 +23,10 @@ interface JobSeekerAnalytics {
     applications: number;
     dateFormatted: string;
   }>;
+  trendingJobs: Array<{
+    jobTitle: string;
+    count: number;
+  }>;
   recentApplications: Array<{
     id: string;
     jobTitle: string;

@@ -146,6 +146,30 @@ export async function GET(req: NextRequest) {
         Math.round((item._count.status / totalApplications) * 100) || 0,
     }));
 
+    // Trending jobs (popular job titles in the platform)
+    const trendingJobsData = await prisma.jobPosting.groupBy({
+      by: ["title"],
+      _count: {
+        title: true,
+      },
+      where: {
+        status: {
+          in: ["HIRING", "URGENTLY_HIRING"],
+        },
+      },
+      orderBy: {
+        _count: {
+          title: "desc",
+        },
+      },
+      take: 15,
+    });
+
+    const trendingJobs = trendingJobsData.map((job) => ({
+      jobTitle: job.title,
+      count: job._count.title,
+    }));
+
     return NextResponse.json({
       analytics: {
         // User info
@@ -161,6 +185,7 @@ export async function GET(req: NextRequest) {
         // Chart data
         statusBreakdown: statusChartData,
         applicationTimeline: timelineData,
+        trendingJobs,
 
         // Recent activity
         recentApplications,

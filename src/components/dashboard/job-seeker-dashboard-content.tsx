@@ -34,6 +34,7 @@ import {
   FiXCircle,
   FiAlertCircle,
   FiPause,
+  FiBriefcase,
 } from "react-icons/fi";
 import { MdWork } from "react-icons/md";
 import { GiSkills } from "react-icons/gi";
@@ -107,14 +108,66 @@ export default function JobSeekerDashboardContent({
             ))}
           </div>
 
-          {/* Charts Skeleton */}
+          {/* Charts Skeleton - Now includes Trending Jobs */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl p-6 shadow-md">
-                <div className="h-6 w-32 bg-gray-300 rounded animate-pulse mb-4"></div>
-                <div className="h-64 bg-gray-100 rounded animate-pulse"></div>
+            {/* Application Timeline Chart */}
+            <div className="bg-white rounded-xl p-6 shadow-md">
+              <div className="h-6 w-40 bg-gray-300 rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-48 bg-gray-200 rounded animate-pulse mb-4"></div>
+              <div className="h-64 bg-gray-100 rounded animate-pulse"></div>
+            </div>
+
+            {/* Status Breakdown Chart */}
+            <div className="bg-white rounded-xl p-6 shadow-md">
+              <div className="h-6 w-36 bg-gray-300 rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-44 bg-gray-200 rounded animate-pulse mb-4"></div>
+              <div className="h-64 bg-gray-100 rounded animate-pulse"></div>
+            </div>
+
+            {/* Trending Jobs Skeleton */}
+            <div className="bg-white rounded-xl p-6 shadow-md">
+              <div className="h-6 w-32 bg-gray-300 rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-52 bg-gray-200 rounded animate-pulse mb-4"></div>
+              <div className="space-y-3 max-h-64">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                      <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                    <div className="h-6 w-16 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+          </div>
+
+          {/* Recent Applications Skeleton */}
+          <div className="grid grid-cols-1 gap-4 md:gap-6">
+            <div className="bg-white rounded-xl p-6 shadow-md">
+              <div className="h-6 w-40 bg-gray-300 rounded animate-pulse mb-2"></div>
+              <div className="h-4 w-48 bg-gray-200 rounded animate-pulse mb-4"></div>
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                  >
+                    <div className="space-y-2">
+                      <div className="h-5 w-48 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                    <div className="space-y-2 text-right">
+                      <div className="h-6 w-20 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -144,7 +197,7 @@ export default function JobSeekerDashboardContent({
   };
 
   return (
-    <div className="space-y-6 px-4 md:px-8 py-6 bg-[var(--r-gray)] min-h-[calc(100vh-8rem)] font-libertinus">
+    <div className="space-y-6 px-4 md:px-8 py-6 bg-[var(--r-gray)] min-h-[calc(100vh-8rem)] max-h-[calc(100vh-6.5rem)] overflow-y-auto font-libertinus">
       {/* Header with Time Filter */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
@@ -377,6 +430,70 @@ export default function JobSeekerDashboardContent({
             )}
           </CardContent>
         </Card>
+
+        {/* Trending Jobs */}
+        <Card className="rounded-xl shadow-md">
+          <CardHeader>
+            <CardTitle className="font-dm-serif font-normal text-xl text-[var(--r-black)]">
+              Trending Jobs
+              <span className="text-sm font-normal text-[var(--r-boldgray)] block">
+                Popular positions on the platform
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {analytics.trendingJobs && analytics.trendingJobs.length > 0 ? (
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {analytics.trendingJobs.map((job, index) => (
+                  <div
+                    key={job.jobTitle}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                    onClick={() => router.push(pages.jobPortal)}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="flex items-center justify-center w-8 h-8 bg-[var(--r-blue)]/10 text-[var(--r-blue)] rounded-full text-sm font-bold">
+                        {index + 1}
+                      </div>
+                      <div>
+                        <p className="font-medium text-[var(--r-black)] text-sm">
+                          {job.jobTitle.length > 30
+                            ? job.jobTitle.substring(0, 30) + "..."
+                            : job.jobTitle}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <Badge
+                        variant="secondary"
+                        className="bg-[var(--r-blue)]/10 text-[var(--r-blue)]"
+                      >
+                        {job.count} {job.count === 1 ? "posting" : "postings"}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="h-64 flex flex-col items-center justify-center text-[var(--r-boldgray)] space-y-3">
+                <FiBriefcase className="h-12 w-12 text-[var(--r-blue)]" />
+                <p className="text-center">No trending jobs data yet.</p>
+                <p className="text-sm text-center">
+                  Check back as more companies post jobs!
+                </p>
+                <button
+                  onClick={() => router.push(pages.jobPortal)}
+                  className="px-4 py-2 bg-[var(--r-blue)] text-white rounded-lg text-sm hover:bg-[var(--r-blue)]/80 transition-colors"
+                >
+                  Browse Jobs
+                </button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Applications Section */}
+      <div className="grid grid-cols-1 gap-4 md:gap-6">
         {/* Recent Applications */}
         <Card className="rounded-xl shadow-md">
           <CardHeader>
