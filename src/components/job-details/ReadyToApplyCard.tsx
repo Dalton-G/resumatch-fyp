@@ -48,9 +48,8 @@ export function ReadyToApplyCard({
             variant="outline"
             size="sm"
             onClick={() => setShowReportModal(true)}
-            className="w-full text-gray-600 hover:text-red-600 hover:border-red-300"
+            className="w-full text-gray-600 hover:text-red-600 hover:border-red-300 text-md font-libertinus"
           >
-            <AlertTriangle className="w-4 h-4 mr-2" />
             Report Job
           </Button>
         </CardContent>

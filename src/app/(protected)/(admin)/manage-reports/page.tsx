@@ -36,6 +36,8 @@ import { useJobReports, useResolveJobReport } from "@/hooks/use-job-reports";
 import { JobReportResponse } from "@/types/job-reports";
 import Heading from "@/components/custom/heading";
 import { formatDistanceToNow } from "date-fns";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface ReportResolution {
   status: "RESOLVED_VALID" | "RESOLVED_INVALID" | "DISMISSED";
@@ -68,13 +70,9 @@ export default function ManageReportsPage() {
     adminNotes: "",
   });
 
-  // Fetch job reports
+  // Fetch job reports - fetch all reports to get accurate counts
   const { data: reports, isLoading } = useJobReports(
-    activeTab === "pending"
-      ? "PENDING,UNDER_REVIEW"
-      : activeTab === "resolved"
-      ? "RESOLVED_VALID,RESOLVED_INVALID,DISMISSED"
-      : undefined,
+    undefined, // Fetch all reports regardless of tab
     50
   );
 
@@ -101,6 +99,8 @@ export default function ManageReportsPage() {
         onSuccess: handleResolveSuccess,
       }
     );
+
+    toast.success("Report have been resolved!");
   };
 
   const getReportsByStatus = (
@@ -128,10 +128,10 @@ export default function ManageReportsPage() {
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <CardTitle className="text-lg font-semibold mb-2">
+              <CardTitle className="text-xl font-normal font-dm-serif mb-2">
                 {report.job.title}
               </CardTitle>
-              <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+              <div className="flex items-center gap-2 text-lg text-gray-600 mb-2 font-libertinus">
                 <User className="w-4 h-4" />
                 <span>{report.job.companyName}</span>
                 <span>•</span>
@@ -139,14 +139,15 @@ export default function ManageReportsPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Badge
-                  className={
-                    statusColors[report.status as keyof typeof statusColors]
-                  }
+                  className={cn(
+                    statusColors[report.status as keyof typeof statusColors],
+                    "text-sm"
+                  )}
                 >
                   <StatusIcon className="w-3 h-3 mr-1" />
                   {report.status.replace("_", " ")}
                 </Badge>
-                <span className="text-sm text-gray-500">
+                <span className="text-md text-gray-500 font-libertinus">
                   {formatDistanceToNow(new Date(report.createdAt), {
                     addSuffix: true,
                   })}
@@ -171,20 +172,23 @@ export default function ManageReportsPage() {
                     }}
                     variant="outline"
                     size="sm"
+                    className="font-libertinus bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/80 hover:text-white"
                   >
                     Resolve
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent className="max-w-md">
+                <AlertDialogContent className="max-w-md font-libertinus">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Resolve Report</AlertDialogTitle>
-                    <AlertDialogDescription>
+                    <AlertDialogTitle className="font-dm-serif font-normal text-xl">
+                      Resolve Report
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="font-libertinus text-md">
                       Choose how to resolve this job posting report.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <div className="space-y-4 py-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
+                    <div className="mb-6">
+                      <label className="block text-md font-medium mb-2 font-libertinus">
                         Resolution
                       </label>
                       <Select
@@ -214,7 +218,7 @@ export default function ManageReportsPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label className="block text-md font-medium mb-2 font-libertinus">
                         Admin Notes (Optional)
                       </label>
                       <Textarea
@@ -227,6 +231,7 @@ export default function ManageReportsPage() {
                         }
                         placeholder="Add any notes about this resolution..."
                         rows={3}
+                        className="font-libertinus"
                       />
                     </div>
                   </div>
@@ -240,12 +245,14 @@ export default function ManageReportsPage() {
                           adminNotes: "",
                         });
                       }}
+                      className="font-libertinus"
                     >
                       Cancel
                     </AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleResolveReport}
                       disabled={resolveReportMutation.isPending}
+                      className="font-libertinus"
                     >
                       {resolveReportMutation.isPending
                         ? "Resolving..."
@@ -260,31 +267,33 @@ export default function ManageReportsPage() {
         <CardContent>
           <div className="space-y-3">
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-1">Reason:</p>
-              <Badge variant="outline" className="text-xs">
+              <p className="text-md font-medium text-gray-700 mb-1 font-libertinus">
+                Reason:
+              </p>
+              <Badge variant="outline" className="text-sm font-libertinus">
                 {report.reason.replace("_", " ")}
               </Badge>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-1">
+              <p className="text-md font-medium text-gray-700 mb-1 font-libertinus">
                 Description:
               </p>
-              <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+              <p className="text-md text-gray-600 bg-gray-50 p-2 rounded font-libertinus">
                 {report.description || "No description provided"}
               </p>
             </div>
             {report.adminNotes && (
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">
+                <p className="text-sm font-medium text-gray-700 mb-1 font-libertinus">
                   Admin Notes:
                 </p>
-                <p className="text-sm text-gray-600 bg-blue-50 p-2 rounded">
+                <p className="text-sm text-gray-600 bg-blue-50 p-2 rounded font-libertinus">
                   {report.adminNotes}
                 </p>
               </div>
             )}
             {report.resolvedAt && (
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-500 font-libertinus">
                 Resolved{" "}
                 {formatDistanceToNow(new Date(report.resolvedAt), {
                   addSuffix: true,
@@ -298,10 +307,13 @@ export default function ManageReportsPage() {
   };
 
   return (
-    <div>
+    <div className="font-libertinus">
       <Heading title="Manage Reports" />
       <div className="p-6 max-h-[calc(100vh-6.5rem)] overflow-y-auto">
         <div className="max-w-5xl mx-auto">
+          <p className="text-gray-600 mb-6 font-libertinus text-md">
+            Review and resolve job posting reports from job seekers
+          </p>
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
@@ -310,22 +322,22 @@ export default function ManageReportsPage() {
             <TabsList className="grid w-full grid-cols-2 bg-white h-12">
               <TabsTrigger
                 value="pending"
-                className="flex items-center gap-2 justify-center py-2 rounded-md
+                className="flex items-center gap-2 justify-center py-2 rounded-md font-libertinus
         data-[state=active]:bg-[var(--r-blue)]
         data-[state=active]:text-white
         data-[state=inactive]:text-gray-700
-        transition-colors"
+        transition-colors text-md"
               >
                 <AlertTriangle className="w-4 h-4" />
                 Pending ({pendingReports.length})
               </TabsTrigger>
               <TabsTrigger
                 value="resolved"
-                className="flex items-center gap-2 justify-center py-2 rounded-md
+                className="flex items-center gap-2 justify-center py-2 rounded-md font-libertinus
         data-[state=active]:bg-[var(--r-blue)]
         data-[state=active]:text-white
         data-[state=inactive]:text-gray-700
-        transition-colors"
+        transition-colors text-md"
               >
                 <CheckCircle className="w-4 h-4" />
                 Resolved ({resolvedReports.length})
@@ -333,9 +345,11 @@ export default function ManageReportsPage() {
             </TabsList>
             <TabsContent value="pending" className="mt-6">
               {isLoading ? (
-                <div className="text-center py-8">Loading reports...</div>
+                <div className="text-center py-8 font-libertinus">
+                  Loading reports...
+                </div>
               ) : pendingReports.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 font-libertinus">
                   No pending reports to review
                 </div>
               ) : (
@@ -346,9 +360,11 @@ export default function ManageReportsPage() {
             </TabsContent>
             <TabsContent value="resolved" className="mt-6">
               {isLoading ? (
-                <div className="text-center py-8">Loading reports...</div>
+                <div className="text-center py-8 font-libertinus">
+                  Loading reports...
+                </div>
               ) : resolvedReports.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 font-libertinus">
                   No resolved reports found
                 </div>
               ) : (

@@ -93,21 +93,21 @@ export default function ReportJobModal({
   if (submitted) {
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md font-libertinus">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-4">
               <CheckCircle className="w-8 h-8 text-green-500" />
-              <DialogTitle className="text-xl text-green-700">
+              <DialogTitle className="text-xl text-green-700 font-normal font-dm-serif">
                 Report Submitted
               </DialogTitle>
             </div>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-gray-600">
+            <p className="text-gray-600 font-libertinus text-md">
               Thank you for reporting this job posting. Our team will review it
               and take appropriate action if necessary.
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-md text-gray-500 font-libertinus">
               This dialog will close automatically...
             </p>
           </div>
@@ -118,13 +118,15 @@ export default function ReportJobModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md font-libertinus">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
             <AlertTriangle className="w-6 h-6 text-orange-500" />
-            <DialogTitle className="text-xl">Report Job Posting</DialogTitle>
+            <DialogTitle className="text-xl font-normal font-dm-serif">
+              Report Job Posting
+            </DialogTitle>
           </div>
-          <DialogDescription className="text-gray-600">
+          <DialogDescription className="text-gray-600 font-libertinus text-md">
             Report "{jobTitle}" at {companyName} for policy violations or
             inappropriate content.
           </DialogDescription>
@@ -132,11 +134,11 @@ export default function ReportJobModal({
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label className="block text-sm font-medium mb-2 font-libertinus">
               Reason for reporting *
             </label>
             <Select value={reason} onValueChange={setReason}>
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a reason" />
               </SelectTrigger>
               <SelectContent>
@@ -150,7 +152,7 @@ export default function ReportJobModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label className="block text-sm font-medium mb-2 font-libertinus">
               Description *
             </label>
             <Textarea
@@ -159,16 +161,17 @@ export default function ReportJobModal({
               placeholder="Please provide more details about the issue..."
               rows={4}
               maxLength={500}
+              className="font-libertinus"
             />
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="text-xs text-gray-500 mt-1 font-libertinus">
               {description.length}/500 characters
             </div>
           </div>
 
-          <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded">
-            <strong>Note:</strong> False reports may result in restrictions on
-            your account. Only report jobs that genuinely violate our community
-            guidelines.
+          <div className="text-sm text-gray-500 bg-gray-50 p-3 rounded font-libertinus">
+            <strong className="font-normal font-dm-serif">Note:</strong> False
+            reports may result in restrictions on your account. Only report jobs
+            that genuinely violate our community guidelines.
           </div>
 
           <div className="flex gap-3 pt-4">
@@ -177,11 +180,15 @@ export default function ReportJobModal({
               disabled={
                 reportJobMutation.isPending || !reason || !description.trim()
               }
-              className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-libertinus"
             >
               {reportJobMutation.isPending ? "Submitting..." : "Submit Report"}
             </Button>
-            <Button variant="outline" onClick={handleClose} className="flex-1">
+            <Button
+              variant="outline"
+              onClick={handleClose}
+              className="flex-1 font-libertinus"
+            >
               Cancel
             </Button>
           </div>
