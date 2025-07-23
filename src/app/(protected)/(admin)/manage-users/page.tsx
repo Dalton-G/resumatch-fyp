@@ -157,302 +157,313 @@ export default function ManageUsersPage() {
     <div className="font-libertinus">
       <Heading title="Manage Users" />
 
-      <div className="container mx-auto py-6 space-y-6">
-        {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-3">
+      <div className="max-h-[calc(100vh-6.5rem)] overflow-y-auto">
+        <div className="max-w-7xl mx-auto py-6 space-y-6">
+          {/* Stats Cards */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <CardTitle className="text-lg font-normal font-dm-serif">
+                  Total Users
+                </CardTitle>
+                <Users className="h-6 w-6 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold font-dm-serif">
+                  {totalCount}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <CardTitle className="text-lg font-normal font-dm-serif">
+                  Active Users
+                </CardTitle>
+                <UserCheck className="h-6 w-6 text-green-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold text-green-600 font-dm-serif">
+                  {users.filter((u) => u.isApproved).length}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-lg font-medium font-dm-serif">
+                  Banned Users
+                </CardTitle>
+                <UserX className="h-6 w-6 text-red-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold text-red-600 font-dm-serif">
+                  {users.filter((u) => !u.isApproved).length}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          {/* Filters */}
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium font-dm-serif">
-                Total Users
+            <CardHeader>
+              <CardTitle className="font-dm-serif font-normal text-xl">
+                Filters
               </CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold font-dm-serif">
-                {totalCount}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search by name or email..."
+                      value={searchTerm}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                        setCurrentPage(1);
+                      }}
+                      className="pl-8"
+                    />
+                  </div>
+                </div>
+                <Select
+                  value={statusFilter}
+                  onValueChange={(value: "all" | "approved" | "banned") => {
+                    setStatusFilter(value);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-full sm:w-[180px]">
+                    <SelectValue placeholder="Filter by status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Users</SelectItem>
+                    <SelectItem value="approved">Active Users</SelectItem>
+                    <SelectItem value="banned">Banned Users</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={roleFilter}
+                  onValueChange={(
+                    value: "all" | "JOB_SEEKER" | "COMPANY" | "ADMIN"
+                  ) => {
+                    setRoleFilter(value);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-full sm:w-[180px]">
+                    <SelectValue placeholder="Filter by role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Roles</SelectItem>
+                    <SelectItem value="JOB_SEEKER">Job Seekers</SelectItem>
+                    <SelectItem value="COMPANY">Companies</SelectItem>
+                    <SelectItem value="ADMIN">Admins</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>
+          {/* Users Table */}
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium font-dm-serif">
-                Active Users
+            <CardHeader>
+              <CardTitle className="font-dm-serif font-normal text-xl">
+                Users ({totalCount})
               </CardTitle>
-              <UserCheck className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600 font-dm-serif">
-                {users.filter((u) => u.isApproved).length}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium font-dm-serif">
-                Banned Users
-              </CardTitle>
-              <UserX className="h-4 w-4 text-red-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-red-600 font-dm-serif">
-                {users.filter((u) => !u.isApproved).length}
-              </div>
+              {loading ? (
+                <div className="text-center py-8">Loading users...</div>
+              ) : (
+                <>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Joined</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((user) => (
+                        <TableRow
+                          key={user.id}
+                          className="cursor-pointer hover:bg-gray-50"
+                          onClick={() => handleRowClick(user.id)}
+                        >
+                          <TableCell>
+                            <div className="font-medium flex items-center gap-2">
+                              {user.name || "No name"}
+                              <ExternalLink className="h-4 w-4 text-gray-400" />
+                            </div>
+                          </TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{getUserRole(user)}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={cn(
+                                "py-1 px-2 rounded-full",
+                                user.isApproved
+                                  ? "bg-green-600 text-white"
+                                  : "bg-red-600 text-white"
+                              )}
+                              variant={user.isApproved ? "default" : "default"}
+                            >
+                              {user.isApproved ? "Active" : "Banned"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{formatDate(user.createdAt)}</TableCell>
+                          <TableCell>
+                            <div onClick={(e) => e.stopPropagation()}>
+                              {getUserRole(user) === "ADMIN" ? (
+                                <Badge
+                                  variant="default"
+                                  className="p-2 bg-[var(--r-black)] cursor-not-allowed"
+                                >
+                                  Admin User
+                                </Badge>
+                              ) : user.isApproved ? (
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button
+                                      variant="default"
+                                      size="sm"
+                                      disabled={actionLoading === user.id}
+                                      className="bg-red-600 text-white hover:bg-red-400 cursor-pointer"
+                                    >
+                                      {actionLoading === user.id
+                                        ? "Updating..."
+                                        : "Ban User"}
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>
+                                        Ban User
+                                      </AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to ban{" "}
+                                        {user.name || user.email}? This will
+                                        prevent them from logging in, close all
+                                        their job postings, and their resume
+                                        embeddings will be deactivated.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>
+                                        Cancel
+                                      </AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() =>
+                                          handleBanUser(
+                                            user.id,
+                                            user.name || user.email
+                                          )
+                                        }
+                                        className="bg-red-600 hover:bg-red-700"
+                                      >
+                                        Ban User
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              ) : (
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button
+                                      variant="default"
+                                      size="sm"
+                                      disabled={actionLoading === user.id}
+                                      className="bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/80 cursor-pointer"
+                                    >
+                                      {actionLoading === user.id
+                                        ? "Updating..."
+                                        : "Unban User"}
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent className="font-libertinus">
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle className="font-dm-serif font-normal text-xl">
+                                        Unban User
+                                      </AlertDialogTitle>
+                                      <AlertDialogDescription className="text-md">
+                                        Are you sure you want to unban{" "}
+                                        {user.name || user.email}? This will
+                                        restore their access, reopen eligible
+                                        job postings, and reactivate their
+                                        resume embeddings.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>
+                                        Cancel
+                                      </AlertDialogCancel>
+                                      <AlertDialogAction
+                                        className="bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80"
+                                        onClick={() =>
+                                          handleUnbanUser(
+                                            user.id,
+                                            user.name || user.email
+                                          )
+                                        }
+                                      >
+                                        Unban User
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-between space-x-2 py-4">
+                      <div className="text-sm text-muted-foreground">
+                        Page {currentPage} of {totalPages}
+                      </div>
+                      <div className="space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setCurrentPage(Math.max(1, currentPage - 1))
+                          }
+                          disabled={currentPage === 1}
+                        >
+                          Previous
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            setCurrentPage(
+                              Math.min(totalPages, currentPage + 1)
+                            )
+                          }
+                          disabled={currentPage === totalPages}
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  {users.length === 0 && (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No users found matching your criteria.
+                    </div>
+                  )}
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
-
-        {/* Filters */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-dm-serif">Filters</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search by name or email..."
-                    value={searchTerm}
-                    onChange={(e) => {
-                      setSearchTerm(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    className="pl-8"
-                  />
-                </div>
-              </div>
-              <Select
-                value={statusFilter}
-                onValueChange={(value: "all" | "approved" | "banned") => {
-                  setStatusFilter(value);
-                  setCurrentPage(1);
-                }}
-              >
-                <SelectTrigger className="w-full sm:w-[180px]">
-                  <SelectValue placeholder="Filter by status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Users</SelectItem>
-                  <SelectItem value="approved">Active Users</SelectItem>
-                  <SelectItem value="banned">Banned Users</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select
-                value={roleFilter}
-                onValueChange={(
-                  value: "all" | "JOB_SEEKER" | "COMPANY" | "ADMIN"
-                ) => {
-                  setRoleFilter(value);
-                  setCurrentPage(1);
-                }}
-              >
-                <SelectTrigger className="w-full sm:w-[180px]">
-                  <SelectValue placeholder="Filter by role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Roles</SelectItem>
-                  <SelectItem value="JOB_SEEKER">Job Seekers</SelectItem>
-                  <SelectItem value="COMPANY">Companies</SelectItem>
-                  <SelectItem value="ADMIN">Admins</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Users Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-dm-serif">
-              Users ({totalCount})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="text-center py-8">Loading users...</div>
-            ) : (
-              <>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>User</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Joined</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users.map((user) => (
-                      <TableRow
-                        key={user.id}
-                        className="cursor-pointer hover:bg-gray-50"
-                        onClick={() => handleRowClick(user.id)}
-                      >
-                        <TableCell>
-                          <div className="font-medium flex items-center gap-2">
-                            {user.name || "No name"}
-                            <ExternalLink className="h-4 w-4 text-gray-400" />
-                          </div>
-                        </TableCell>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{getUserRole(user)}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            className={cn(
-                              "p-2",
-                              user.isApproved ? "bg-green-600" : ""
-                            )}
-                            variant={
-                              user.isApproved ? "default" : "destructive"
-                            }
-                          >
-                            {user.isApproved ? "Active" : "Banned"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{formatDate(user.createdAt)}</TableCell>
-                        <TableCell>
-                          <div onClick={(e) => e.stopPropagation()}>
-                            {getUserRole(user) === "ADMIN" ? (
-                              <Badge variant="outline">Admin User</Badge>
-                            ) : user.isApproved ? (
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button
-                                    variant="destructive"
-                                    size="sm"
-                                    disabled={actionLoading === user.id}
-                                  >
-                                    {actionLoading === user.id
-                                      ? "..."
-                                      : "Ban User"}
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                      Ban User
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Are you sure you want to ban{" "}
-                                      {user.name || user.email}? This will
-                                      prevent them from logging in and their
-                                      resume embeddings will be deactivated.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>
-                                      Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() =>
-                                        handleBanUser(
-                                          user.id,
-                                          user.name || user.email
-                                        )
-                                      }
-                                      className="bg-red-600 hover:bg-red-700"
-                                    >
-                                      Ban User
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            ) : (
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button
-                                    variant="default"
-                                    size="sm"
-                                    disabled={actionLoading === user.id}
-                                    className="bg-[var(--r-blue)]"
-                                  >
-                                    {actionLoading === user.id
-                                      ? "..."
-                                      : "Unban User"}
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                      Unban User
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Are you sure you want to unban{" "}
-                                      {user.name || user.email}? This will
-                                      restore their access and reactivate their
-                                      resume embeddings.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>
-                                      Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() =>
-                                        handleUnbanUser(
-                                          user.id,
-                                          user.name || user.email
-                                        )
-                                      }
-                                    >
-                                      Unban User
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-between space-x-2 py-4">
-                    <div className="text-sm text-muted-foreground">
-                      Page {currentPage} of {totalPages}
-                    </div>
-                    <div className="space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setCurrentPage(Math.max(1, currentPage - 1))
-                        }
-                        disabled={currentPage === 1}
-                      >
-                        Previous
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          setCurrentPage(Math.min(totalPages, currentPage + 1))
-                        }
-                        disabled={currentPage === totalPages}
-                      >
-                        Next
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {users.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No users found matching your criteria.
-                  </div>
-                )}
-              </>
-            )}
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

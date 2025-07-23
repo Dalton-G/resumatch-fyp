@@ -3,7 +3,8 @@ import { prisma } from "@/lib/prisma";
 import pc from "@/lib/pinecone";
 
 /**
- * Bans a company user by setting isApproved to false and deactivating all their job posting embeddings
+ * Bans a company user by setting isApproved to false, updating all job postings to CLOSED_BY_ADMIN status,
+ * and deactivating all their job posting embeddings
  */
 export async function banCompanyUser(
   userId: string,
@@ -38,7 +39,28 @@ export async function banCompanyUser(
       });
 
       if (companyProfile) {
-        // 3. Deactivate all job posting embeddings in database
+        // 3. Update all job postings status to CLOSED_BY_ADMIN
+        if (companyProfile.jobPostings.length > 0) {
+          const allJobIds = companyProfile.jobPostings.map(
+            (jobPosting: any) => jobPosting.id
+          );
+
+          await tx.jobPosting.updateMany({
+            where: {
+              id: { in: allJobIds },
+            },
+            data: {
+              status: "CLOSED_BY_ADMIN",
+              updatedAt: new Date(),
+            },
+          });
+
+          console.log(
+            `📝 Updated ${allJobIds.length} job postings to CLOSED_BY_ADMIN status`
+          );
+        }
+
+        // 4. Deactivate all job posting embeddings in database
         const jobPostingsWithEmbeddings = companyProfile.jobPostings.filter(
           (jobPosting: any) => jobPosting.embedding
         );
@@ -78,7 +100,8 @@ export async function banCompanyUser(
 }
 
 /**
- * Unbans a company user by setting isApproved to true and reactivating their job posting embeddings
+ * Unbans a company user by setting isApproved to true, restoring job postings to HIRING status
+ * (except those with valid reports), and reactivating their job posting embeddings
  * (excluding those that have been reported and marked as "RESOLVED_VALID")
  */
 export async function unbanCompanyUser(userId: string): Promise<void> {
@@ -125,6 +148,45 @@ export async function unbanCompanyUser(userId: string): Promise<void> {
           }
         );
 
+        const reportedJobPostings = companyProfile.jobPostings.filter(
+          (jobPosting: any) => jobPosting.reports.length > 0
+        );
+
+        // 4. Update job posting statuses based on report status
+        if (eligibleJobPostings.length > 0) {
+          const eligibleJobIds = eligibleJobPostings.map(
+            (jobPosting: any) => jobPosting.id
+          );
+
+          // Restore status to HIRING for job postings without valid reports
+          await tx.jobPosting.updateMany({
+            where: {
+              id: { in: eligibleJobIds },
+              status: "CLOSED_BY_ADMIN", // Only update those that were closed by admin
+            },
+            data: {
+              status: "HIRING",
+              updatedAt: new Date(),
+            },
+          });
+
+          console.log(
+            `📝 Restored ${eligibleJobIds.length} job postings to HIRING status`
+          );
+        }
+
+        if (reportedJobPostings.length > 0) {
+          const reportedJobIds = reportedJobPostings.map(
+            (jobPosting: any) => jobPosting.id
+          );
+
+          // Keep reported job postings as CLOSED_BY_ADMIN
+          console.log(
+            `📝 Kept ${reportedJobIds.length} job postings as CLOSED_BY_ADMIN due to valid reports`
+          );
+        }
+
+        // 5. Reactivate embeddings for eligible job postings
         if (eligibleJobPostings.length > 0) {
           validJobPostingsToReactivate = eligibleJobPostings.map(
             (jobPosting: any) => jobPosting.id
@@ -334,10 +396,13 @@ async function updatePineconeJobPostingEmbeddingsActiveSelective(
 }
 
 /**
- * Get the ban status and job posting embedding counts for a company user
+ * Get the ban status, job posting status counts, and embedding counts for a company user
  */
 export async function getCompanyUserBanStatus(userId: string): Promise<{
   isBanned: boolean;
+  totalJobPostings: number;
+  hiringJobPostings: number;
+  closedByAdminJobPostings: number;
   totalJobPostingEmbeddings: number;
   activeJobPostingEmbeddings: number;
   inactiveJobPostingEmbeddings: number;
@@ -370,16 +435,30 @@ export async function getCompanyUserBanStatus(userId: string): Promise<{
 
     const isBanned = !user.isApproved;
 
+    let totalJobPostings = 0;
+    let hiringJobPostings = 0;
+    let closedByAdminJobPostings = 0;
     let totalJobPostingEmbeddings = 0;
     let activeJobPostingEmbeddings = 0;
     let inactiveJobPostingEmbeddings = 0;
     let jobPostingsWithValidReports = 0;
 
     if (user.companyProfile) {
-      const jobPostingsWithEmbeddings = user.companyProfile.jobPostings.filter(
+      const allJobPostings = user.companyProfile.jobPostings;
+      const jobPostingsWithEmbeddings = allJobPostings.filter(
         (jobPosting) => jobPosting.embedding
       );
 
+      // Job posting status counts
+      totalJobPostings = allJobPostings.length;
+      hiringJobPostings = allJobPostings.filter(
+        (jobPosting) => jobPosting.status === "HIRING"
+      ).length;
+      closedByAdminJobPostings = allJobPostings.filter(
+        (jobPosting) => jobPosting.status === "CLOSED_BY_ADMIN"
+      ).length;
+
+      // Embedding counts
       totalJobPostingEmbeddings = jobPostingsWithEmbeddings.length;
       activeJobPostingEmbeddings = jobPostingsWithEmbeddings.filter(
         (jobPosting) => jobPosting.embedding?.active === true
@@ -393,6 +472,9 @@ export async function getCompanyUserBanStatus(userId: string): Promise<{
 
     return {
       isBanned,
+      totalJobPostings,
+      hiringJobPostings,
+      closedByAdminJobPostings,
       totalJobPostingEmbeddings,
       activeJobPostingEmbeddings,
       inactiveJobPostingEmbeddings,
