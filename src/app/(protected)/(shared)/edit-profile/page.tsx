@@ -2,20 +2,37 @@ import { ensureAuth } from "@/lib/utils/check-role";
 import JobSeekerEditProfile from "@/components/edit/job-seeker-edit-profile";
 import CompanyEditProfile from "@/components/edit/company-edit-profile";
 import AdminEditProfile from "@/components/edit/admin-edit-profile";
+import Heading from "@/components/custom/heading";
+import { UserRole } from "@prisma/client";
 
 export default async function Page() {
   const session = await ensureAuth();
   const role = session.user.role;
   const userId = session.user.id;
 
-  if (role === "JOB_SEEKER") {
-    return <JobSeekerEditProfile userId={userId} role={role} />;
+  if (role === UserRole.JOB_SEEKER) {
+    return (
+      <div>
+        <Heading title="Edit Profile" />
+        <JobSeekerEditProfile userId={userId} role={role} />
+      </div>
+    );
   }
-  if (role === "COMPANY") {
-    return <CompanyEditProfile userId={userId} role={role} />;
+  if (role === UserRole.COMPANY) {
+    return (
+      <div>
+        <Heading title="Edit Profile" />
+        <CompanyEditProfile userId={userId} role={role} />
+      </div>
+    );
   }
-  if (role === "ADMIN") {
-    return <AdminEditProfile userId={userId} role={role} />;
+  if (role === UserRole.ADMIN) {
+    return (
+      <div>
+        <Heading title="Edit Profile" />
+        <AdminEditProfile userId={userId} role={role} />
+      </div>
+    );
   }
   // Placeholder for other roles
   return (

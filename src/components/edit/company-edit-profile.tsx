@@ -120,11 +120,8 @@ export default function CompanyEditProfile({
 
   return (
     <div className="flex justify-center items-start min-h-screen bg-[var(--r-gray)] font-libertinus">
-      <Card className="w-full max-w-5xl mt-12 mb-12 mx-4">
+      <Card className="w-full max-w-7xl mt-12 mb-12 mx-4">
         <CardContent className="px-10 py-6">
-          <h1 className="text-3xl font-bold font-dm-serif mb-6">
-            Edit Profile
-          </h1>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-8">
               <label className="block font-medium mb-2">Company Logo</label>
@@ -193,7 +190,7 @@ export default function CompanyEditProfile({
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger id="industry">
+                        <SelectTrigger id="industry" className="min-w-[17rem]">
                           <SelectValue placeholder="Select Industry" />
                         </SelectTrigger>
                         <SelectContent>
@@ -224,7 +221,7 @@ export default function CompanyEditProfile({
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger id="size">
+                        <SelectTrigger id="size" className="min-w-[17rem]">
                           <SelectValue placeholder="Select Size" />
                         </SelectTrigger>
                         <SelectContent>
