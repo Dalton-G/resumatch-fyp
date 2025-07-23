@@ -73,10 +73,7 @@ export const adminSidebar: SidebarConfig = {
     {
       label: "Jobs",
       icon: LuBriefcaseBusiness,
-      children: [
-        { label: "Job Portal", href: pages.jobPortal },
-        { label: "Manage Jobs", href: pages.manageJobs },
-      ],
+      children: [{ label: "Manage Jobs", href: pages.manageJobs }],
     },
     {
       label: "Users",

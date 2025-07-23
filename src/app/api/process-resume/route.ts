@@ -74,6 +74,7 @@ export async function POST(req: NextRequest) {
         content: embeddedResume.content,
         embedding: embeddedResume.embedding,
         appliedJobIds: [],
+        active: embeddedResume.metadata.active,
         source: embeddedResume.metadata.source,
         country: embeddedResume.metadata.country,
         profession: embeddedResume.metadata.profession,

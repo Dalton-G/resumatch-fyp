@@ -83,7 +83,7 @@ export async function updateResumeEmbeddingsCountry(
         const existingRecord = fetchResponse.records[resume.id];
         const currentMetadata = existingRecord.metadata || {};
 
-        // Update the vector with new country metadata
+        // Update the vector with new metadata
         await namespace.update({
           id: resume.id,
           metadata: {

@@ -7,6 +7,7 @@ export interface ResumeMetadata {
     appliedJobIds: string[];
     country: string;
     profession: string;
+    active: boolean;
   };
 }
 
