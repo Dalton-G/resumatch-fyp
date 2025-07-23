@@ -16,13 +16,13 @@ export const pages = {
   createJob: "/create-job",
   editJob: (id: string) => `/edit-job/${id}`,
   viewJob: (id: string) => `/jobs/${id}`,
-  redirect: "/redirect",
   applyForJob: (jobId: string) => `/apply-for-job/${jobId}`,
   viewMyApplication: (id: string) => `/my-applications/view/${id}`,
   viewApplicants: (jobId: string, jobTitle: string) =>
     `/view-applicants/${jobId}/${encodeURIComponent(jobTitle)}`,
   rankApplicants: "/rank-applicants",
   viewApplication: (id: string) => `/view-application/${id}`,
+  dashboard: "/dashboard",
 };
 
 export const api = {

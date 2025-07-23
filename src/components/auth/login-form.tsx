@@ -51,7 +51,7 @@ export function LoginForm({
       email: data.email,
       password: data.password,
       redirect: false,
-      callbackUrl: pages.redirect,
+      callbackUrl: pages.dashboard,
     });
 
     if (result?.error) {

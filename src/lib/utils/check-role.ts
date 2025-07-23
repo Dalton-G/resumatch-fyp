@@ -14,17 +14,3 @@ export async function ensureAuth() {
   if (!session || !session.user) redirect(pages.login);
   return session;
 }
-
-export async function redirectToHomePage() {
-  const session = await ensureAuth();
-  switch (session.user.role) {
-    case "JOB_SEEKER":
-      redirect(pages.jobPortal);
-    case "COMPANY":
-      redirect(pages.myJobPostings);
-    case "ADMIN":
-      redirect(pages.jobPortal);
-    default:
-      redirect(pages.login);
-  }
-}

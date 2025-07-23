@@ -4,10 +4,16 @@ import { FaUserCog, FaUserCircle } from "react-icons/fa";
 import { FiPlus, FiMinus } from "react-icons/fi";
 import { pages } from "./directory";
 import { SidebarConfig } from "@/lib/model/sidebar-model";
+import { RxDashboard } from "react-icons/rx";
 
 export const jobSeekerSidebar: SidebarConfig = {
-  home: pages.jobPortal,
+  home: pages.dashboard,
   sections: [
+    {
+      label: "Dashboard",
+      icon: RxDashboard,
+      children: [{ label: "Home", href: pages.dashboard }],
+    },
     {
       label: "Jobs",
       icon: LuBriefcaseBusiness,
@@ -33,8 +39,13 @@ export const jobSeekerSidebar: SidebarConfig = {
 };
 
 export const companySidebar: SidebarConfig = {
-  home: pages.jobPortal,
+  home: pages.dashboard,
   sections: [
+    {
+      label: "Dashboard",
+      icon: RxDashboard,
+      children: [{ label: "Home", href: pages.dashboard }],
+    },
     {
       label: "Jobs",
       icon: LuBriefcaseBusiness,
@@ -52,8 +63,13 @@ export const companySidebar: SidebarConfig = {
 };
 
 export const adminSidebar: SidebarConfig = {
-  home: pages.jobPortal,
+  home: pages.dashboard,
   sections: [
+    {
+      label: "Dashboard",
+      icon: RxDashboard,
+      children: [{ label: "Home", href: pages.dashboard }],
+    },
     {
       label: "Jobs",
       icon: LuBriefcaseBusiness,
