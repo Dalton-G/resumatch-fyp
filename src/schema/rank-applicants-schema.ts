@@ -8,6 +8,13 @@ export const rankApplicantsRequestSchema = z.object({
 });
 
 export const candidateAnalysisSchema = z.object({
+  aiScore: z
+    .number()
+    .min(0)
+    .max(100)
+    .describe(
+      "AI-generated match score (0-100) based on candidate fit for the role"
+    ),
   reasoning: z
     .string()
     .describe(
@@ -19,9 +26,6 @@ export const candidateAnalysisSchema = z.object({
   potentialConcerns: z
     .array(z.string())
     .describe("Any potential concerns or gaps (can be empty array)"),
-  overallFit: z
-    .enum(["EXCELLENT", "GOOD", "FAIR", "POOR"])
-    .describe("Overall assessment of candidate fit"),
 });
 
 export const rankedCandidateSchema = z.object({

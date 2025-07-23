@@ -242,45 +242,54 @@ export async function POST(request: NextRequest) {
       validCandidates.map(async (candidate: any) => {
         if (!candidate) throw new Error("Invalid candidate data");
 
-        const analysisPrompt = `
-Analyze this candidate's resume for the following job position:
+        // Use the same system + user prompt structure as job-matching
+        const systemPrompt = `
+          You are ResuMatch AI, an expert candidate ranking system that analyzes resumes against job requirements to provide detailed candidate assessments.
+          
+          TASK: Analyze the provided candidate's resume for the specific job position and provide a comprehensive evaluation.
+          
+          For this candidate, provide:
+          1. An AI match score (0-100) based on how well the candidate's skills and experience align with the job requirements
+          2. Detailed reasoning explaining why this candidate matches or doesn't match the role
+          3. Key strengths the candidate has for this role (3-5 specific skills or experiences)
+          4. Potential concerns or gaps that might need attention (can be empty if none)
+          
+          GUIDELINES:
+          - Base AI scores on actual skill alignment, experience level, and job requirements
+          - Be specific in analysis - mention actual skills, technologies, or experiences
+          - Focus on actionable insights for recruiters
+          - Be honest about both strengths and potential gaps
+          - Consider technical competency, experience level, and cultural fit
+          - Use objective language when analyzing candidate strengths and concerns
+        `;
 
-JOB: ${jobPosting.title} at ${jobPosting.company.name}
-DESCRIPTION: ${jobPosting.description}
-
-CANDIDATE RESUME:
-${candidate.resumeContent}
-
-Provide a detailed analysis of this candidate's fit for the role.
-`;
+        const userPrompt = `
+          JOB POSITION:
+          Title: ${jobPosting.title}
+          Company: ${jobPosting.company.name}
+          Description: ${jobPosting.description}
+          
+          CANDIDATE RESUME:
+          ${candidate.resumeContent}
+          
+          Please analyze this candidate's fit for the job position and provide a detailed assessment.
+          Focus on specific skills, experiences, and qualifications that are relevant to the role.
+        `;
 
         const { object: analysis } = await generateObject({
-          model: openai("gpt-4o"),
+          model: openai(env.OPENAI_LLM_MODEL),
+          system: systemPrompt,
+          prompt: userPrompt,
           schema: candidateAnalysisSchema,
-          prompt: analysisPrompt,
+          temperature: 0.3,
+          maxTokens: 2000,
         });
-
-        // Calculate AI score based on overall fit
-        const aiScore = (() => {
-          switch (analysis.overallFit) {
-            case "EXCELLENT":
-              return 0.95;
-            case "GOOD":
-              return 0.8;
-            case "FAIR":
-              return 0.6;
-            case "POOR":
-              return 0.3;
-            default:
-              return 0.5;
-          }
-        })();
 
         return {
           jobSeekerId: candidate.jobSeekerId,
           applicationId: candidate.applicationId,
           name: candidate.name,
-          aiScore,
+          aiScore: analysis.aiScore / 100, // Convert to 0-1 scale to match existing format
           embeddingScore: candidate.embeddingScore,
           profession: candidate.profession,
           country: candidate.country,

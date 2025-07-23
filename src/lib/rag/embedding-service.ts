@@ -8,7 +8,6 @@ import {
 import { env } from "@/config/env";
 import { embed } from "ai";
 import pc from "../pinecone";
-import { count } from "console";
 
 export async function generateEmbedding(text: string): Promise<number[]> {
   try {
