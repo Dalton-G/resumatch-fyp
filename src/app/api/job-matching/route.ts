@@ -30,10 +30,17 @@ export async function POST(request: NextRequest) {
         id: resumeId,
         jobSeeker: {
           userId: session.user.id,
+          user: {
+            isApproved: true, // Only allow matching for approved (non-banned) users
+          },
         },
       },
       include: {
-        embedding: true,
+        embedding: {
+          where: {
+            active: true, // Only use active resume embeddings
+          },
+        },
         jobSeeker: true,
       },
     });

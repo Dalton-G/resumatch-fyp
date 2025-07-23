@@ -8,6 +8,7 @@ import JobSeekerProfileView from "@/components/profile/job-seeker-profile-view";
 import CompanyProfileView from "@/components/profile/company-profile-view";
 import AdminProfileView from "@/components/profile/admin-profile-view";
 import { UserRole } from "@prisma/client";
+import Heading from "@/components/custom/heading";
 
 interface ViewProfilePageProps {
   params: Promise<{ userId: string }>;
@@ -50,47 +51,56 @@ export default function ViewProfilePage({ params }: ViewProfilePageProps) {
   switch (profile.role) {
     case UserRole.JOB_SEEKER:
       return (
-        <JobSeekerProfileView
-          name={profile.name}
-          image={profile.image}
-          profession={profile.profession}
-          country={profile.country}
-          views={profile.views}
-          bio={profile.bio}
-          skills={profile.skills}
-          phone={profile.phone}
-          email={profile.email}
-          githubUrl={profile.githubUrl}
-          linkedinUrl={profile.linkedinUrl}
-          portfolioUrl={profile.portfolioUrl}
-        />
+        <div>
+          <Heading title="Job Seeker Profile" />
+          <JobSeekerProfileView
+            name={profile.name}
+            image={profile.image}
+            profession={profile.profession}
+            country={profile.country}
+            views={profile.views}
+            bio={profile.bio}
+            skills={profile.skills}
+            phone={profile.phone}
+            email={profile.email}
+            githubUrl={profile.githubUrl}
+            linkedinUrl={profile.linkedinUrl}
+            portfolioUrl={profile.portfolioUrl}
+          />
+        </div>
       );
     case UserRole.COMPANY:
       return (
         <div className="flex flex-1 overflow-y-auto max-h-svh">
-          <CompanyProfileView
-            name={profile.name}
-            profilePicture={profile.profilePicture}
-            industry={profile.industry}
-            size={profile.size}
-            address={profile.address}
-            views={profile.views}
-            website={profile.website}
-            email={profile.email}
-            description={profile.description}
-            userId={profile.id}
-          />
+          <div>
+            <Heading title="Company Profile" />
+            <CompanyProfileView
+              name={profile.name}
+              profilePicture={profile.profilePicture}
+              industry={profile.industry}
+              size={profile.size}
+              address={profile.address}
+              views={profile.views}
+              website={profile.website}
+              email={profile.email}
+              description={profile.description}
+              userId={profile.id}
+            />
+          </div>
         </div>
       );
     case UserRole.ADMIN:
       return (
-        <AdminProfileView
-          firstName={profile.firstName}
-          lastName={profile.lastName}
-          profilePicture={profile.profilePicture}
-          email={profile.email}
-          views={profile.views}
-        />
+        <div>
+          <Heading title="Admin Profile" />
+          <AdminProfileView
+            firstName={profile.firstName}
+            lastName={profile.lastName}
+            profilePicture={profile.profilePicture}
+            email={profile.email}
+            views={profile.views}
+          />
+        </div>
       );
     default:
       return <div>Unknown profile type</div>;

@@ -81,6 +81,7 @@ export async function storeResumeEmbeddingInPinecone(
         appliedJobIds: embeddedResume.metadata.appliedJobIds,
         country: embeddedResume.metadata.country,
         profession: embeddedResume.metadata.profession,
+        active: embeddedResume.metadata.active,
       },
     };
 

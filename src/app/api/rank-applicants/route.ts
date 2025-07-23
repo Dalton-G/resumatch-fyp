@@ -144,6 +144,7 @@ export async function POST(request: NextRequest) {
     // Build Pinecone filter (using User IDs, not JobSeekerProfile IDs)
     const pineconeFilter: Record<string, any> = {
       jobSeekerId: { $in: appliedUserIds }, // This should be User.id values
+      active: { $eq: true }, // Only include active resume embeddings (not banned users)
     };
 
     if (localOnly) {

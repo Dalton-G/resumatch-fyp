@@ -16,7 +16,8 @@ export function prepareResumeMetadata(
   resumeId: string,
   source: string,
   country: string,
-  profession: string
+  profession: string,
+  active: boolean = true
 ): ResumeMetadata {
   return {
     content: cleanText(content),
@@ -27,6 +28,7 @@ export function prepareResumeMetadata(
       appliedJobIds: [],
       country,
       profession,
+      active,
     },
   };
 }

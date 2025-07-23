@@ -215,6 +215,7 @@ model ResumeEmbedding {
   content       String
   embedding     Float[]
   appliedJobIds String[]
+  active        Boolean  @default(true)
   source        String?
   country       String?
   profession    String?
@@ -223,6 +224,7 @@ model ResumeEmbedding {
 
   @@index([jobSeekerId])
   @@index([resumeId])
+  @@index([active])
 }
 
 model JobPostingEmbedding {
