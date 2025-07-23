@@ -17,4 +17,5 @@ export const cacheKeys = {
   rankApplicants: "rank-applicants",
   jobsWithApplicants: "jobs-with-applicants",
   professions: "professions",
+  jobSeekerAnalytics: "job-seeker-analytics",
 };

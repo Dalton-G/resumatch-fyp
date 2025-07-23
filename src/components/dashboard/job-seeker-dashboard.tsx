@@ -1,4 +1,5 @@
 import Heading from "../custom/heading";
+import JobSeekerDashboardContent from "./job-seeker-dashboard-content";
 
 interface JobSeekerDashboardProps {
   userId: string;
@@ -10,7 +11,7 @@ export default function JobSeekerDashboard({
   return (
     <div>
       <Heading title="Dashboard" />
-      {/* Content Goes Here (in a importable component) */}
+      <JobSeekerDashboardContent userId={userId} />
     </div>
   );
 }
