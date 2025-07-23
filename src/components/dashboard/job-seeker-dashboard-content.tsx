@@ -11,10 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -74,7 +71,7 @@ interface JobSeekerDashboardContentProps {
 export default function JobSeekerDashboardContent({
   userId,
 }: JobSeekerDashboardContentProps) {
-  const [timeRange, setTimeRange] = useState("30");
+  const [timeRange, setTimeRange] = useState("7");
   const { data, isLoading, error } = useJobSeekerAnalytics(timeRange);
   const router = useRouter();
 
@@ -107,8 +104,8 @@ export default function JobSeekerDashboardContent({
           </div>
 
           {/* Charts Skeleton */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
-            {[...Array(4)].map((_, i) => (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+            {[...Array(3)].map((_, i) => (
               <div key={i} className="bg-white rounded-xl p-6 shadow-md">
                 <div className="h-6 w-32 bg-gray-300 rounded animate-pulse mb-4"></div>
                 <div className="h-64 bg-gray-100 rounded animate-pulse"></div>
@@ -148,14 +145,14 @@ export default function JobSeekerDashboardContent({
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-dm-serif text-[var(--r-black)]">
-            Your Dashboard
+            Welcome Back, {analytics.firstName} {analytics.lastName}
           </h2>
           <p className="text-[var(--r-boldgray)] mt-1">
             Track your job search progress and profile metrics
           </p>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-full sm:w-48">
+          <SelectTrigger className="w-full sm:w-48 bg-white">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -255,42 +252,12 @@ export default function JobSeekerDashboardContent({
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
-        {/* Profile Completion */}
-        <Card className="rounded-xl shadow-md">
-          <CardHeader>
-            <CardTitle className="font-dm-serif text-xl text-[var(--r-black)]">
-              Profile Completion
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-[var(--r-boldgray)]">
-                  Your profile is {analytics.profileCompletionPercentage}%
-                  complete
-                </span>
-                <span className="text-sm font-dm-serif text-[var(--r-black)]">
-                  {analytics.profileCompletionPercentage}%
-                </span>
-              </div>
-              <Progress
-                value={analytics.profileCompletionPercentage}
-                className="h-3"
-              />
-              <p className="text-xs text-[var(--r-boldgray)]">
-                {analytics.profileCompletionPercentage < 100
-                  ? "Complete your profile to increase visibility to employers"
-                  : "Great! Your profile is fully complete"}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
+      {/* Charts Section - 3 columns */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Application Status Breakdown */}
         <Card className="rounded-xl shadow-md">
           <CardHeader>
-            <CardTitle className="font-dm-serif text-xl text-[var(--r-black)]">
+            <CardTitle className="font-dm-serif font-normal text-xl text-[var(--r-black)]">
               Application Status
             </CardTitle>
           </CardHeader>
@@ -347,13 +314,11 @@ export default function JobSeekerDashboardContent({
             )}
           </CardContent>
         </Card>
-      </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
         {/* Application Timeline */}
         <Card className="rounded-xl shadow-md">
           <CardHeader>
-            <CardTitle className="font-dm-serif text-xl text-[var(--r-black)]">
+            <CardTitle className="font-dm-serif font-normal text-xl text-[var(--r-black)]">
               Application Timeline (
               {timeRangeOptions.find((opt) => opt.value === timeRange)?.label})
             </CardTitle>
@@ -399,11 +364,10 @@ export default function JobSeekerDashboardContent({
             )}
           </CardContent>
         </Card>
-
         {/* Recent Applications */}
         <Card className="rounded-xl shadow-md">
           <CardHeader>
-            <CardTitle className="font-dm-serif text-xl text-[var(--r-black)]">
+            <CardTitle className="font-dm-serif font-normal text-xl text-[var(--r-black)]">
               Recent Applications
             </CardTitle>
           </CardHeader>

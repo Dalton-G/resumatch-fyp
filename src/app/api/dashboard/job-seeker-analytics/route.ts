@@ -93,26 +93,6 @@ export async function GET(req: NextRequest) {
       where: { jobSeekerId: jobSeeker.id },
     });
 
-    // Calculate profile completion percentage
-    const profileFields = [
-      jobSeeker.firstName,
-      jobSeeker.lastName,
-      jobSeeker.phone,
-      jobSeeker.country,
-      jobSeeker.bio,
-      jobSeeker.profession,
-      jobSeeker.profilePicture,
-      jobSeeker.linkedinUrl || jobSeeker.githubUrl || jobSeeker.portfolioUrl, // At least one social link
-      jobSeeker.skills && jobSeeker.skills.length > 0 ? "skills" : null, // Has skills
-    ];
-
-    const completedFields = profileFields.filter(
-      (field) => field !== null && field !== undefined && field !== ""
-    ).length;
-    const profileCompletionPercentage = Math.round(
-      (completedFields / profileFields.length) * 100
-    );
-
     // Prepare timeline data (group by day)
     const timelineData: Array<{
       date: string;
@@ -167,12 +147,15 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       analytics: {
+        // User info
+        firstName: jobSeeker.firstName,
+        lastName: jobSeeker.lastName,
+
         // Summary cards
         totalApplications,
         profileViews: jobSeeker.views,
         resumeCount,
         skillsCount: jobSeeker.skills.length,
-        profileCompletionPercentage,
 
         // Chart data
         statusBreakdown: statusChartData,

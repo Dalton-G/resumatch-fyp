@@ -6,11 +6,12 @@ import { api } from "@/config/directory";
 import { cacheKeys } from "@/config/cache-keys";
 
 interface JobSeekerAnalytics {
+  firstName: string;
+  lastName: string;
   totalApplications: number;
   profileViews: number;
   resumeCount: number;
   skillsCount: number;
-  profileCompletionPercentage: number;
   statusBreakdown: Array<{
     status: string;
     count: number;

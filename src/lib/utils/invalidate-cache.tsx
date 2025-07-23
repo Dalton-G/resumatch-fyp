@@ -22,5 +22,6 @@ export async function invalidateJobApplicationQueries(
     }),
     queryClient.invalidateQueries({ queryKey: [cacheKeys.jobApplicants] }),
     queryClient.invalidateQueries({ queryKey: [cacheKeys.jobMatching] }),
+    queryClient.invalidateQueries({ queryKey: [cacheKeys.jobSeekerAnalytics] }),
   ]);
 }
