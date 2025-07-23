@@ -196,7 +196,7 @@ export default function AdminDashboardContent({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[var(--r-boldgray)]">
-                  New Users (
+                  Users (
                   {
                     timeRangeOptions.find((opt) => opt.value === timeRange)
                       ?.label
@@ -391,7 +391,7 @@ export default function AdminDashboardContent({
                     <YAxis tick={{ fontSize: 12 }} stroke="#727272" />
                     <Tooltip
                       labelFormatter={(label) => `Date: ${label}`}
-                      formatter={(value) => [`${value}`, "New Users"]}
+                      formatter={(value) => [`${value}`, "Users"]}
                       contentStyle={{
                         backgroundColor: "white",
                         border: "1px solid #cdcdcd",
@@ -555,7 +555,7 @@ export default function AdminDashboardContent({
                     />
                     <YAxis tick={{ fontSize: 12 }} stroke="#727272" />
                     <Tooltip
-                      formatter={(value) => [`${value}`, "Users"]}
+                      formatter={(value) => [`${value}`, "Job Seekers"]}
                       labelFormatter={(label) => `Country: ${label}`}
                       contentStyle={{
                         backgroundColor: "white",
