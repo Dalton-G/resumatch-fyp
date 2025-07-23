@@ -254,6 +254,41 @@ export async function GET(req: NextRequest) {
       })
     );
 
+    // Trending skills from applicants
+    const applicantsWithSkills = await prisma.jobApplication.findMany({
+      where: {
+        job: {
+          companyId: company.id,
+        },
+      },
+      select: {
+        jobSeeker: {
+          select: {
+            skills: true,
+          },
+        },
+      },
+    });
+
+    const skillsMap = new Map();
+    applicantsWithSkills.forEach((application) => {
+      application.jobSeeker.skills.forEach((skill) => {
+        const normalizedSkill = skill.trim().toLowerCase();
+        skillsMap.set(
+          normalizedSkill,
+          (skillsMap.get(normalizedSkill) || 0) + 1
+        );
+      });
+    });
+
+    const trendingSkills = Array.from(skillsMap.entries())
+      .map(([skill, count]) => ({
+        skill: skill.charAt(0).toUpperCase() + skill.slice(1),
+        count,
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 15);
+
     return NextResponse.json({
       analytics: {
         // Company info
@@ -272,6 +307,7 @@ export async function GET(req: NextRequest) {
         applicationsByJob,
         topPerformingJobs,
         applicationTimeline: timelineData,
+        trendingSkills,
 
         // Recent activity
         recentApplications: recentApplicationsData.map((app) => ({

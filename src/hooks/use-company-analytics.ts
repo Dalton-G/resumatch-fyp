@@ -38,6 +38,10 @@ interface CompanyAnalytics {
     applications: number;
     dateFormatted: string;
   }>;
+  trendingSkills: Array<{
+    skill: string;
+    count: number;
+  }>;
   recentApplications: Array<{
     id: string;
     candidateName: string;

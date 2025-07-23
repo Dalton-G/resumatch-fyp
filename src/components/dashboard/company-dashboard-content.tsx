@@ -39,6 +39,7 @@ import {
   FiXCircle,
   FiAlertCircle,
   FiPause,
+  FiAward,
 } from "react-icons/fi";
 import { MdWork } from "react-icons/md";
 import { formatDistanceToNow } from "date-fns";
@@ -127,8 +128,8 @@ export default function CompanyDashboardContent({
           </div>
 
           {/* Bottom Section Skeleton */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-            {[...Array(2)].map((_, i) => (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+            {[...Array(3)].map((_, i) => (
               <div key={i} className="bg-white rounded-xl p-6 shadow-md">
                 <div className="h-6 w-32 bg-gray-300 rounded animate-pulse mb-4"></div>
                 <div className="h-64 bg-gray-100 rounded animate-pulse"></div>
@@ -541,8 +542,8 @@ export default function CompanyDashboardContent({
         </Card>
       </div>
 
-      {/* Bottom Section - Row 4: Top Jobs & Recent Applications */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+      {/* Bottom Section - Row 4: Top Jobs, Recent Applications & Trending Skills */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Top Performing Jobs */}
         <Card className="rounded-xl shadow-md">
           <CardHeader>
@@ -697,6 +698,57 @@ export default function CompanyDashboardContent({
                 >
                   Post a Job
                 </button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Trending Skills */}
+        <Card className="rounded-xl shadow-md">
+          <CardHeader>
+            <CardTitle className="font-dm-serif font-normal text-xl text-[var(--r-black)]">
+              Trending Skills
+              <span className="text-sm font-normal text-[var(--r-boldgray)] block">
+                Among your applicants
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {analytics.trendingSkills && analytics.trendingSkills.length > 0 ? (
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {analytics.trendingSkills.map((skill, index) => (
+                  <div
+                    key={skill.skill}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="flex items-center justify-center w-8 h-8 bg-purple-100 text-purple-600 rounded-full text-sm font-bold">
+                        {index + 1}
+                      </div>
+                      <div>
+                        <p className="font-medium text-[var(--r-black)] text-sm">
+                          {skill.skill}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <Badge
+                        variant="secondary"
+                        className="bg-purple-100 text-purple-600"
+                      >
+                        {skill.count} applicants
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="h-64 flex flex-col items-center justify-center text-[var(--r-boldgray)] space-y-3">
+                <FiAward className="h-12 w-12 text-purple-600" />
+                <p className="text-center">No trending skills data yet.</p>
+                <p className="text-sm text-center">
+                  Skills will appear as candidates apply to your jobs!
+                </p>
               </div>
             )}
           </CardContent>

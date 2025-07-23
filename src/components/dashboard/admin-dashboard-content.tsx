@@ -196,7 +196,12 @@ export default function AdminDashboardContent({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[var(--r-boldgray)]">
-                  New Users ({timeRangeOptions.find((opt) => opt.value === timeRange)?.label})
+                  New Users (
+                  {
+                    timeRangeOptions.find((opt) => opt.value === timeRange)
+                      ?.label
+                  }
+                  )
                 </p>
                 <p className="text-3xl font-dm-serif text-[var(--r-black)]">
                   {analytics.newUsersInRange}
@@ -671,7 +676,8 @@ export default function AdminDashboardContent({
                         style={{
                           borderColor:
                             roleColors[user.role as keyof typeof roleColors],
-                          color: roleColors[user.role as keyof typeof roleColors],
+                          color:
+                            roleColors[user.role as keyof typeof roleColors],
                         }}
                       >
                         {formatRole(user.role)}
