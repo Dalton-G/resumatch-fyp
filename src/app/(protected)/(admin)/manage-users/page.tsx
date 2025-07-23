@@ -37,6 +37,7 @@ import Heading from "@/components/custom/heading";
 import { toast } from "sonner";
 import { Search, UserCheck, UserX, Users, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface User {
   id: string;
@@ -302,6 +303,10 @@ export default function ManageUsersPage() {
                         </TableCell>
                         <TableCell>
                           <Badge
+                            className={cn(
+                              "p-2",
+                              user.isApproved ? "bg-green-600" : ""
+                            )}
                             variant={
                               user.isApproved ? "default" : "destructive"
                             }
@@ -364,6 +369,7 @@ export default function ManageUsersPage() {
                                     variant="default"
                                     size="sm"
                                     disabled={actionLoading === user.id}
+                                    className="bg-[var(--r-blue)]"
                                   >
                                     {actionLoading === user.id
                                       ? "..."
