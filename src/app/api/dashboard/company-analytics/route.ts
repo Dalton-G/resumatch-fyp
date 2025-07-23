@@ -125,8 +125,8 @@ export async function GET(req: NextRequest) {
     }> = [];
     const dateMap = new Map();
 
-    // Initialize all days in range with 0
-    for (let i = 0; i < daysAgo; i++) {
+    // Initialize all days in range with 0 (including today)
+    for (let i = 0; i <= daysAgo; i++) {
       const date = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
       const dateKey = date.toISOString().split("T")[0];
       dateMap.set(dateKey, 0);
