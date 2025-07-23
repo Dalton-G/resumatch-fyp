@@ -22,6 +22,7 @@ import {
   Cell,
   LineChart,
   Line,
+  Legend,
 } from "recharts";
 import {
   FiFileText,
@@ -47,12 +48,15 @@ const timeRangeOptions = [
 ];
 
 const statusColors = {
-  APPLIED: "#2b85ff", // --r-blue
-  REVIEWING: "#f39c12", // orange
-  INTERVIEWED: "#9b59b6", // purple
-  OFFERED: "#27ae60", // green
-  REJECTED: "#e74c3c", // red
-  WITHDRAWN: "#95a5a6", // gray
+  APPLIED: "#3b82f6", // blue-500 to match bg-blue-100 text-blue-800
+  REVIEWING: "#f59e0b", // yellow-500 to match bg-yellow-100 text-yellow-800  
+  SHORTLISTED: "#8b5cf6", // purple-500 to match bg-purple-100 text-purple-800
+  REJECTED: "#ef4444", // red-500 to match bg-red-100 text-red-800
+  SUCCESS: "#10b981", // green-500 to match bg-green-100 text-green-800
+  // Legacy support for old statuses
+  INTERVIEWED: "#8b5cf6", // purple
+  OFFERED: "#10b981", // green  
+  WITHDRAWN: "#6b7280", // gray
 };
 
 const statusIcons = {
@@ -263,16 +267,16 @@ export default function JobSeekerDashboardContent({
           </CardHeader>
           <CardContent>
             {analytics.statusBreakdown.length > 0 ? (
-              <div className="h-64">
+              <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={analytics.statusBreakdown}
                       cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={100}
-                      paddingAngle={5}
+                      cy="45%"
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={2}
                       dataKey="count"
                       onClick={() => handleChartClick(null, "applications")}
                       className="cursor-pointer"
@@ -293,6 +297,15 @@ export default function JobSeekerDashboardContent({
                         `${value} (${props.payload.percentage}%)`,
                         formatStatus(props.payload.status),
                       ]}
+                    />
+                    <Legend
+                      verticalAlign="bottom"
+                      height={36}
+                      formatter={(value, entry) => (
+                        <span style={{ color: entry.color, fontSize: '12px' }}>
+                          {formatStatus(value)}
+                        </span>
+                      )}
                     />
                   </PieChart>
                 </ResponsiveContainer>

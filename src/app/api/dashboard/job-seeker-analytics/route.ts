@@ -140,6 +140,7 @@ export async function GET(req: NextRequest) {
     // Format status breakdown for charts
     const statusChartData = statusBreakdown.map((item) => ({
       status: item.status,
+      name: item.status, // This will be used by the legend
       count: item._count.status,
       percentage:
         Math.round((item._count.status / totalApplications) * 100) || 0,

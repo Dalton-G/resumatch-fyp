@@ -14,6 +14,7 @@ interface JobSeekerAnalytics {
   skillsCount: number;
   statusBreakdown: Array<{
     status: string;
+    name: string;
     count: number;
     percentage: number;
   }>;
