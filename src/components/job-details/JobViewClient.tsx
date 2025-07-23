@@ -68,6 +68,8 @@ export function JobViewClient({ jobId, userRole }: JobViewClientProps) {
             </div>
           ) : (
             <ReadyToApplyCard
+              jobId={job.id}
+              jobTitle={job.title}
               companyName={company.name}
               applicationCount={applicationCount}
               hasApplied={!!hasApplied}

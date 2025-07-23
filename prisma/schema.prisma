@@ -103,6 +103,7 @@ model JobSeekerProfile {
   applications   JobApplication[]
   user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   resumes        Resume[]
+  jobReports     JobReport[]      @relation("ReporterProfile")
 
   @@index([country])
   @@index([userId])
@@ -130,15 +131,16 @@ model CompanyProfile {
 }
 
 model AdminProfile {
-  id             String   @id @default(cuid())
-  userId         String   @unique
+  id             String      @id @default(cuid())
+  userId         String      @unique
   firstName      String?
   lastName       String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
   profilePicture String?
-  views          Int      @default(0)
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  views          Int         @default(0)
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resolvedReports JobReport[] @relation("AdminResolver")
 
   @@index([userId])
 }
@@ -174,6 +176,7 @@ model JobPosting {
   embedding    JobPostingEmbedding?
   applications JobApplication[]
   company      CompanyProfile       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  reports      JobReport[]
 
   @@index([status])
   @@index([companyId])
@@ -244,6 +247,29 @@ model JobPostingEmbedding {
   @@index([active])
 }
 
+model JobReport {
+  id          String        @id @default(cuid())
+  jobId       String
+  reporterId  String
+  reason      ReportReason
+  description String?
+  status      ReportStatus  @default(PENDING)
+  adminNotes  String?
+  resolvedAt  DateTime?
+  resolvedBy  String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  job         JobPosting         @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  reporter    JobSeekerProfile   @relation("ReporterProfile", fields: [reporterId], references: [id], onDelete: Cascade)
+  admin       AdminProfile?      @relation("AdminResolver", fields: [resolvedBy], references: [id], onDelete: SetNull)
+
+  @@unique([jobId, reporterId])
+  @@index([jobId])
+  @@index([reporterId])
+  @@index([createdAt])
+}
+
 enum UserRole {
   JOB_SEEKER
   COMPANY
@@ -269,4 +295,22 @@ enum WorkType {
   ONSITE
   REMOTE
   HYBRID
+}
+
+enum ReportReason {
+  SPAM
+  FAKE_JOB
+  INAPPROPRIATE_CONTENT
+  MISLEADING_INFORMATION
+  DISCRIMINATORY
+  SCAM
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  UNDER_REVIEW
+  RESOLVED_VALID
+  RESOLVED_INVALID
+  DISMISSED
 }

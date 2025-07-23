@@ -81,7 +81,10 @@ export const adminSidebar: SidebarConfig = {
     {
       label: "Users",
       icon: FaUserCog,
-      children: [{ label: "Manage Users", href: pages.manageUsers }],
+      children: [
+        { label: "Manage Users", href: pages.manageUsers },
+        { label: "Manage Reports", href: pages.manageReports },
+      ],
     },
   ],
 };

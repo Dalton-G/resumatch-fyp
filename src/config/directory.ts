@@ -6,6 +6,7 @@ export const pages = {
   companyRegister: "/register/company",
   manageJobs: "/manage-jobs",
   manageUsers: "/manage-users",
+  manageReports: "/manage-reports",
   myJobPostings: "/my-job-postings",
   myApplications: "/my-applications",
   myResume: "/my-resume",
@@ -66,4 +67,8 @@ export const api = {
   jobSeekerAnalytics: "/api/dashboard/job-seeker-analytics",
   companyAnalytics: "/api/dashboard/company-analytics",
   adminAnalytics: "/api/dashboard/admin-analytics",
+  createJobReport: "/api/job-reports/create",
+  listJobReports: "/api/job-reports/list",
+  resolveJobReport: (id: string) => `/api/job-reports/${id}/resolve`,
+  jobReportAnalytics: "/api/job-reports/analytics",
 };
