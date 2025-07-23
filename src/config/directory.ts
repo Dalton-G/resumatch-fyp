@@ -64,4 +64,5 @@ export const api = {
   jobsWithApplicants: "/api/company/jobs-with-applicants",
   professions: "/api/professions",
   jobSeekerAnalytics: "/api/dashboard/job-seeker-analytics",
+  companyAnalytics: "/api/dashboard/company-analytics",
 };
