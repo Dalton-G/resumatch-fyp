@@ -49,13 +49,13 @@ const timeRangeOptions = [
 
 const statusColors = {
   APPLIED: "#3b82f6", // blue-500 to match bg-blue-100 text-blue-800
-  REVIEWING: "#f59e0b", // yellow-500 to match bg-yellow-100 text-yellow-800  
+  REVIEWING: "#f59e0b", // yellow-500 to match bg-yellow-100 text-yellow-800
   SHORTLISTED: "#8b5cf6", // purple-500 to match bg-purple-100 text-purple-800
   REJECTED: "#ef4444", // red-500 to match bg-red-100 text-red-800
   SUCCESS: "#10b981", // green-500 to match bg-green-100 text-green-800
   // Legacy support for old statuses
   INTERVIEWED: "#8b5cf6", // purple
-  OFFERED: "#10b981", // green  
+  OFFERED: "#10b981", // green
   WITHDRAWN: "#6b7280", // gray
 };
 
@@ -302,7 +302,7 @@ export default function JobSeekerDashboardContent({
                       verticalAlign="bottom"
                       height={36}
                       formatter={(value, entry) => (
-                        <span style={{ color: entry.color, fontSize: '12px' }}>
+                        <span style={{ color: entry.color, fontSize: "12px" }}>
                           {formatStatus(value)}
                         </span>
                       )}
