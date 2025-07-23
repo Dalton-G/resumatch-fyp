@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import ProtectedSidebar from "@/components/layout/protected-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { redirectIfBanned } from "@/actions/user-status";
 
 export default async function ProtectedLayout({
   children,
@@ -11,6 +12,8 @@ export default async function ProtectedLayout({
 }) {
   const session = await auth();
   if (!session || !session.user) redirect(pages.login);
+
+  await redirectIfBanned();
 
   const { id, name, image, role } = session.user;
 

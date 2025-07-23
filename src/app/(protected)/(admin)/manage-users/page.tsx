@@ -335,16 +335,16 @@ export default function ManageUsersPage() {
                                       className="bg-red-600 text-white hover:bg-red-400 cursor-pointer"
                                     >
                                       {actionLoading === user.id
-                                        ? "Updating..."
+                                        ? "Banning..."
                                         : "Ban User"}
                                     </Button>
                                   </AlertDialogTrigger>
-                                  <AlertDialogContent>
+                                  <AlertDialogContent className="font-libertinus">
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>
+                                      <AlertDialogTitle className="font-normal font-dm-serif text-xl">
                                         Ban User
                                       </AlertDialogTitle>
-                                      <AlertDialogDescription>
+                                      <AlertDialogDescription className="text-md">
                                         Are you sure you want to ban{" "}
                                         {user.name || user.email}? This will
                                         prevent them from logging in, close all
@@ -380,7 +380,7 @@ export default function ManageUsersPage() {
                                       className="bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/80 cursor-pointer"
                                     >
                                       {actionLoading === user.id
-                                        ? "Updating..."
+                                        ? "Unbanning..."
                                         : "Unban User"}
                                     </Button>
                                   </AlertDialogTrigger>
