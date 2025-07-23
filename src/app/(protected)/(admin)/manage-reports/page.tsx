@@ -170,7 +170,7 @@ export default function ManageReportsPage() {
                       });
                       setResolveDialogOpen(true);
                     }}
-                    variant="outline"
+                    variant="default"
                     size="sm"
                     className="font-libertinus bg-[var(--r-blue)] text-white hover:bg-[var(--r-blue)]/80 hover:text-white"
                   >
@@ -252,7 +252,7 @@ export default function ManageReportsPage() {
                     <AlertDialogAction
                       onClick={handleResolveReport}
                       disabled={resolveReportMutation.isPending}
-                      className="font-libertinus"
+                      className="font-libertinus bg-[var(--r-blue)] hover:bg-[var(--r-blue)]/80"
                     >
                       {resolveReportMutation.isPending
                         ? "Resolving..."

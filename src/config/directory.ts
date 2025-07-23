@@ -1,6 +1,7 @@
 export const pages = {
   login: "/",
   register: "/register",
+  banned: "/banned",
   jobPortal: "/job-portal",
   jobSeekerRegister: "/register/job-seeker",
   companyRegister: "/register/company",

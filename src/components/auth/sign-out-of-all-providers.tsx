@@ -4,10 +4,8 @@ import { signOutOfAllProviders } from "@/actions/auth";
 import { Button } from "../ui/button";
 import { CgLogOut } from "react-icons/cg";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 
 export default function SignOutOfAllProvidersButton() {
-  const queryClient = useQueryClient();
   return (
     <form action={signOutOfAllProviders}>
       <Button
@@ -15,7 +13,7 @@ export default function SignOutOfAllProvidersButton() {
         onClick={() => {
           toast.success("Signed out successfully");
         }}
-        className="bg-[var(--r-gray)] font-dm-serif hover:bg-red-400 hover:text-white text-[var(--r-black)] shrink-0 cursor-pointer"
+        className="bg-[var(--r-gray)] font-dm-serif hover:bg-red-600 hover:text-white text-[var(--r-black)] shrink-0 cursor-pointer"
       >
         <CgLogOut />
       </Button>
