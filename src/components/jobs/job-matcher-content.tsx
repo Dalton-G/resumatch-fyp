@@ -43,6 +43,7 @@ import { useJobMatching } from "@/hooks/use-job-matching";
 import { MdAutoGraph } from "react-icons/md";
 import { TbVectorSpline } from "react-icons/tb";
 import { FaInfoCircle } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 
 interface JobMatcherContentProps {
   userId: string;
@@ -421,10 +422,16 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent className="min-w-3xl font-libertinus">
-                          <AlertDialogHeader>
-                            <AlertDialogTitle className="text-xl font-normal font-dm-serif mb-4">
-                              Scoring System Explained
-                            </AlertDialogTitle>
+                          <AlertDialogHeader className="mb-4">
+                            <div className="flex flex-row items-center justify-between mb-4">
+                              <AlertDialogTitle className="text-xl font-normal font-dm-serif">
+                                Scoring System Explained
+                              </AlertDialogTitle>
+
+                              <AlertDialogCancel>
+                                <RxCross2 />
+                              </AlertDialogCancel>
+                            </div>
                             <AlertDialogDescription asChild>
                               <div className="space-y-4 text-base">
                                 <div className="border rounded-lg p-4 bg-blue-50">
@@ -492,9 +499,6 @@ export default function JobMatcherContent({ userId }: JobMatcherContentProps) {
                               </div>
                             </AlertDialogDescription>
                           </AlertDialogHeader>
-                          <div className="mt-4 flex justify-end">
-                            <AlertDialogCancel>Close</AlertDialogCancel>
-                          </div>
                         </AlertDialogContent>
                       </AlertDialog>
                     </div>

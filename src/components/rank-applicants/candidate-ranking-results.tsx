@@ -35,6 +35,7 @@ import { FaInfoCircle } from "react-icons/fa";
 import { MdAutoGraph } from "react-icons/md";
 import type { RankApplicantsResponse } from "@/schema/rank-applicants-schema";
 import { pages } from "@/config/directory";
+import { RxCross2 } from "react-icons/rx";
 
 type SortBy = "ai-score" | "embedding-score" | "average";
 
@@ -144,9 +145,14 @@ export function CandidateRankingResults({
                 </AlertDialogTrigger>
                 <AlertDialogContent className="min-w-3xl font-libertinus">
                   <AlertDialogHeader>
-                    <AlertDialogTitle className="text-2xl font-dm-serif font-normal mb-4">
-                      Candidate Scoring System
-                    </AlertDialogTitle>
+                    <div className="flex flex-row items-center justify-between mb-4">
+                      <AlertDialogTitle className="text-2xl font-dm-serif font-normal">
+                        Candidate Scoring System
+                      </AlertDialogTitle>
+                      <AlertDialogCancel>
+                        <RxCross2 />
+                      </AlertDialogCancel>
+                    </div>
                     <AlertDialogDescription asChild>
                       <div className="space-y-4 text-base">
                         <div className="border rounded-lg p-4 bg-blue-50">
@@ -210,9 +216,6 @@ export function CandidateRankingResults({
                       </div>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
-                  <div className="mt-4 flex justify-end">
-                    <AlertDialogCancel>Close</AlertDialogCancel>
-                  </div>
                 </AlertDialogContent>
               </AlertDialog>
             </div>
