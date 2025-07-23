@@ -41,9 +41,6 @@ export default function JobSeekerProfileView({
 }: JobSeekerProfileViewProps) {
   return (
     <div>
-      <h1 className="text-3xl font-bold px-8 mt-8 font-dm-serif">
-        View Profile
-      </h1>
       <div className="flex w-full gap-8 justify-center items-start mt-8 px-8">
         {/* Left Card */}
         <Card className="flex flex-col items-center flex-1 py-10 px-8 rounded-2xl shadow-lg bg-[var(--color-card)] min-w-0">

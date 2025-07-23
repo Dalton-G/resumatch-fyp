@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { unbanUser } from "@/lib/utils/user-ban-management";
+import { unbanCompanyUser } from "@/lib/utils/company-ban-management";
 
 export async function POST(
   request: NextRequest,
@@ -25,13 +26,31 @@ export async function POST(
 
     const { userId } = await params;
 
-    // Unban the user
-    const result = await unbanUser(userId);
+    // Check if user exists and get their role
+    const targetUser = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        jobSeekerProfile: { select: { id: true } },
+        companyProfile: { select: { id: true } },
+      },
+    });
+
+    if (!targetUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Unban the user based on their role
+    if (targetUser.companyProfile) {
+      // Company user - reactivate job posting embeddings (excluding reported ones)
+      await unbanCompanyUser(userId);
+    } else {
+      // Job seeker user - reactivate resume embeddings
+      await unbanUser(userId);
+    }
 
     return NextResponse.json({
       success: true,
       message: "User unbanned successfully",
-      result,
     });
   } catch (error) {
     console.error("Error unbanning user:", error);

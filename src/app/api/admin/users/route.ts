@@ -51,6 +51,8 @@ export async function GET(request: NextRequest) {
       where.jobSeekerProfile = { isNot: null };
     } else if (role === "COMPANY") {
       where.companyProfile = { isNot: null };
+    } else if (role === "ADMIN") {
+      where.role = "ADMIN";
     }
 
     // Get users with counts

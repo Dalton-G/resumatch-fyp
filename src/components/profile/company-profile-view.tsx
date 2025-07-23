@@ -29,7 +29,7 @@ export default function CompanyProfileView({
   userId, // Destructure companyId
 }: CompanyProfileViewProps) {
   return (
-    <div className="flex flex-col gap-8 w-full px-8 mt-8">
+    <div className="flex flex-col gap-8 w-full px-8 pt-8 max-h-[calc(100vh-6.5rem)] overflow-y-auto">
       {/* Header Section */}
       <Card className="flex flex-row items-center gap-8 p-10 rounded-2xl shadow-lg bg-[var(--color-card)]">
         {/* Logo */}

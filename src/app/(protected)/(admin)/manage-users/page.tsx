@@ -64,7 +64,7 @@ export default function ManageUsersPage() {
     "all" | "approved" | "banned"
   >("all");
   const [roleFilter, setRoleFilter] = useState<
-    "all" | "JOB_SEEKER" | "COMPANY"
+    "all" | "JOB_SEEKER" | "COMPANY" | "ADMIN"
   >("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -239,7 +239,9 @@ export default function ManageUsersPage() {
               </Select>
               <Select
                 value={roleFilter}
-                onValueChange={(value: "all" | "JOB_SEEKER" | "COMPANY") => {
+                onValueChange={(
+                  value: "all" | "JOB_SEEKER" | "COMPANY" | "ADMIN"
+                ) => {
                   setRoleFilter(value);
                   setCurrentPage(1);
                 }}
@@ -251,6 +253,7 @@ export default function ManageUsersPage() {
                   <SelectItem value="all">All Roles</SelectItem>
                   <SelectItem value="JOB_SEEKER">Job Seekers</SelectItem>
                   <SelectItem value="COMPANY">Companies</SelectItem>
+                  <SelectItem value="ADMIN">Admins</SelectItem>
                 </SelectContent>
               </Select>
             </div>
