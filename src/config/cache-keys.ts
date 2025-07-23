@@ -19,4 +19,5 @@ export const cacheKeys = {
   professions: "professions",
   jobSeekerAnalytics: "job-seeker-analytics",
   companyAnalytics: "company-analytics",
+  adminAnalytics: "admin-analytics",
 };

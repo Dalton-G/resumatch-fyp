@@ -65,4 +65,5 @@ export const api = {
   professions: "/api/professions",
   jobSeekerAnalytics: "/api/dashboard/job-seeker-analytics",
   companyAnalytics: "/api/dashboard/company-analytics",
+  adminAnalytics: "/api/dashboard/admin-analytics",
 };
