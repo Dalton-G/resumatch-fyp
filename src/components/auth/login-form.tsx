@@ -75,7 +75,7 @@ export function LoginForm({
       )}
       {...props}
     >
-      <h1 className="text-3xl font-bold font-dm-serif mb-2 text-center md:text-center mt-4">
+      <h1 className="text-3xl font-dm-serif mb-2 text-center md:text-center mt-4">
         Welcome back
       </h1>
       <p className="mb-8 text-center md:text-center font-libertinus">

@@ -163,9 +163,7 @@ export default function JobSeekerEditProfile({
 
   return (
     <div className="flex flex-col gap-4 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold px-8 mt-8 font-dm-serif">
-        Edit Profile
-      </h1>
+      <h1 className="text-3xl px-8 mt-8 font-dm-serif">Edit Profile</h1>
       <div className="flex flex-row gap-8 p-8 font-libertinus">
         <div className="flex-1">
           <Tabs value={tab} onValueChange={setTab} className="w-full">

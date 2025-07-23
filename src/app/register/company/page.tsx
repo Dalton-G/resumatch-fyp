@@ -10,7 +10,7 @@ export default function CompanyRegisterPage() {
       {/* Left: Registration Form */}
       <div className="flex flex-1 flex-col items-center justify-center bg-[var(--r-gray)] px-4">
         <div className="w-full max-w-md mx-auto flex flex-col items-center">
-          <h1 className="text-4xl font-bold font-dm-serif mb-2 text-center">
+          <h1 className="text-4xl font-dm-serif mb-2 text-center">
             Company Registration
           </h1>
           <p className="mb-8 text-center font-libertinus text-base font-medium">
@@ -34,7 +34,7 @@ export default function CompanyRegisterPage() {
         <div className="flex flex-col items-center">
           <RiStarSmileFill size={120} className="text-white" />
           <div className="text-center mt-4">
-            <h2 className="text-5xl font-bold font-dm-serif">ResuMatch</h2>
+            <h2 className="text-5xl font-dm-serif">ResuMatch</h2>
             <p className="mt-2 text-2xl font-libertinus font-light">
               Where jobs find <i>you</i>
             </p>

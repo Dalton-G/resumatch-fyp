@@ -14,7 +14,7 @@ export default function Home() {
           <div className="flex flex-col items-center">
             <RiStarSmileFill size={80} className="text-white" />
             <div className="text-center">
-              <h2 className="text-3xl font-bold font-dm-serif">ResuMatch</h2>
+              <h2 className="text-3xl font-dm-serif">ResuMatch</h2>
               <p className="mt-1 text-base font-libertinus font-light">
                 Where jobs find <i>you</i>
               </p>
