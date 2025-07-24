@@ -27,6 +27,7 @@ import { useState } from "react";
 import { countryOptions } from "@/config/country-options";
 import axios from "@/lib/axios";
 import { invalidateJobPostingQueries } from "@/lib/utils/invalidate-cache";
+import { JobStatus } from "@prisma/client";
 
 const jobFormSchema = z.object({
   title: z.string().min(1, "Job title is required"),
@@ -132,8 +133,8 @@ export default function EditJobForm({ job }: EditJobFormProps) {
   };
 
   return (
-    <div className="flex justify-center items-start bg-[var(--r-gray)] font-libertinus">
-      <Card className="w-full max-w-2xl mt-12 mb-12 mx-4 rounded-xl shadow-md">
+    <div className="flex justify-center items-start mx-auto bg-[var(--r-gray)] font-libertinus max-h-[calc(100vh-6.5rem)] overflow-y-auto">
+      <Card className="w-full max-w-2xl mt-12 mb-12 rounded-xl shadow-md">
         <CardContent className="px-10 py-8">
           <h2 className="text-2xl font-dm-serif text-[var(--r-black)] mb-2">
             Edit Job Details
@@ -141,6 +142,12 @@ export default function EditJobForm({ job }: EditJobFormProps) {
           <p className="font-libertinus text-[var(--r-boldgray)] mb-8">
             Update the information about your job posting
           </p>
+          {job.status === JobStatus.CLOSED_BY_ADMIN && (
+            <div className="mb-8 text-red-600 w-full text-center text-lg bg-red-100 rounded-lg p-2">
+              This job has been closed by the admin due to policy violations and
+              cannot be updated. Please contact support for more information.
+            </div>
+          )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-6">
               <label className="block font-medium mb-2">Job Title:</label>
@@ -345,7 +352,9 @@ export default function EditJobForm({ job }: EditJobFormProps) {
               <Button
                 type="submit"
                 className="font-dm-serif px-8 py-2 bg-[var(--r-blue)] text-white w-[280px] hover:bg-[var(--r-blue)]/80"
-                disabled={isUpdating}
+                disabled={
+                  isUpdating || job.status === JobStatus.CLOSED_BY_ADMIN
+                }
               >
                 Update Job
               </Button>
