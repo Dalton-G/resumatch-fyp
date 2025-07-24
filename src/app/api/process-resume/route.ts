@@ -35,14 +35,19 @@ export async function POST(req: NextRequest) {
       where: { userId: jobSeekerId },
     });
 
-    if (!jobSeekerProfile?.country || !jobSeekerProfile?.profession) {
+    if (!jobSeekerProfile) {
       return NextResponse.json(
-        {
-          error:
-            "Job seeker profile not found or country/profession is missing",
-        },
+        { error: "Job seeker profile not found" },
         { status: 404 }
       );
+    }
+
+    if (!jobSeekerProfile.country) {
+      jobSeekerProfile.country = "not set"; // default to not set
+    }
+
+    if (!jobSeekerProfile.profession) {
+      jobSeekerProfile.profession = "not set"; // default to not set
     }
 
     // 1. Extract Text from the s3Url

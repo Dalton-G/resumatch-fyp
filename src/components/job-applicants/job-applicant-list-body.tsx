@@ -138,7 +138,7 @@ export default function JobApplicantListBody({
                         className="w-full h-full object-cover rounded-full"
                       />
                     ) : (
-                      <span>
+                      <span className="flex items-center justify-center w-full h-full text-black">
                         {getInitials(
                           app.jobSeeker.firstName,
                           app.jobSeeker.lastName
