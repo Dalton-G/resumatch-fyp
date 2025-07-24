@@ -40,6 +40,7 @@ import {
 } from "react-icons/fi";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
+import { pages } from "@/config/directory";
 
 const timeRangeOptions = [
   { value: "7", label: "Last 7 days" },
@@ -102,9 +103,9 @@ export default function AdminDashboardContent({
             ))}
           </div>
 
-          {/* Charts Skeleton */}
+          {/* Charts Skeleton - Now includes Trending Jobs */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-            {[...Array(6)].map((_, i) => (
+            {[...Array(9)].map((_, i) => (
               <div key={i} className="bg-white rounded-xl p-6 shadow-md">
                 <div className="h-6 w-32 bg-gray-300 rounded animate-pulse mb-4"></div>
                 <div className="h-64 bg-gray-100 rounded animate-pulse"></div>
@@ -701,8 +702,8 @@ export default function AdminDashboardContent({
         </Card>
       </div>
 
-      {/* Bottom Section - Row 5: Top Companies & Trending Skills */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+      {/* Bottom Section - Row 5: Top Companies, Trending Skills & Trending Jobs */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Top Companies by Performance */}
         <Card className="rounded-xl shadow-md">
           <CardHeader>
@@ -793,6 +794,66 @@ export default function AdminDashboardContent({
               <div className="h-64 flex flex-col items-center justify-center text-[var(--r-boldgray)] space-y-3">
                 <FiAward className="h-12 w-12 text-purple-600" />
                 <p className="text-center">No trending skills data yet.</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Trending Jobs */}
+        <Card className="rounded-xl shadow-md">
+          <CardHeader>
+            <CardTitle className="font-dm-serif font-normal text-xl text-[var(--r-black)]">
+              Trending Jobs
+              <span className="text-sm font-normal text-[var(--r-boldgray)] block">
+                Popular positions on the platform
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {analytics.trendingJobs && analytics.trendingJobs.length > 0 ? (
+              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {analytics.trendingJobs.map((job, index) => (
+                  <div
+                    key={job.jobTitle}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                    onClick={() => router.push(pages.jobPortal)}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="flex items-center justify-center w-8 h-8 bg-[var(--r-blue)]/10 text-[var(--r-blue)] rounded-full text-sm font-bold">
+                        {index + 1}
+                      </div>
+                      <div>
+                        <p className="font-medium text-[var(--r-black)] text-sm">
+                          {job.jobTitle.length > 30
+                            ? job.jobTitle.substring(0, 30) + "..."
+                            : job.jobTitle}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <Badge
+                        variant="secondary"
+                        className="bg-[var(--r-blue)]/10 text-[var(--r-blue)]"
+                      >
+                        {job.count} {job.count === 1 ? "posting" : "postings"}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="h-64 flex flex-col items-center justify-center text-[var(--r-boldgray)] space-y-3">
+                <FiBriefcase className="h-12 w-12 text-[var(--r-blue)]" />
+                <p className="text-center">No trending jobs data yet.</p>
+                <p className="text-sm text-center">
+                  Check back as more companies post jobs!
+                </p>
+                <button
+                  onClick={() => router.push(pages.jobPortal)}
+                  className="px-4 py-2 bg-[var(--r-blue)] text-white rounded-lg text-sm hover:bg-[var(--r-blue)]/80 transition-colors"
+                >
+                  Browse Jobs
+                </button>
               </div>
             )}
           </CardContent>

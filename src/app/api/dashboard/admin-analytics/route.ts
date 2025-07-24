@@ -399,6 +399,30 @@ export async function GET(req: NextRequest) {
       .sort((a, b) => b.count - a.count)
       .slice(0, 15);
 
+    // Trending jobs (popular job titles in the platform)
+    const trendingJobsData = await prisma.jobPosting.groupBy({
+      by: ["title"],
+      _count: {
+        title: true,
+      },
+      where: {
+        status: {
+          in: ["HIRING", "URGENTLY_HIRING"],
+        },
+      },
+      orderBy: {
+        _count: {
+          title: "desc",
+        },
+      },
+      take: 15,
+    });
+
+    const trendingJobs = trendingJobsData.map((job) => ({
+      jobTitle: job.title,
+      count: job._count.title,
+    }));
+
     return NextResponse.json({
       analytics: {
         // Admin info
@@ -442,6 +466,7 @@ export async function GET(req: NextRequest) {
         })),
         topCompaniesByPerformance,
         trendingSkills,
+        trendingJobs,
 
         // Meta
         timeRange: daysAgo,

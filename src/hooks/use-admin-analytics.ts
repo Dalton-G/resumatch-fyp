@@ -66,6 +66,10 @@ interface AdminAnalytics {
     skill: string;
     count: number;
   }>;
+  trendingJobs: Array<{
+    jobTitle: string;
+    count: number;
+  }>;
   timeRange: number;
   dateRange: {
     from: string;
