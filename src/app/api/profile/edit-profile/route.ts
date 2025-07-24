@@ -76,8 +76,8 @@ export async function PUT(request: NextRequest) {
           // Update resume embeddings in background (don't block the response)
           updateResumeEmbeddingsCountry(
             userId,
-            profileFields.country || currentProfile?.country || "",
-            profileFields.profession || currentProfile?.profession || undefined
+            profileFields.country || "not set",
+            profileFields.profession || "not set"
           ).catch((error) => {
             console.error(
               "Failed to update resume embeddings metadata:",
