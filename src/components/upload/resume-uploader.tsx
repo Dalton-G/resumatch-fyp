@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, FileText } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { cacheKeys } from "@/config/cache-keys";
+import { replaceSpacesWithUnderscores } from "@/lib/utils/clean-filename";
 
 export default function ResumeUploader() {
   const queryClient = useQueryClient();
@@ -59,9 +60,12 @@ export default function ResumeUploader() {
     setUploading(true);
     setUploadProgress(0);
     try {
+      // Sanitize filename
+      const formattedFileName = replaceSpacesWithUnderscores(file.name);
+
       // 1. Get presigned URL
       const presignRes = await axiosInstance.post(api.s3, {
-        fileName: file.name,
+        fileName: formattedFileName,
         contentType: file.type,
         size: file.size,
         folderPath: config.folder,
