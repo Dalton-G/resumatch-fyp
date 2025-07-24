@@ -27,9 +27,13 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { industryOptions, sizeOptions } from "@/config/company-options";
 import { z } from "zod";
+import { useState, useEffect } from "react";
+import ProfilePictureUploader from "@/components/upload/profile-picture-uploader";
 
 export default function CompanyForm() {
   const router = useRouter();
+  const [logo, setLogo] = useState("");
+
   type CompanyRegistrationForm = z.infer<typeof companyRegistrationSchema>;
   const form = useForm<CompanyRegistrationForm>({
     resolver: zodResolver(companyRegistrationSchema),
@@ -47,6 +51,26 @@ export default function CompanyForm() {
     },
     mode: "onSubmit",
   });
+
+  const { setValue } = form;
+
+  // Sync logo state with form field
+  useEffect(() => {
+    if (logo) {
+      setValue("companyLogo", logo, { shouldValidate: true });
+    }
+  }, [logo, setValue]);
+
+  // Logo upload handlers
+  const handleLogoUpload = (fileUrl: string) => {
+    setValue("companyLogo", fileUrl, { shouldValidate: true });
+    setLogo(fileUrl);
+  };
+
+  const handleLogoDelete = () => {
+    setValue("companyLogo", "", { shouldValidate: true });
+    setLogo("");
+  };
 
   async function handleSubmit(data: CompanyRegistrationForm) {
     try {
@@ -283,13 +307,12 @@ export default function CompanyForm() {
           name="companyLogo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Company Logo URL</FormLabel>
+              <FormLabel>Company Logo</FormLabel>
               <FormControl>
-                <Input
-                  type="url"
-                  {...field}
-                  className="font-libertinus bg-white"
-                  placeholder=""
+                <ProfilePictureUploader
+                  onUploadComplete={handleLogoUpload}
+                  onDelete={handleLogoDelete}
+                  initialFileUrl={logo}
                 />
               </FormControl>
               <FormMessage />

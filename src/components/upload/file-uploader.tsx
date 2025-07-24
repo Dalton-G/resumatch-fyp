@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { Loader2, Trash2, User, FileText } from "lucide-react";
+import { replaceSpacesWithUnderscores } from "@/lib/utils/clean-filename";
 
 export type UploadFile = {
   id: string;
@@ -126,11 +127,14 @@ export default function FileUploader({
 
   async function uploadFile(uploadFile: File) {
     const id = uuidv4();
+    const formattedFileName = replaceSpacesWithUnderscores(uploadFile.name);
     setFiles((prev) => [
       ...(!multiple ? [] : prev),
       {
         id,
-        file: uploadFile,
+        file: new File([uploadFile], formattedFileName, {
+          type: uploadFile.type,
+        }),
         uploading: true,
         progress: 0,
         isDeleting: false,
@@ -145,7 +149,7 @@ export default function FileUploader({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          fileName: uploadFile.name,
+          fileName: formattedFileName,
           contentType: uploadFile.type,
           size: uploadFile.size,
           folderPath: folderPath,

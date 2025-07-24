@@ -10,15 +10,15 @@ export default function CompanyRegisterPage() {
       {/* Left: Registration Form */}
       <div className="flex flex-1 flex-col items-center justify-center bg-[var(--r-gray)] px-4">
         <div className="w-full max-w-md mx-auto flex flex-col items-center">
-          <h1 className="text-4xl font-dm-serif mb-2 text-center">
+          <h1 className="text-3xl font-dm-serif mb-2 text-center">
             Company Registration
           </h1>
-          <p className="mb-8 text-center font-libertinus text-base font-medium">
+          <p className="mb-4 text-center font-libertinus text-base font-medium">
             Create your <span className="text-[var(--r-blue)]">ResuMatch</span>{" "}
             company account
           </p>
           <CompanyForm />
-          <p className="text-center text-sm font-libertinus mt-8">
+          <p className="text-center text-sm font-libertinus mt-4">
             Already have an account?{" "}
             <a
               href={pages.login}
