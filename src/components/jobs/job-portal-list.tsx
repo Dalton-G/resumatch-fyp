@@ -33,8 +33,6 @@ const workTypeOptions = [
 const jobStatusOptions = [
   { value: "URGENTLY_HIRING", label: "Urgently Hiring" },
   { value: "HIRING", label: "Hiring" },
-  { value: "CLOSED", label: "Closed" },
-  { value: "CLOSED_BY_ADMIN", label: "Closed by Admin" },
 ];
 
 function truncate(str: string, n: number) {
