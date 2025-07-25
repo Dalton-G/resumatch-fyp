@@ -314,7 +314,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       jobTitle: jobPosting.title,
       jobCompany: jobPosting.company.name,
-      totalCandidates: rankedCandidates.length,
+      totalCandidates: limitedCandidates.length,
       candidates: limitedCandidates,
     });
   } catch (error) {
